@@ -1,11 +1,17 @@
 #include "geometry_node.hpp"
 
-model geometry;
+Geometry_node::Geometry_node():
+    Node(),
+    geometry{}{}
 
-model getGeometry(){
+Geometry_node::Geometry_node(model g):
+    Node(),
+    geometry{g}{}
+
+model Geometry_node::getGeometry(){
     return geometry;
 }
 
-void setGeometry(model g){
+void Geometry_node::setGeometry(model g){
     geometry = g;
 }

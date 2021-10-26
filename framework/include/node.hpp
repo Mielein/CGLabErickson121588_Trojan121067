@@ -10,17 +10,18 @@
 class Node{
     private:
         Node *parent;
-        std::list<Node> children;
+        std::vector<Node> children;               //List doesent work well, we use vector
         std::string name;
         std::string path;
         int depth;
         glm::mat4 localTransform;
         glm::mat4 worldTransform;
     public:
+        Node();
         Node getParent();
-        void setParent(Node node);
+        void setParent(Node *node);
         Node getChildren(std::string name);
-        std::list<Node> getChildrenList();
+        std::vector<Node> getChildrenList();
         std::string getName();
         std::string getPath();
         int getDepth();

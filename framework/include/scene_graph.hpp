@@ -1,6 +1,9 @@
 #ifndef SCENE_GRAPH_HPP;
 #define SCENE_GRAPH_HPP;
 
+#include "node.hpp"
+#include <string>
+
 class scene_graph{
     private:
         std::string name;

@@ -9,7 +9,7 @@
 
 class Node{
     private:
-        Node parent;
+        Node *parent;
         std::list<Node> children;
         std::string name;
         std::string path;

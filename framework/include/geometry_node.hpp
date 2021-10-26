@@ -10,8 +10,6 @@ class Geometry_node : public Node{
     public:
         model getGeometry();
         void setGeometry(model g);
-
-
 };
 
 

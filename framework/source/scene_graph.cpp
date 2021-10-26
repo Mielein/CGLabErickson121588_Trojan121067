@@ -1,26 +1,23 @@
 #include "scene_graph.hpp"
 
-class scene_graph{
-    std::string name = " ";
-    Node root;
+std::string name = " ";
+Node root;
 
-    std::string getName(){
-        return name;
-    }
-    void setName(std::string n){
-        name = n;
-    }
+std::string getName(){
+    return name;
+}
+void setName(std::string n){
+    name = n;
+}
 
-    Node getRoot(){
-        return root;
-    }
+Node getRoot(){
+    return root;
+}
 
-    void setRoote(Node r){
-        root = r;
-    }
+void setRoote(Node r){
+    root = r;
+}
 
-    std::string printGraph(){
-        //TODO
-    }
-
-};
+std::string printGraph(){
+    //TODO
+}

@@ -18,6 +18,7 @@ class Node{
         glm::mat4 worldTransform;
     public:
         Node();
+        Node(Node *_parent, std::string _name, std::string _path);
         Node getParent();
         void setParent(Node *node);
         Node getChildren(std::string name);
@@ -26,10 +27,10 @@ class Node{
         std::string getPath();
         int getDepth();
         glm::mat4 getLocalTransform();
-        void setLocalTransform(glm::mat4);
+        void setLocalTransform(glm::mat4 newLocal);
         glm::mat4 getWorldTransform();
-        void setWorldTransform(glm::mat4);
-        void addChildren(Node);
+        void setWorldTransform(glm::mat4 newWorld);
+        void addChildren(Node newChild);
         Node removeChildren(std::string);
 };
 

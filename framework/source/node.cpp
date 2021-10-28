@@ -13,6 +13,15 @@ Node::Node():
     worldTransform{}
     {}
 
+Node::Node(Node *_parent, std::string _name, std::string _path):
+    parent{_parent},
+    children{},
+    name{_name},
+    path{_path},
+    depth{},
+    localTransform{},
+    worldTransform{}
+    {}
 
 Node Node::getParent(){
     return *parent;
@@ -20,7 +29,6 @@ Node Node::getParent(){
 
 void Node::setParent(Node *node){
     *parent = *node;
-    return;
 }
 
 Node Node::getChildren(std::string name){
@@ -33,41 +41,41 @@ Node Node::getChildren(std::string name){
 }
 
 std::vector<Node> Node::getChildrenList(){
-
+    return children;
 }
 
 std::string Node::getName(){
-
+    return name;
 }
 
 std::string Node::getPath(){
-
+    return path;
 }
 
 int Node::getDepth(){
-
+    return depth;
 }
 
 glm::mat4 Node::getLocalTransform(){
-
+    return localTransform;
 }
 
-void Node::setLocalTransform(glm::mat4){
-
+void Node::setLocalTransform(glm::mat4 newLocal){
+    localTransform = newLocal;
 }
 
 glm::mat4 Node::getWorldTransform(){
-
+    return worldTransform;
 }
 
-void Node::setWorldTransform(glm::mat4){
-
+void Node::setWorldTransform(glm::mat4 newWorld){
+    worldTransform = newWorld;
 }
 
-void Node::addChildren(Node){
-
+void Node::addChildren(Node newNode){
+    children.push_back(newNode);
 }
 
 Node Node::removeChildren(std::string){
-
+    return;
 }

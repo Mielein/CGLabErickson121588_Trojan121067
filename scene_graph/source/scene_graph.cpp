@@ -23,6 +23,6 @@ void Scene_graph::setRoot(Node r){
     root = r;
 }
 
-std::string Scene_graph::printGraph(){
+std::string Scene_graph::printClass(){
     //TODO
 }

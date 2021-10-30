@@ -37,7 +37,7 @@ Node Node::getChildren(std::string name){
         throw;
     }
     return; */
-    if (std::find(children.begin(), children.end(), name) != children.end()) return;
+    if (std::find(children.begin(), children.end(), name) != children.end()) return; //didnt this one need to return a node???
     else throw;
     //Todo need a way to iterate over the list to find the element (now vector)
 }

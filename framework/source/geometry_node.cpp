@@ -1,4 +1,4 @@
-#include "geometry_node.hpp"
+/* #include "geometry_node.hpp"
 
 Geometry_node::Geometry_node():
     Node(),
@@ -14,4 +14,4 @@ model Geometry_node::getGeometry(){
 
 void Geometry_node::setGeometry(model g){
     geometry = g;
-}
+} */

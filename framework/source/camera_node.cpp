@@ -1,4 +1,4 @@
-#include "camera_node.hpp"
+/* #include "camera_node.hpp"
 
 Camera_node::Camera_node():
     Node(),
@@ -17,4 +17,4 @@ glm::mat4 Camera_node::getProjectionMatrix(){
 void Camera_node::setProjectionMatrix(glm::mat4 matrix){
     projectionMatrix = matrix;
 
-}
+} */

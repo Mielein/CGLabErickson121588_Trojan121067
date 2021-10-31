@@ -21,7 +21,7 @@ class Node{
         Node(Node *_parent, std::string _name, std::string _path);
         Node getParent();
         void setParent(Node *node);
-        Node getChildren(std::string name);
+        Node getChild(std::string name);
         std::vector<Node> getChildrenList();
         std::string getName();
         std::string getPath();

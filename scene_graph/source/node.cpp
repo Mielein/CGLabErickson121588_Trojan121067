@@ -31,14 +31,20 @@ void Node::setParent(Node *node){
     *parent = *node;
 }
 
-Node Node::getChildren(std::string name){
+Node Node::getChild(std::string name){
+    std::vector<Node>::iterator it = std::find(children.begin(), children.end(), name);
+
 /*     std::vector<Node>::iterator it = std::find(children.begin(), children.end(), name);
     if(it == children.end()){
         throw;
     }
     return; */
-    if (std::find(children.begin(), children.end(), name) != children.end()) return; //didnt this one need to return a node???
-    else throw;
+
+    //if (std::find(children.begin(), children.end(), name) != children.end()){
+    //    return std::find(children.begin(), children.end(), this);
+    //    }
+        //didnt this one need to return a node???
+    //else throw;
     //Todo need a way to iterate over the list to find the element (now vector)
 }
 

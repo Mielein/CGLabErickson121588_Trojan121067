@@ -23,7 +23,7 @@ Node::Node(Node *_parent, std::string _name, std::string _path):
     worldTransform{}
     {}
 
-Node Node::getParent(){
+Node Node::getParent() const{
     return *parent;
 }
 
@@ -31,40 +31,33 @@ void Node::setParent(Node *node){
     *parent = *node;
 }
 
-Node Node::getChild(std::string name){
-    std::vector<Node>::iterator it = std::find(children.begin(), children.end(), name);
-
-/*     std::vector<Node>::iterator it = std::find(children.begin(), children.end(), name);
-    if(it == children.end()){
-        throw;
-    }
-    return; */
-
-    //if (std::find(children.begin(), children.end(), name) != children.end()){
-    //    return std::find(children.begin(), children.end(), this);
-    //    }
-        //didnt this one need to return a node???
-    //else throw;
-    //Todo need a way to iterate over the list to find the element (now vector)
+Node Node::getChild(std::string name) const{
+    int i = 5;
+    for(Node const& x : children)
+        if(x.getName() == name){
+            return x;
+        }
+        else continue;
+    throw;
 }
 
-std::vector<Node> Node::getChildrenList(){
+std::vector<Node> Node::getChildrenList() const{
     return children;
 }
 
-std::string Node::getName(){
+std::string Node::getName() const{
     return name;
 }
 
-std::string Node::getPath(){
+std::string Node::getPath() const{
     return path;
 }
 
-int Node::getDepth(){
+int Node::getDepth() const{
     return depth;
 }
 
-glm::mat4 Node::getLocalTransform(){
+glm::mat4 Node::getLocalTransform() const{
     return localTransform;
 }
 
@@ -72,7 +65,7 @@ void Node::setLocalTransform(glm::mat4 newLocal){
     localTransform = newLocal;
 }
 
-glm::mat4 Node::getWorldTransform(){
+glm::mat4 Node::getWorldTransform() const{
     return worldTransform;
 }
 

@@ -19,16 +19,16 @@ class Node{
     public:
         Node();
         Node(Node *_parent, std::string _name, std::string _path);
-        Node getParent();
+        Node getParent() const;
         void setParent(Node *node);
-        Node getChild(std::string name);
-        std::vector<Node> getChildrenList();
-        std::string getName();
-        std::string getPath();
-        int getDepth();
-        glm::mat4 getLocalTransform();
+        Node getChild(std::string name) const;
+        std::vector<Node> getChildrenList() const;
+        std::string getName() const;
+        std::string getPath() const;
+        int getDepth() const;
+        glm::mat4 getLocalTransform() const;
         void setLocalTransform(glm::mat4 newLocal);
-        glm::mat4 getWorldTransform();
+        glm::mat4 getWorldTransform() const;
         void setWorldTransform(glm::mat4 newWorld);
         void addChildren(Node newChild);
         Node removeChildren(std::string);

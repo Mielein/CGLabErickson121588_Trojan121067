@@ -32,7 +32,6 @@ void Node::setParent(Node *node){
 }
 
 Node Node::getChild(std::string name) const{
-    int i = 5;
     for(Node const& x : children)
         if(x.getName() == name){
             return x;

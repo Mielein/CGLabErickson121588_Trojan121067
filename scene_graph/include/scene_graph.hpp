@@ -1,5 +1,5 @@
-#ifndef SCENE_GRAPH_HPP;
-#define SCENE_GRAPH_HPP;
+#ifndef SCENE_GRAPH_HPP
+#define SCENE_GRAPH_HPP
 
 #include "node.hpp"
 #include <string>

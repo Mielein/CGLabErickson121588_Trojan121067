@@ -32,13 +32,15 @@ void Node::setParent(Node *node){
 }
 
 Node Node::getChild(std::string name) const{
-    for(Node const& x : children)
+    for(Node const& x : children){
         if(x.getName() == name){
             return x;
         }
-        else continue;
+        getChild(name);
+    }
+        
     throw;
-    //ToDo Needs to be recursive ... D:
+    //should be recursive
 }
 
 std::vector<Node> Node::getChildrenList() const{
@@ -80,6 +82,6 @@ void Node::addChildren(Node newNode){
 Node Node::removeChildren(std::string name){
     Node tmp_Nope = getChild(name);
     Node tmp_Node; //ToDo
-    //children.erase(std::remove(children.begin(), children.end(), tmp_Nope));
+    
     return tmp_Node;
 }

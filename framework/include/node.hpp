@@ -15,6 +15,7 @@ class Node{
         int depth;
         glm::mat4 localTransform;
         glm::mat4 worldTransform;
+        bool explored = false;
     public:
         Node();
         Node(Node *_parent, std::string _name, std::string _path);

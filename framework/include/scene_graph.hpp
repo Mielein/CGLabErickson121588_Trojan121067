@@ -14,9 +14,9 @@ class Scene_graph{
     public:
         Scene_graph();
         Scene_graph(std::string n, Node r);
-        std::string getName();
-        Node getRoot();
-        std::string printClass();
+        std::string getName() const;
+        Node getRoot() const;
+        std::string printClass() const;
 };
 
 #endif

@@ -38,6 +38,7 @@ Node Node::getChild(std::string name) const{
         }
         else continue;
     throw;
+    //ToDo Needs to be recursive ... D:
 }
 
 std::vector<Node> Node::getChildrenList() const{
@@ -76,6 +77,9 @@ void Node::addChildren(Node newNode){
     children.push_back(newNode);
 }
 
-Node Node::removeChildren(std::string){
-    return;
+Node Node::removeChildren(std::string name){
+    Node tmp_Nope = getChild(name);
+    Node tmp_Node; //ToDo
+    //children.erase(std::remove(children.begin(), children.end(), tmp_Nope));
+    return tmp_Node;
 }

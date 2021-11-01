@@ -1,11 +1,10 @@
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
-
-#include "node.hpp"
+#ifndef NODE_HPP
+#define NODE_HPP
 
 #include <glm/gtc/type_precision.hpp>
 #include <string>
 #include <list>
+#include <vector>
 
 class Node{
     private:
@@ -31,7 +30,7 @@ class Node{
         glm::mat4 getWorldTransform() const;
         void setWorldTransform(glm::mat4 newWorld);
         void addChildren(Node newChild);
-        Node removeChildren(std::string);
+        Node removeChildren(std::string name);
 };
 
 #endif

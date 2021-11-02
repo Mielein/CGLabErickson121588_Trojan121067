@@ -26,19 +26,15 @@ void Scene_graph::setRoot(Node r){
     root = r;
 }
 
-/* std::string Scene_graph::printClass() const{
-    //TODO recursion!!
-    std::cout<<"hello";
-    std::cout<<root.getName()<<"->";
+std::string printChildren(std::vector<Node> children){
     for(Node const& x : children){
-        if(x.getName() == name){
-            return x;
-        }
-	std::cout<<it->getName()<<" -> ";
-		//itorating the neighbour
-		for(std::vector<Node>::iterator i = it->getChildrenList().begin(); i != it->getChildrenList().end(); ++i){
-			std::cout<<i->getName();
-			std::cout<<std::endl;
-		}
-	}
-} */
+        std::cout<<x.getName()<<", ";
+        std::cout<<"->"<<std::endl;
+        printChildren(x.getChildrenList());
+    }
+}
+
+std::string Scene_graph::printClass() const{
+    std::cout<<root.getName()<<"->";
+    printChildren(root.getChildrenList());
+}

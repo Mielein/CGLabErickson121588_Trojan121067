@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
   Node first_node("Uranus");
   Node first_node("Neptune");
   Node first_node("Moon");
-  Camera_Node
+
 
   debug_scene.getRoot().addChild(first_node);
   std::cout << debug_scene.getRoot().getChild("First element").getName() << std::endl;

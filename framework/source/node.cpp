@@ -4,26 +4,21 @@
 #include <algorithm>
 #include <iostream>
 
+
 Node::Node():
-    parent{},
-    name{"boring_default_name"}
-    {}
+    name{"boring_default_name"}{}
+
 
 Node::Node(std::string _name):
-    name{_name}
-    {}
+    name{_name}{}
 
-Node::Node(Node *_parent, std::string _name):
-    parent{_parent},
-    name{_name}
-    {}
 
-Node Node::getParent() const{
-    return *parent;
+std::shared_ptr<Node>& Node::getParent() const{
+    return parent;
 }
 
-void Node::setParent(Node *node){
-    *parent = *node;
+void Node::setParent(std::shared_ptr<Node>& node){
+    parent = node;
 }
 
 Node Node::getChild(std::string name) const{
@@ -72,6 +67,7 @@ void Node::setWorldTransform(glm::mat4 newWorld){
 }
 
 void Node::addChild(Node newNode){
+    newNode.setParent(this);
     children.insert(children.end(), newNode);
 }
 

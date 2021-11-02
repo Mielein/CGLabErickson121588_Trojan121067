@@ -5,10 +5,11 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <memory>
 
 class Node{
     private:
-        Node *parent;
+        std::shared_ptr<Node>& parent;
         std::vector<Node> children;               //List doesent work well, we use vector
         std::string name;
         std::string path;
@@ -18,9 +19,8 @@ class Node{
     public:
         Node();
         Node(std::string _name);
-        Node(Node *_parent, std::string _name);
-        Node getParent() const;
-        void setParent(Node *node);
+        std::shared_ptr<Node>& getParent() const;
+        void setParent(std::shared_ptr<Node>& node);
         Node getChild(std::string name) const;
         std::vector<Node> getChildrenList() const;
         std::string getName() const;

@@ -9,8 +9,8 @@
 
 class Node{
     private:
-        std::shared_ptr<Node>& parent;
-        std::vector<Node> children;               //List doesent work well, we use vector
+        std::shared_ptr<Node> parent;
+        std::vector<std::shared_ptr<Node>> children;               //List doesent work well, we use vector
         std::string name;
         std::string path;
         int depth;
@@ -19,10 +19,10 @@ class Node{
     public:
         Node();
         Node(std::string _name);
-        std::shared_ptr<Node>& getParent() const;
-        void setParent(std::shared_ptr<Node>& node);
+        std::shared_ptr<Node> getParent() const;
+        void setParent(std::shared_ptr<Node> node);
         Node getChild(std::string name) const;
-        std::vector<Node> getChildrenList() const;
+        std::vector<std::shared_ptr<Node>> getChildrenList() const;
         std::string getName() const;
         std::string getPath() const;
         int getDepth() const;
@@ -30,7 +30,7 @@ class Node{
         void setLocalTransform(glm::mat4 newLocal);
         glm::mat4 getWorldTransform() const;
         void setWorldTransform(glm::mat4 newWorld);
-        void addChild(Node newChild);
+        void addChild(std::shared_ptr<Node> newNode);
         Node removeChild(std::string name);
 };
 

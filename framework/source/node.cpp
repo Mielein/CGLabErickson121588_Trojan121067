@@ -5,6 +5,7 @@
 #include <iostream>
 
 
+
 Node::Node():
     name{"boring_default_name"}{}
 
@@ -13,27 +14,27 @@ Node::Node(std::string _name):
     name{_name}{}
 
 
-std::shared_ptr<Node>& Node::getParent() const{
+std::shared_ptr<Node> Node::getParent() const{
     return parent;
 }
 
-void Node::setParent(std::shared_ptr<Node>& node){
+void Node::setParent(std::shared_ptr<Node> node){
     parent = node;
 }
 
 Node Node::getChild(std::string name) const{
-    for(Node const& x : children){
-        std::cout << x.getName() << std::endl;
-        if(x.getName() == name){
-            return x;
+    for(auto const& x : children){
+        std::cout << x->getName() << std::endl;
+        if(x->getName() == name){
+            return *x;
         }
-        x.getChild(name);
+        x->getChild(name);
     }
     throw;
     //should be recursive
 }
 
-std::vector<Node> Node::getChildrenList() const{
+std::vector<std::shared_ptr<Node>> Node::getChildrenList() const{
     //std::cout << "getChildrenList Callback" << std::endl;
     return children;
 }
@@ -66,17 +67,17 @@ void Node::setWorldTransform(glm::mat4 newWorld){
     worldTransform = newWorld;
 }
 
-void Node::addChild(Node newNode){
-    newNode.setParent(this);
+void Node::addChild(std::shared_ptr<Node> newNode){
+    newNode->setParent(this->parent);
     children.insert(children.end(), newNode);
 }
 
 Node Node::removeChild(std::string name){
     Node tmp_Nope;
     Node tmp_Node; //ToDo
-    for(Node const& x : children){
-        if(x.getName() == name){
-            tmp_Nope = x;
+    for(auto const& x : children){
+        if(x->getName() == name){
+            tmp_Nope = *x;
         }
         getChild(name);
         tmp_Node = tmp_Nope;

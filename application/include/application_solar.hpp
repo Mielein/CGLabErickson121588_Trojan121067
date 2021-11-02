@@ -25,7 +25,7 @@ class ApplicationSolar : public Application {
   void render() const;
 
   Scene_graph scene_graph_;
-  
+
  protected:
   void initializeShaderPrograms();
   void initializeGeometry();

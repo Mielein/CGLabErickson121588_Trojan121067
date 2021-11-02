@@ -188,17 +188,18 @@ void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
 int main(int argc, char* argv[]) {
 
   //scene graph Debug area
-  Node root_node("Root element");
+  Node root_node("root element");
   Scene_graph debug_scene("Debug Scene", root_node);
-  Node first_node("First element");
-  Node first_node("");
-  Node first_node("");
-  Node first_node("");
-  Node first_node("");
-  Node first_node("");
-  Node first_node("");
-  Node first_node("");
-  Node first_node("");
+  Node first_node("Mercury");
+  Node first_node("Venus");
+  Node first_node("Earth");
+  Node first_node("Mars");
+  Node first_node("Jupiter");
+  Node first_node("Saturn");
+  Node first_node("Uranus");
+  Node first_node("Neptune");
+  Node first_node("Moon");
+  Camera_Node
 
   debug_scene.getRoot().addChild(first_node);
   std::cout << debug_scene.getRoot().getChild("First element").getName() << std::endl;

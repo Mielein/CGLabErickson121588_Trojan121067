@@ -39,11 +39,3 @@ std::string Scene_graph::printClass() const{
 		}
 	}
 }
-
-/* int main(int argc, char* argv[]){
-    Node root(NULL,"root","???");
-    Scene_graph scene_graph("test sceneGraph", root);
-    Node node();
-    scene_graph.printClass();
-    return 0;
-} */

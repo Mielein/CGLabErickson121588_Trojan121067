@@ -10,6 +10,8 @@ class Camera_node : public Node{
         bool isEnabled;
         glm::mat4 projectionMatrix;
     public:
+        Camera_node();
+        Camera_node(std::string name);
         bool getPerspective();
         bool getEnabled();
         void setEnable(bool enable);

@@ -31,10 +31,11 @@ Node Node::getChild(std::string name) const{
         if(x.getName() == name){
             return x;
         }
+        else{
+            throw;
+        }
         getChild(name);
     }
-        
-    throw;
     //should be recursive
 }
 

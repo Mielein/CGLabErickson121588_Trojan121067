@@ -40,8 +40,6 @@ ApplicationSolar::~ApplicationSolar() {
 void ApplicationSolar::render() const {
   // bind shader to upload uniforms
   glUseProgram(m_shaders.at("planet").handle);
-  // scene_graph_.printClass();
-
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
@@ -188,5 +186,22 @@ void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
 
 // exe entry point
 int main(int argc, char* argv[]) {
+
+  //scene graph Debug area
+  Node root_node("Root element");
+  Scene_graph debug_scene("Debug Scene", root_node);
+  Node first_node("First element");
+  Node first_node("");
+  Node first_node("");
+  Node first_node("");
+  Node first_node("");
+  Node first_node("");
+  Node first_node("");
+  Node first_node("");
+  Node first_node("");
+
+  debug_scene.getRoot().addChild(first_node);
+  std::cout << debug_scene.getRoot().getChild("First element").getName() << std::endl;
+
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

@@ -24,6 +24,8 @@ class ApplicationSolar : public Application {
   // draw all objects
   void render() const;
 
+  Scene_graph scene_graph_;
+  
  protected:
   void initializeShaderPrograms();
   void initializeGeometry();
@@ -41,7 +43,6 @@ class ApplicationSolar : public Application {
   // camera projection matrix
   glm::fmat4 m_view_projection;
   // initialized sceneGraph with information about objects and there rotation
-  Scene_graph scene_graph_;
 };
 
 #endif

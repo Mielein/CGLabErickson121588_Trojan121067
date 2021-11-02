@@ -200,7 +200,7 @@ int main(int argc, char* argv[]) {
   Node neptune_node("Neptune");
   Node moon_node("Moon");
   Camera_node camera("Camera");
-  
+
   earth_node.addChild(moon_node);
   root_node.addChild(mercury_node);
   root_node.addChild(venus_node);
@@ -211,12 +211,14 @@ int main(int argc, char* argv[]) {
   root_node.addChild(urnaus_node);
   root_node.addChild(neptune_node);
   root_node.addChild(camera);
-  
 
 //  root_node.addChild(earth_node);
 //  root_node.addChild(neptune_node);
 
+//  std::cout <<  << std::endl
   Scene_graph debug_scene("Debug Scene", root_node);
+  
+  //std::cout << debug_scene.getRoot().getChild("Moon").getName() << std::endl;
 
 /*   for(auto i = root_node.getChildrenList().begin(); i != root_node.getChildrenList().end(); i++){
     std::cout << root_node.getChild("Earth").getName() << std::endl;
@@ -228,6 +230,7 @@ int main(int argc, char* argv[]) {
 
   //earth_node.addChild(moon_node);
   //std::cout << debug_scene.getRoot().getName() << std::endl;
+
   debug_scene.printClass();
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);

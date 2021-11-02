@@ -1,4 +1,5 @@
 #include "scene_graph.hpp"
+#include "camera_node.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -30,8 +31,7 @@ std::string Scene_graph::printClass() const{
     //TODO recursion!!
     std::cout<<"hello";
     std::cout<<root.getName()<<"->";
-    for(std::vector<Node>::iterator it = root.getChildrenList().begin();it != root.getChildrenList().end(); ++it){
-		std::cout<<it->getName()<<" -> ";
+	std::cout<<it->getName()<<" -> ";
 		//itorating the neighbour
 		for(std::vector<Node>::iterator i = it->getChildrenList().begin(); i != it->getChildrenList().end(); ++i){
 			std::cout<<i->getName();

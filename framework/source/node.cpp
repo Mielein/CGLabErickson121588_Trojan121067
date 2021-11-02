@@ -83,7 +83,7 @@ Node Node::removeChild(std::string name){
         }
         getChild(name);
         tmp_Node = tmp_Nope;
-        remove(children.begin(),children.end(),tmp_Nope);
+        //children.erase(std::remove(children.begin(),children.end(),tmp_Nope));
     }
       
     return tmp_Node;

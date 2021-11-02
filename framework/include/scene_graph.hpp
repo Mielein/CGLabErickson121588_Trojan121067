@@ -2,6 +2,7 @@
 #define SCENE_GRAPH_HPP
 
 #include "node.hpp"
+#include "camera_node.hpp"
 #include <string>
 
 class Scene_graph{

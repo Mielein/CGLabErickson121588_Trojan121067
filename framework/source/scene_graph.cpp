@@ -1,5 +1,4 @@
 #include "scene_graph.hpp"
-#include "camera_node.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -27,10 +26,14 @@ void Scene_graph::setRoot(Node r){
     root = r;
 }
 
-std::string Scene_graph::printClass() const{
+/* std::string Scene_graph::printClass() const{
     //TODO recursion!!
     std::cout<<"hello";
     std::cout<<root.getName()<<"->";
+    for(Node const& x : children){
+        if(x.getName() == name){
+            return x;
+        }
 	std::cout<<it->getName()<<" -> ";
 		//itorating the neighbour
 		for(std::vector<Node>::iterator i = it->getChildrenList().begin(); i != it->getChildrenList().end(); ++i){
@@ -38,4 +41,4 @@ std::string Scene_graph::printClass() const{
 			std::cout<<std::endl;
 		}
 	}
-}
+} */

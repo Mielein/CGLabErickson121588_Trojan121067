@@ -4,8 +4,8 @@ Camera_node::Camera_node():
     Node(),
     projectionMatrix{}{}
 
-Camera_node::Camera_node(std::string name):
-    Node{name}{}
+Camera_node::Camera_node(std::string _name):
+    Node{_name}{}
 
 bool Camera_node::getEnabled(){
     return isEnabled;

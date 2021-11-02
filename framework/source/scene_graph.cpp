@@ -33,13 +33,14 @@ void Scene_graph::setRoot(Node r){
 
 std::string printChildren(std::vector<Node> children){
     for(Node const& x : children){
-        std::cout<<x.getName()<<", ";
-        std::cout<<"->"<<std::endl;
+        std::cout<<x.getParent().getName()<<x.getName()<<"->";
         printChildren(x.getChildrenList());
+        std::cout<<std::endl;
     }
 }
 
 std::string Scene_graph::printClass() const{
     std::cout<<root.getName()<<"->";
-    printChildren(root.getChildrenList());
+    std::cout<<printChildren(root.getChildrenList());
+    
 }

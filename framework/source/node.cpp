@@ -10,11 +10,10 @@ Node::Node():
     {}
 
 Node::Node(std::string _name):
-    parent{},
     name{_name}
     {}
 
-Node::Node(Node *_parent, std::string _name, std::string _path):
+Node::Node(Node *_parent, std::string _name):
     parent{_parent},
     name{_name}
     {}

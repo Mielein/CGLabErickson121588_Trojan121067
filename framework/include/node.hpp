@@ -18,7 +18,7 @@ class Node{
     public:
         Node();
         Node(std::string _name);
-        Node(Node *_parent, std::string _name, std::string _path);
+        Node(Node *_parent, std::string _name);
         Node getParent() const;
         void setParent(Node *node);
         Node getChild(std::string name) const;

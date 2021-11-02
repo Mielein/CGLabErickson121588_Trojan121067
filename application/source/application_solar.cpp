@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
   //scene graph Debug area
   Node root_node("root element");
   
-  Node mercury_node("Mercury");
+  Node mercury_node("Mercury",root_node);
   Node venus_node("Venus");
   Node earth_node("Earth");
   Node mars_node("Mars");

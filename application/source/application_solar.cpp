@@ -224,7 +224,7 @@ int main(int argc, char* argv[]) {
 
   //earth_node.addChild(moon_node);
   //std::cout << debug_scene.getRoot().getChild("Mars").getName() << std::endl;
-  //debug_scene.printClass();
+  debug_scene.printClass();
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

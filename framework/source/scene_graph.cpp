@@ -10,15 +10,19 @@ Scene_graph::Scene_graph():
 Scene_graph::Scene_graph(std::string n, Node r):
     name{n},
     root{r}{}
+    /* Node root = Node("root");
+    setRoot(root); */
+
 
 std::string Scene_graph::getName() const{
     return name;
 }
+
 void Scene_graph::setName(std::string n){
-    name = n;
+    name = n;y
 }
 
-Node Scene_graph::getRoot() /* const */{
+Node Scene_graph::getRoot() const{
     return root;
 }
 

@@ -5,22 +5,17 @@
 
 Node::Node():
     parent{},
-    children{},
-    name{"boring_default_name"},
-    path{},
-    depth{},
-    localTransform{},
-    worldTransform{}
+    name{"boring_default_name"}
+    {}
+
+Node::Node(std::string _name):
+    parent{},
+    name{_name}
     {}
 
 Node::Node(Node *_parent, std::string _name, std::string _path):
     parent{_parent},
-    children{},
-    name{_name},
-    path{_path},
-    depth{},
-    localTransform{},
-    worldTransform{}
+    name{_name}
     {}
 
 Node Node::getParent() const{
@@ -75,13 +70,21 @@ void Node::setWorldTransform(glm::mat4 newWorld){
     worldTransform = newWorld;
 }
 
-void Node::addChildren(Node newNode){
+void Node::addChild(Node newNode){
     children.push_back(newNode);
 }
 
-Node Node::removeChildren(std::string name){
-    Node tmp_Nope = getChild(name);
+Node Node::removeChild(std::string name){
+    Node tmp_Nope;
     Node tmp_Node; //ToDo
-    
+    for(Node const& x : children){
+        if(x.getName() == name){
+            tmp_Nope = x;
+        }
+        getChild(name);
+        tmp_Node = tmp_Nope;
+        remove(children.begin(),children.end(),tmp_Nope);
+    }
+      
     return tmp_Node;
 }

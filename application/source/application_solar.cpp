@@ -190,19 +190,28 @@ int main(int argc, char* argv[]) {
   //scene graph Debug area
   Node root_node("root element");
   Scene_graph debug_scene("Debug Scene", root_node);
-  Node first_node("Mercury");
-  Node first_node("Venus");
-  Node first_node("Earth");
-  Node first_node("Mars");
-  Node first_node("Jupiter");
-  Node first_node("Saturn");
-  Node first_node("Uranus");
-  Node first_node("Neptune");
-  Node first_node("Moon");
+  Node mercury_node("Mercury");
+  Node venus_node("Venus");
+  Node earth_node("Earth");
+  Node mars_node("Mars");
+  Node jupiter_node("Jupiter");
+  Node saturn_node("Saturn");
+  Node urnaus_node("Uranus");
+  Node neptune_node("Neptune");
+  Node moon_node("Moon");
+  Camera_node camera("Camera");
 
-
-  debug_scene.getRoot().addChild(first_node);
-  std::cout << debug_scene.getRoot().getChild("First element").getName() << std::endl;
+  debug_scene.getRoot().addChild(mercury_node);
+  debug_scene.getRoot().addChild(venus_node);
+  debug_scene.getRoot().addChild(earth_node);
+  debug_scene.getRoot().addChild(mars_node);
+  debug_scene.getRoot().addChild(jupiter_node);
+  debug_scene.getRoot().addChild(saturn_node);
+  debug_scene.getRoot().addChild(urnaus_node);
+  debug_scene.getRoot().addChild(neptune_node);
+  debug_scene.getRoot().addChild(camera);
+  earth_node.addChild(moon_node);
+  std::cout << debug_scene.getRoot().getChild("Mars").getName() << std::endl;
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

@@ -42,8 +42,8 @@ void ApplicationSolar::render() const {
   glUseProgram(m_shaders.at("planet").handle);
   // scene_graph_.printClass();
   Node tmp_node("First element");
-  scene_graph_.getRoot().addChildren(tmp_node);
-  scene_graph_.getRoot().getChild();
+  scene_graph_.getRoot().addChild(tmp_node);
+  scene_graph_.getRoot().getChild("First element");
 
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});

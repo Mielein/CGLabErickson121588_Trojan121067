@@ -18,7 +18,7 @@ Scene_graph::Scene_graph(std::string n, std::shared_ptr<Node> r){
     setRoot(root); */
 
 
-std::string Scene_graph::getName() const{
+std::string Scene_graph::getNameScene() const{
     return name;
 }
 
@@ -34,16 +34,23 @@ void Scene_graph::setRoot(std::shared_ptr<Node> r){
     root = r;
 }
 
-std::string printChildren(std::vector<Node> children){
-    /* for(Node const& x : children){
-        std::cout<<x.getParent()->getName()<<" -> "<<x.getName()<<"->";
-        printChildren(x.getChildrenList());
-        std::cout<<std::endl;
-    } */
+std::string printChildren(std::vector<std::shared_ptr<Node>> children){
+    for(auto const& x : children){
+        return x->getName();
+        /* std::cout<< "hi" <<std::endl;
+        std::cout<< x->getName() <<std::endl;
+        std::cout<<x->getParent()->getName()<<" -> "<<x->getName()<<"->";
+        printChildren(x->getChildrenList());
+        std::cout<<std::endl;  */
+    
+        
+    }  
+    
 }
 
 std::string Scene_graph::printClass() const{
-    //std::cout<<root.getName()<<"->";
-    //std::cout<<printChildren(root->getChildrenList());
+    //std::cout<<root->getName()<<"->";
+    //std::cout<<root->getName()<<std::endl;
+    std::cout<<printChildren(root->getChildrenList());
     
 }

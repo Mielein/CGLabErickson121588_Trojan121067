@@ -16,7 +16,7 @@ class Scene_graph{
         Scene_graph();
         Scene_graph(std::string n);
         Scene_graph(std::string n, std::shared_ptr<Node> r);
-        std::string getName() const;
+        std::string getNameScene() const;
         std::shared_ptr<Node> getRoot()  const;
         std::string printClass() const;
 };

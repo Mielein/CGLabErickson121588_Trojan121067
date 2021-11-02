@@ -210,8 +210,21 @@ int main(int argc, char* argv[]) {
   debug_scene.getRoot().addChild(urnaus_node);
   debug_scene.getRoot().addChild(neptune_node);
   debug_scene.getRoot().addChild(camera);
-  earth_node.addChild(moon_node);
-  std::cout << debug_scene.getRoot().getChild("Mars").getName() << std::endl;
+
+  root_node.addChild(earth_node);
+  root_node.addChild(neptune_node);
+
+/*   for(auto i = root_node.getChildrenList().begin(); i != root_node.getChildrenList().end(); i++){
+    std::cout << root_node.getChild("Earth").getName() << std::endl;
+  } */
+
+  for(Node const& x : root_node.getChildrenList()){
+      std::cout << "schnublini" + x.getName() << std::endl;
+  }
+
+  //earth_node.addChild(moon_node);
+  //std::cout << debug_scene.getRoot().getChild("Mars").getName() << std::endl;
+  //debug_scene.printClass();
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

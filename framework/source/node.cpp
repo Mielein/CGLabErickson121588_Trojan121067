@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 Node::Node():
     parent{},
@@ -28,18 +29,18 @@ void Node::setParent(Node *node){
 
 Node Node::getChild(std::string name) const{
     for(Node const& x : children){
+        std::cout << x.getName() << std::endl;
         if(x.getName() == name){
             return x;
         }
-        else{
-            throw;
-        }
-        getChild(name);
+        x.getChild(name);
     }
+    throw;
     //should be recursive
 }
 
 std::vector<Node> Node::getChildrenList() const{
+    //std::cout << "getChildrenList Callback" << std::endl;
     return children;
 }
 
@@ -72,7 +73,7 @@ void Node::setWorldTransform(glm::mat4 newWorld){
 }
 
 void Node::addChild(Node newNode){
-    children.push_back(newNode);
+    children.insert(children.end(), newNode);
 }
 
 Node Node::removeChild(std::string name){

@@ -18,7 +18,7 @@ void Scene_graph::setName(std::string n){
     name = n;
 }
 
-Node Scene_graph::getRoot() const{
+Node Scene_graph::getRoot() /* const */{
     return root;
 }
 

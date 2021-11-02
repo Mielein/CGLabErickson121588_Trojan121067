@@ -7,9 +7,10 @@ Scene_graph::Scene_graph():
     name{" "},
     root{}{}
 
-Scene_graph::Scene_graph(std::string n, Node r):
-    name{n},
-    root{r}{}
+Scene_graph::Scene_graph(std::string n, Node r){
+    setRoot(r);
+    setName(n);
+}
     /* Node root = Node("root");
     setRoot(root); */
 
@@ -19,7 +20,7 @@ std::string Scene_graph::getName() const{
 }
 
 void Scene_graph::setName(std::string n){
-    name = n;y
+    name = n;
 }
 
 Node Scene_graph::getRoot() const{

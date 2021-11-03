@@ -9,7 +9,7 @@ class Geometry_node : public Node{
         model geometry;
     public:
         Geometry_node();
-        Geometry_node(model g);
+        Geometry_node(std::string _name);
         model getGeometry();
         void setGeometry(model g);
 };

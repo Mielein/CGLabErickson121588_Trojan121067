@@ -233,7 +233,7 @@ int main(int argc, char* argv[]) {
   //earth_node.addChild(moon_node);
 
   //std::cout << debug_scene.getRoot().getChildrenList()[0]->getName() << std::endl;
-  std::cout << debug_scene.getRoot().getName() << std::endl;
+  std::cout << moon_node.getParent()->getName() << std::endl;
 
   debug_scene.printClass();
 

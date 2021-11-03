@@ -234,10 +234,10 @@ int main(int argc, char* argv[]) {
 
   //std::cout << debug_scene.getRoot().getChildrenList()[0]->getName() << std::endl;
   debug_scene.printClass();
-  std::cout << debug_scene.getRoot().getChild("Earth").getParent()->getName() << std::endl;
-  std::cout << mercury_node.getParent()->getName() << std::endl;
-  std::cout << moon_node.getParent()->getName() << std::endl;
-  
+  std::cout << debug_scene.getRoot().getChildrenList().size() << std::endl;
+  std::cout << debug_scene.getRoot() .getChild("Moon")->getParent()->getName() << std::endl;
+  std::cout << debug_scene.getRoot() .getChild("Earth")->getName() << std::endl;
+
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

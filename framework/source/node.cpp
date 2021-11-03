@@ -30,15 +30,23 @@ void Node::setParent(std::shared_ptr<Node> node){
     //std::cout << node->getName() << std::endl; 
 }
 
-Node Node::getChild(std::string name) const{
-    for(auto const& x : children){
-        std::cout << x->getParent()->getName()<<" -> "<<x->getName() << std::endl; // red flags (maybe the corrupt output)
-        if(x->getName() == name){
-            return *x;
-        }
-        x->getChild(name);
+std::shared_ptr<Node> Node::getChild(std::string name) const{
+    if(children.size() == 0){
+        return nullptr;
+        //std::cout<<"sad"<<std::endl;
     }
-    throw;
+    for(auto const& x : children){
+        //std::cout<<"for loop"<<std::endl;
+        //std::cout << x->getParent()->getName()<<" -> "<<x->getName() << std::endl; // red flags (maybe the corrupt output)
+        if(x->getName() == name){
+            //std::cout<<name<<std::endl;
+            return x;
+
+        }
+        else if(x->getChild(name) == nullptr) continue;
+        else return x->getChild(name);
+    }
+    return nullptr;
     //should be recursive
 }
 

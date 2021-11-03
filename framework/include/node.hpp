@@ -21,7 +21,7 @@ class Node{
         Node(std::string _name);
         std::shared_ptr<Node> getParent() const;
         void setParent(std::shared_ptr<Node> node);
-        Node getChild(std::string name) const;
+        std::shared_ptr<Node> getChild(std::string name) const;
         std::vector<std::shared_ptr<Node>> getChildrenList() const;
         std::string getName() const;
         std::string getPath() const;

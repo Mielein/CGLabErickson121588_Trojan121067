@@ -60,8 +60,23 @@ std::string Node::getName() const{
 }
 
 std::string Node::getPath() const{
+    std::string path;
+    path = this->getName();
+    for(auto const& x : this->getChildrenList()){
+        x->getPath();
+        path += " -> " + x->getName();;
+    }
     return path;
 }
+/*     std::string path = this->getName();
+    std::cout << " -> "; 
+    for(auto const& x : children){
+        if(children.size() != 0){
+            return x->getName() + " ->" ;
+        }
+    } */
+
+
 
 int Node::getDepth() const{
     return depth;

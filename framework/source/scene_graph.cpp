@@ -37,7 +37,7 @@ void Scene_graph::setRoot(Node r){
 std::string printChildren(std::vector<std::shared_ptr<Node>> children){
     std::string debug_return;
     for(auto const& x : children){
-        std::cout << x->getName() << " -> "; //ToDo (not that much more) the format is wrong but else... ITS DONE
+        std::cout << x->getParent()->getName()<< " -> " << x->getName() << " -> "; //ToDo (not that much more) the format is wrong but else... ITS DONE
         if(x->getChildrenList().size() != 0){
             printChildren(x->getChildrenList());
         }

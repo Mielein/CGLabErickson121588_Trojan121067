@@ -226,7 +226,7 @@ int main(int argc, char* argv[]) {
   root_node.addChild(std::make_shared<Node>(camera));
   Scene_graph debug_scene("Debug Scene", root_node);
 
-  earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
+  earth_node.addChild(std::make_shared<Node>(earth_geo));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
   venus_node.addChild(std::make_shared<Geometry_node>(venus_geo));
   mars_node.addChild(std::make_shared<Geometry_node>(mars_geo));

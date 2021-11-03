@@ -27,7 +27,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,scene_graph_{}
 {
-  initializeSolarSystem();
+  initializeSceneGraph();
   initializeGeometry();
   initializeShaderPrograms();
 }
@@ -40,19 +40,19 @@ ApplicationSolar::~ApplicationSolar() {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void ApplicationSolar::initializeSolarSystem() {
+void ApplicationSolar::initializeSceneGraph() {
   std::cout << "initialize Solar System" << std::endl;
   Node root_node("root element");
   
   Node mercury_node("Mercury", glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
-  Node venus_node("Venus");
-  Node earth_node("Earth");
-  Node mars_node("Mars");
-  Node jupiter_node("Jupiter");
-  Node saturn_node("Saturn");
-  Node urnaus_node("Uranus");
-  Node neptune_node("Neptune");
-  Node moon_node("Moon");
+  Node venus_node("Venus", glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }));
+  Node earth_node("Earth", glm::translate({}, glm::fvec3{25.0f, 0.0f, 0.0f }));
+  Node mars_node("Mars", glm::translate({}, glm::fvec3{36.0f, 0.0f, 0.0f }));
+  Node jupiter_node("Jupiter", glm::translate({}, glm::fvec3{47.0f, 0.0f, 0.0f }));
+  Node saturn_node("Saturn", glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }));
+  Node urnaus_node("Uranus", glm::translate({}, glm::fvec3{69.0f, 0.0f, 0.0f }));
+  Node neptune_node("Neptune", glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
+  Node moon_node("Moon", glm::translate({}, glm::fvec3{30.3f, 0.0f, 0.0f }));
 
   Geometry_node mercury_geo("geo_Mercury");
   Geometry_node venus_geo("geo_Venus");
@@ -89,16 +89,13 @@ void ApplicationSolar::initializeSolarSystem() {
 
   scene_graph_= Scene_graph("Solar Scene Graph", root_node);
   scene_graph_.printClass();
-
-  
-
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 void ApplicationSolar::render() const {
   // bind shader to upload uniforms
+  planetrenderer();
   glUseProgram(m_shaders.at("planet").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
@@ -117,7 +114,38 @@ void ApplicationSolar::render() const {
   glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
 
+void ApplicationSolar::planetrenderer() const{
+  std::vector<std::shared_ptr<Node>> List_of_Planets;
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Venus"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Earth"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mars"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Jupiter"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Saturn"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
+  List_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon"));
+
+  for(std::shared_ptr<Node> x : List_of_Planets){
+    //std::cout << x->getName();
+    glUseProgram(m_shaders.at("planet").handle);
+    glm::fmat4 planet_matrix = x->getLocalTransform();
+    glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+                     1, GL_FALSE, glm::value_ptr(planet_matrix));
+    
+    glm::fmat4 better_planet_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * planet_matrix);
+    glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+                     1, GL_FALSE, glm::value_ptr(planet_matrix));
+
+    glBindVertexArray(planet_object.vertex_AO);
+
+    glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
 
 void ApplicationSolar::uploadView() {
   // vertices are transformed in camera space, so camera transform must be inverted

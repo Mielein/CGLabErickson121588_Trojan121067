@@ -24,7 +24,7 @@ void Node::setParent(std::shared_ptr<Node> node){
 
 Node Node::getChild(std::string name) const{
     for(auto const& x : children){
-        std::cout << x->getName() << std::endl;
+        std::cout << x->getName() << std::endl; // red flags (maybe the corrupt output)
         if(x->getName() == name){
             return *x;
         }

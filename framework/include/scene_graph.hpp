@@ -8,16 +8,16 @@
 class Scene_graph{
     private:
         std::string name;
-        std::shared_ptr<Node> root;
+        Node root;
         void setName(std::string n);
-        void setRoot(std::shared_ptr<Node> r);
+        void setRoot(Node r);
 
     public:
         Scene_graph();
         Scene_graph(std::string n);
-        Scene_graph(std::string n, std::shared_ptr<Node> r);
-        std::string getNameScene() const;
-        std::shared_ptr<Node> getRoot()  const;
+        Scene_graph(std::string n, Node r);
+        std::string getName() const;
+        Node getRoot()  const;
         std::string printClass() const;
 };
 

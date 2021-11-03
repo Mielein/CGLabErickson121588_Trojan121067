@@ -190,7 +190,6 @@ int main(int argc, char* argv[]) {
   //scene graph Debug area
   Node root_node("root element");
   auto root_ptr = std::make_shared<Node>(root_node);
-  Scene_graph debug_scene("Debug Scene", root_ptr);
 
   Node mercury_node("Mercury");
   Node venus_node("Venus");
@@ -206,6 +205,8 @@ int main(int argc, char* argv[]) {
   earth_node.addChild(std::make_shared<Node>(moon_node));
   root_node.addChild(std::make_shared<Node>(mercury_node));
   root_node.addChild(std::make_shared<Node>(venus_node));
+  root_node.addChild(std::make_shared<Node>(earth_node));
+  Scene_graph debug_scene("Debug Scene", root_node);
 /*   root_node.addChild(std::make_shared<Node>(earth_node));
   root_node.addChild(std::make_shared<Node>(mars_node));
   root_node.addChild(std::make_shared<Node>(jupiter_node));
@@ -222,15 +223,17 @@ int main(int argc, char* argv[]) {
   
   //std::cout << debug_scene.getRoot().getChild("Moon").getName() << std::endl;
 
-/*   for(auto i = root_node.getChildrenList().begin(); i != root_node.getChildrenList().end(); i++){
-    std::cout << root_node.getChild("Earth").getName() << std::endl;
-  } */
+/*   for(auto i = root_node.getChildrenList().begin(); i != root_node.getChildrenList().end(); i++){     //this works so the graph is funktuning
+    std::cout << debug_scene.getRoot().getChildrenList()[2]->getChildrenList()[0]->getName() << std::endl;           //error lays in addChild and print graph
+  }   */                                                                                                // the root root element in the dug scene doesenet work
 
 /*   for(Node const& x : debug_scene.getRoot().getChildrenList()){
       std::cout << "schnublini " + x.getName() << std::endl;
   } */
 
   //earth_node.addChild(moon_node);
+
+  //std::cout << debug_scene.getRoot().getChildrenList()[0]->getName() << std::endl;
   //std::cout << debug_scene.getRoot().getName() << std::endl;
 
   debug_scene.printClass();

@@ -27,6 +27,8 @@ class ApplicationSolar : public Application {
   Scene_graph scene_graph_;
 
  protected:
+  // initialize all objects in the graph to create the sun system
+  void initializeSolarSystem();
   void initializeShaderPrograms();
   void initializeGeometry();
   // update uniform values

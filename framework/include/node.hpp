@@ -14,11 +14,12 @@ class Node{
         std::string name;
         std::string path;
         int depth;
-        glm::mat4 localTransform;
-        glm::mat4 worldTransform;
+        glm::fmat4 localTransform;
+        glm::fmat4 worldTransform;
     public:
         Node();
         Node(std::string _name);
+        Node(std::string _name, glm::mat4 _localtransform);
         std::shared_ptr<Node> getParent() const;
         void setParent(std::shared_ptr<Node> node);
         std::shared_ptr<Node> getChild(std::string name) const;
@@ -26,10 +27,10 @@ class Node{
         std::string getName() const;
         std::string getPath() const;
         int getDepth() const;
-        glm::mat4 getLocalTransform() const;
-        void setLocalTransform(glm::mat4 newLocal);
-        glm::mat4 getWorldTransform() const;
-        void setWorldTransform(glm::mat4 newWorld);
+        glm::fmat4 getLocalTransform() const;
+        void setLocalTransform(glm::fmat4 newLocal);
+        glm::fmat4 getWorldTransform() const;
+        void setWorldTransform(glm::fmat4 newWorld);
         void addChild(std::shared_ptr<Node> newNode);
         Node removeChild(std::string name);
 };

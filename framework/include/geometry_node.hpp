@@ -8,6 +8,8 @@ class Geometry_node : public Node{
     private:
         model geometry;
     public:
+        Geometry_node();
+        Geometry_node(model g);
         model getGeometry();
         void setGeometry(model g);
 };

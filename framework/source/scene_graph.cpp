@@ -34,20 +34,23 @@ void Scene_graph::setRoot(Node r){
     root = r;
 }
 
-std::string printChildren(std::vector<std::shared_ptr<Node>> children){
+std::string printChildren(std::vector<std::shared_ptr<Node>> children, bool l){
     std::string debug_return;
     for(auto const& x : children){
-        std::cout << x->getParent()->getName()<< " -> " << x->getName() << " -> "; //ToDo (not that much more) the format is wrong but else... ITS DONE
+        std::cout <<x->getName() << " -> "; //ToDo (not that much more) the format is wrong but else... ITS DONE
         if(x->getChildrenList().size() != 0){
-            printChildren(x->getChildrenList());
+           printChildren(x->getChildrenList(), false);
         }
-        std::cout << std::endl;
+        if(l == true){
+            std::cout << std::endl; 
+        } 
     }
     return debug_return;
 }
 
 std::string Scene_graph::printClass() const{
-    //std::cout<<root->getName()<<"->";
+    std::cout<<root.getName()<<std::endl;
+    std::cout<<"-------------"<<std::endl;
     //std::cout<<root->getName()<<std::endl;
-    printChildren(root.getChildrenList());
+    printChildren(root.getChildrenList(), true);
 }

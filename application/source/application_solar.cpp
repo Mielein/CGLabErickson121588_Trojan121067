@@ -202,7 +202,7 @@ int main(int argc, char* argv[]) {
   Node neptune_node("Neptune");
   Node moon_node("Moon");
   Camera_node camera("Camera");
-
+   
   earth_node.addChild(std::make_shared<Node>(moon_node));
   root_node.addChild(std::make_shared<Node>(mercury_node));
   root_node.addChild(std::make_shared<Node>(venus_node));
@@ -212,7 +212,7 @@ int main(int argc, char* argv[]) {
   root_node.addChild(std::make_shared<Node>(saturn_node));
   root_node.addChild(std::make_shared<Node>(urnaus_node));
   root_node.addChild(std::make_shared<Node>(neptune_node));
-  root_node.addChild(std::make_shared<Node>(camera)); 
+  root_node.addChild(std::make_shared<Node>(camera));
   Scene_graph debug_scene("Debug Scene", root_node);
 //  root_node.addChild(earth_node);
 //  root_node.addChild(neptune_node);
@@ -233,9 +233,11 @@ int main(int argc, char* argv[]) {
   //earth_node.addChild(moon_node);
 
   //std::cout << debug_scene.getRoot().getChildrenList()[0]->getName() << std::endl;
-  std::cout << moon_node.getParent()->getName() << std::endl;
-
   debug_scene.printClass();
+  std::cout << earth_node.getParent()->getName() << std::endl;
+  std::cout << mercury_node.getParent()->getName() << std::endl;
+  std::cout << moon_node.getParent()->getName() << std::endl;
+  
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

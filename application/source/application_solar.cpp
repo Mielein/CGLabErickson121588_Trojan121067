@@ -267,7 +267,8 @@ int main(int argc, char* argv[]) {
   std::cout << debug_scene.getRoot().getChild("Moon")->getParent()->getName() << std::endl;
   std::cout << debug_scene.getRoot().getChild("Earth")->getChildrenList().size() << std::endl;
   std::cout << debug_scene.getRoot().getChild("geo_Mercury")->getName() << std::endl;
-  std::cout << debug_scene.getRoot().getChild("Earth")->getPath() << std::endl;
+  std::cout << debug_scene.getRoot().getChild("Moon")->getPath() << std::endl;
+  std::cout << debug_scene.getRoot().getChild("Earth")->getDepth() << std::endl;
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

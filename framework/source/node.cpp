@@ -59,6 +59,7 @@ std::string Node::getName() const{
     return name;
 }
 
+
 std::string Node::getPath() const{
     std::string path;
     path = this->getName();
@@ -79,6 +80,17 @@ std::string Node::getPath() const{
 
 
 int Node::getDepth() const{
+    int depth = 1;
+    for(auto const& x : this->getChildrenList()){
+        if( x->getChildrenList().size() != 0){
+            depth +=1;
+        }
+        for(auto const& y : x->getChildrenList()){
+            if(x->getChildrenList().size() != 0){
+                depth += 1;
+            }
+        }
+    }
     return depth;
 }
 

@@ -10,6 +10,7 @@ class Geometry_node : public Node{
     public:
         Geometry_node();
         Geometry_node(std::string _name);
+        Geometry_node(std::string _name, glm::fmat4 _localTransform);
         model getGeometry();
         void setGeometry(model g);
 };

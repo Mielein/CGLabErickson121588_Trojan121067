@@ -54,15 +54,15 @@ void ApplicationSolar::initializeSceneGraph() {
   Node neptune_node("Neptune", glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
   Node moon_node("Moon", glm::translate({}, glm::fvec3{30.3f, 0.0f, 0.0f }));
 
-  Geometry_node mercury_geo("geo_Mercury");
-  Geometry_node venus_geo("geo_Venus");
-  Geometry_node earth_geo("geo_Earth");
-  Geometry_node mars_geo("geo_Mars");
-  Geometry_node jupiter_geo("geo_Jupiter");
-  Geometry_node saturn_geo("geo_Saturn");
-  Geometry_node urnaus_geo("geo_Uranus");
-  Geometry_node neptune_geo("geo_Neptune");
-  Geometry_node moon_geo("geo_Moon");
+  Geometry_node mercury_geo("geo_Mercury", glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
+  Geometry_node venus_geo("geo_Venus",glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }));
+  Geometry_node earth_geo("geo_Earth", glm::translate({}, glm::fvec3{25.0f, 0.0f, 0.0f }));
+  Geometry_node mars_geo("geo_Mars", glm::translate({}, glm::fvec3{36.0f, 0.0f, 0.0f }));
+  Geometry_node jupiter_geo("geo_Jupiter", glm::translate({}, glm::fvec3{47.0f, 0.0f, 0.0f }));
+  Geometry_node saturn_geo("geo_Saturn", glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }));
+  Geometry_node urnaus_geo("geo_Uranus", glm::translate({}, glm::fvec3{69.0f, 0.0f, 0.0f }));
+  Geometry_node neptune_geo("geo_Neptune", glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
+  Geometry_node moon_geo("geo_Moon", glm::translate({}, glm::fvec3{30.3f, 0.0f, 0.0f }));
 
   Camera_node camera("Camera");
   
@@ -132,7 +132,7 @@ void ApplicationSolar::planetrenderer() const{
     //std::cout << x->getName();
     glUseProgram(m_shaders.at("planet").handle);
 
-    glm::fmat4 rotation_matrix = glm::rotate(x->getParent()->getLocalTransform(), float(glfwGetTime()) * 100.0f, glm::fvec3{0.0f, 0.0f, 1.0f});
+    glm::fmat4 rotation_matrix = glm::rotate(x->getWorldTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
     glm::fmat4 planet_matrix = glm::rotate(x->getLocalTransform(), float(glfwGetTime()) , glm::fvec3{0.0f, 0.0f, 1.0f});
 
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
@@ -280,89 +280,6 @@ void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
 
 // exe entry point
 int main(int argc, char* argv[]) {
-
-  //scene graph Debug area
-/*   Node root_node("root element");
-  auto root_ptr = std::make_shared<Node>(root_node);
-  
-
-  Node mercury_node("Mercury");
-  Node venus_node("Venus");
-  Node earth_node("Earth");
-  Node mars_node("Mars");
-  Node jupiter_node("Jupiter");
-  Node saturn_node("Saturn");
-  Node urnaus_node("Uranus");
-  Node neptune_node("Neptune");
-  Node moon_node("Moon");
-
-  Geometry_node mercury_geo("geo_Mercury");
-  Geometry_node venus_geo("geo_Venus");
-  Geometry_node earth_geo("geo_Earth");
-  Geometry_node mars_geo("geo_Mars");
-  Geometry_node jupiter_geo("geo_Jupiter");
-  Geometry_node saturn_geo("geo_Saturn");
-  Geometry_node urnaus_geo("geo_Uranus");
-  Geometry_node neptune_geo("geo_Neptune");
-  Geometry_node moon_geo("geo_Moon");
-
-  Camera_node camera("Camera");
-  
-  earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
-  mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
-  venus_node.addChild(std::make_shared<Geometry_node>(venus_geo));
-  mars_node.addChild(std::make_shared<Geometry_node>(mars_geo));
-  jupiter_node.addChild(std::make_shared<Geometry_node>(jupiter_geo));
-  saturn_node.addChild(std::make_shared<Geometry_node>(saturn_geo));
-  urnaus_node.addChild(std::make_shared<Geometry_node>(urnaus_geo));
-  neptune_node.addChild(std::make_shared<Geometry_node>(neptune_geo));
-  moon_node.addChild(std::make_shared<Geometry_node>(moon_geo));
-   
-  earth_node.addChild(std::make_shared<Node>(moon_node));
-  root_node.addChild(std::make_shared<Node>(mercury_node));
-  root_node.addChild(std::make_shared<Node>(venus_node));
-  root_node.addChild(std::make_shared<Node>(earth_node));
-  root_node.addChild(std::make_shared<Node>(mars_node));
-  root_node.addChild(std::make_shared<Node>(jupiter_node));
-  root_node.addChild(std::make_shared<Node>(saturn_node));
-  root_node.addChild(std::make_shared<Node>(urnaus_node));
-  root_node.addChild(std::make_shared<Node>(neptune_node));
-  root_node.addChild(std::make_shared<Node>(camera));
-
-  Scene_graph debug_scene("Debug Scene", root_node); */
-
-//  root_node.addChild(earth_node);
-//  root_node.addChild(neptune_node);
-
-//  std::cout <<  << std::endl
-  
-  
-  //std::cout << debug_scene.getRoot().getChild("Moon").getName() << std::endl;
-
-/*   for(auto i = root_node.getChildrenList().begin(); i != root_node.getChildrenList().end(); i++){     //this works so the graph is funktuning
-    std::cout << debug_scene.getRoot().getChildrenList()[2]->getChildrenList()[0]->getName() << std::endl;           //error lays in addChild and print graph
-  }   */                                                                                                // the root root element in the dug scene doesenet work
-
-/*   for(Node const& x : debug_scene.getRoot().getChildrenList()){
-      std::cout << "schnublini " + x.getName() << std::endl;
-  } */
-
-  //earth_node.addChild(moon_node);
-
-  //std::cout << debug_scene.getRoot().getChildrenList()[0]->getName() << std::endl;
-
-/*   debug_scene.printClass();
-  std::cout << debug_scene.getRoot().getChildrenList().size() << std::endl;
-  std::cout << debug_scene.getRoot() .getChild("Moon")->getParent()->getName() << std::endl;
-  std::cout << debug_scene.getRoot() .getChild("Earth")->getName() << std::endl; */
-
-  //debug_scene.printClass();
-/*   std::cout << debug_scene.getRoot().getChildrenList().size() << std::endl;
-  std::cout << debug_scene.getRoot().getChild("Moon")->getParent()->getName() << std::endl;
-  std::cout << debug_scene.getRoot().getChild("Earth")->getChildrenList().size() << std::endl;
-  std::cout << debug_scene.getRoot().getChild("geo_Mercury")->getName() << std::endl;
-  std::cout << debug_scene.getRoot().getChild("Moon")->getPath() << std::endl;
-  std::cout << debug_scene.getRoot().getChild("Earth")->getDepth() << std::endl;
 
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }

@@ -5,10 +5,9 @@
 #include <iostream>
 
 
-
+//defaultconstructor
 Node::Node():
     name{"boring_default_name"}{}
-
 
 Node::Node(std::string _name):
     name{_name}{}
@@ -23,7 +22,8 @@ Node::Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTrans
     localTransform{_localTransform},
     worldTransform{_worldTransform}{}
 
-std::shared_ptr<Node> Node::getParent() const{
+//checks if nullptr else return shared pointer to parent element
+std::shared_ptr<Node> Node::getParent() const{ 
     //std::cout << "get Parent Call" << std::endl;
     //std::cout << parent->getName() << std::endl;
     Node tmp_Node("Error Node");
@@ -34,41 +34,41 @@ std::shared_ptr<Node> Node::getParent() const{
         return std::make_shared<Node>(tmp_Node);
 }
 
+//gives new parent
 void Node::setParent(std::shared_ptr<Node> node){
     parent = node;
     //std::cout << node->getName() << std::endl; 
 }
 
+
 std::shared_ptr<Node> Node::getChild(std::string name) const{
     if(children.size() == 0){
         return nullptr;
-        //std::cout<<"sad"<<std::endl;
     }
     for(auto const& x : children){
-        //std::cout<<"for loop"<<std::endl;
-        //std::cout << x->getParent()->getName()<<" -> "<<x->getName() << std::endl; // red flags (maybe the corrupt output)
         if(x->getName() == name){
-            //std::cout<<name<<std::endl;
-            return x;
+            return x; //if no x is found it returns a nullptr
 
         }
         else if(x->getChild(name) == nullptr) continue;
         else return x->getChild(name);
     }
     return nullptr;
-    //should be recursive
+    //calls recursive
 }
 
+//no explanation nassessary
 std::vector<std::shared_ptr<Node>> Node::getChildrenList() const{
     //std::cout << "getChildrenList Callback" << std::endl;
     return children;
 }
 
+//no explanation nassessary
 std::string Node::getName() const{
     return name;
 }
 
-
+//calls recursive to check where a path is leading thoug
 std::string Node::getPath() const{
     std::string path;
     path = this->getName();
@@ -78,16 +78,8 @@ std::string Node::getPath() const{
     }
     return path;
 }
-/*     std::string path = this->getName();
-    std::cout << " -> "; 
-    for(auto const& x : children){
-        if(children.size() != 0){
-            return x->getName() + " ->" ;
-        }
-    } */
 
-
-
+//returns size of path
 int Node::getDepth() const{
     int depth = 1;
     for(auto const& x : this->getChildrenList()){
@@ -111,6 +103,7 @@ void Node::setLocalTransform(glm::fmat4 newLocal){
     localTransform = newLocal;
 }
 
+//worldtransform equals worldtransform of parent * localtransform
 glm::fmat4 Node::getWorldTransform() const{
     if(parent == nullptr){
         return worldTransform;
@@ -122,6 +115,7 @@ void Node::setWorldTransform(glm::fmat4 newWorld){
     worldTransform = newWorld;
 }
 
+//set new parent for child and insert Node at end of node .child
 void Node::addChild(std::shared_ptr<Node> newNode){
     Node tmp_node = *this;
     newNode->setParent(std::make_shared<Node>(tmp_node));
@@ -129,9 +123,10 @@ void Node::addChild(std::shared_ptr<Node> newNode){
     children.insert(children.end(), newNode);
 }
 
+//...//
 Node Node::removeChild(std::string name){
     Node tmp_Nope;
-    Node tmp_Node; //ToDo
+    Node tmp_Node; 
     for(auto const& x : children){
         if(x->getName() == name){
             tmp_Nope = *x;

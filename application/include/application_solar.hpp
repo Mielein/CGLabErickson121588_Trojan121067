@@ -27,8 +27,12 @@ class ApplicationSolar : public Application {
   Scene_graph scene_graph_;
 
  protected:
+  // initialize all objects in the graph to create the sun system
+  void initializeSceneGraph();
   void initializeShaderPrograms();
   void initializeGeometry();
+  // custom render methode for the planets out of the scene graph
+  void planetrenderer() const;
   // update uniform values
   void uploadUniforms();
   // upload projection matrix

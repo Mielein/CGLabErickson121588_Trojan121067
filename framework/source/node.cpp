@@ -13,6 +13,15 @@ Node::Node():
 Node::Node(std::string _name):
     name{_name}{}
 
+Node::Node(std::string _name, glm::fmat4 _localTransform):
+    name{_name},
+    localTransform{_localTransform}{}
+
+//constructor for the root node 
+Node::Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTransform):
+    name{_name},
+    localTransform{_localTransform},
+    worldTransform{_worldTransform}{}
 
 std::shared_ptr<Node> Node::getParent() const{
     //std::cout << "get Parent Call" << std::endl;
@@ -94,19 +103,22 @@ int Node::getDepth() const{
     return depth;
 }
 
-glm::mat4 Node::getLocalTransform() const{
+glm::fmat4 Node::getLocalTransform() const{
     return localTransform;
 }
 
-void Node::setLocalTransform(glm::mat4 newLocal){
+void Node::setLocalTransform(glm::fmat4 newLocal){
     localTransform = newLocal;
 }
 
-glm::mat4 Node::getWorldTransform() const{
-    return worldTransform;
+glm::fmat4 Node::getWorldTransform() const{
+    if(parent == nullptr){
+        return worldTransform;
+    }
+    return parent->worldTransform * localTransform;
 }
 
-void Node::setWorldTransform(glm::mat4 newWorld){
+void Node::setWorldTransform(glm::fmat4 newWorld){
     worldTransform = newWorld;
 }
 

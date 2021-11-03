@@ -52,7 +52,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Node saturn_node("Saturn", glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }));
   Node urnaus_node("Uranus", glm::translate({}, glm::fvec3{69.0f, 0.0f, 0.0f }));
   Node neptune_node("Neptune", glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
-  Node moon_node("Moon", glm::translate({}, glm::fvec3{30.3f, 0.0f, 0.0f }));
+  Node moon_node("Moon", glm::translate({}, glm::fvec3{5.3f, 0.0f, 0.0f }));
 
   Geometry_node mercury_geo("geo_Mercury", glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
   Geometry_node venus_geo("geo_Venus",glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }));
@@ -62,7 +62,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node saturn_geo("geo_Saturn", glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }));
   Geometry_node urnaus_geo("geo_Uranus", glm::translate({}, glm::fvec3{69.0f, 0.0f, 0.0f }));
   Geometry_node neptune_geo("geo_Neptune", glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
-  Geometry_node moon_geo("geo_Moon", glm::translate({}, glm::fvec3{30.3f, 0.0f, 0.0f }));
+  Geometry_node moon_geo("geo_Moon", glm::translate({}, glm::fvec3{5.3f, 0.0f, 0.0f }));
 
   Camera_node camera("Camera");
   
@@ -116,6 +116,7 @@ void ApplicationSolar::render() const {
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+
 void ApplicationSolar::planetrenderer() const{
   std::vector<std::shared_ptr<Node>> List_of_Planets;
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
@@ -131,19 +132,31 @@ void ApplicationSolar::planetrenderer() const{
   for(std::shared_ptr<Node> x : List_of_Planets){
     //std::cout << x->getName();
     glUseProgram(m_shaders.at("planet").handle);
-
-    glm::fmat4 rotation_matrix = glm::rotate(x->getWorldTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
-    glm::fmat4 planet_matrix = glm::rotate(x->getLocalTransform(), float(glfwGetTime()) , glm::fvec3{0.0f, 0.0f, 1.0f});
-
+    glm::fmat4 final_matrix;
+    //x->getChild("geo_"+x->getName());
+    if(x->getName() == "Moon"){
+      std::shared_ptr<Node> moon_geo = x->getChild("geo_Moon");
+      glm::fmat4 parent_matrix = x->getParent()->getLocalTransform();
+      glm::fmat4 rotation_matrix = glm::rotate(x->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
+      moon_geo->getParent()->setLocalTransform(rotation_matrix*moon_geo->getLocalTransform());
+      final_matrix = glm::rotate(moon_geo->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
+    }
+    else{
+      //getting the Geometry-node equivalent to Node x
+      std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
+      //initializes Matrix with localTransform of Parent of x
+      glm::fmat4 parent_matrix = x->getParent()->getLocalTransform();
+      //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
+      glm::fmat4 rotation_matrix = glm::rotate(x->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
+      //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
+      //this way x sees the parent as the center of the orbit
+      planet_geo->getParent()->setLocalTransform(rotation_matrix*planet_geo->getLocalTransform());
+      final_matrix = glm::rotate(planet_geo->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
+    }
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
-                     1, GL_FALSE, glm::value_ptr(rotation_matrix));
-
-    glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
-                     1, GL_FALSE, glm::value_ptr(planet_matrix));
+                     1, GL_FALSE, glm::value_ptr(final_matrix));
     
-    glm::fmat4 better_planet_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * planet_matrix);
-    glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
-                     1, GL_FALSE, glm::value_ptr(planet_matrix));
+    final_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * final_matrix);
 
     glBindVertexArray(planet_object.vertex_AO);
 

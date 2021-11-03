@@ -201,7 +201,18 @@ int main(int argc, char* argv[]) {
   Node urnaus_node("Uranus");
   Node neptune_node("Neptune");
   Node moon_node("Moon");
-  Camera_node camera("Camera");
+
+  Geometry_node mercury_geo();
+  Geometry_node venus_geo();
+  Geometry_node earth_geo();
+  Geometry_node mars_geo();
+  Geometry_node jupiter_geo();
+  Geometry_node saturn_geo();
+  Geometry_node urnaus_geo();
+  Geometry_node neptune_geo();
+  Geometry_node moon_geo();
+
+  Camera_node camera("geoCamera");
    
   earth_node.addChild(std::make_shared<Node>(moon_node));
   root_node.addChild(std::make_shared<Node>(mercury_node));
@@ -214,6 +225,16 @@ int main(int argc, char* argv[]) {
   root_node.addChild(std::make_shared<Node>(neptune_node));
   root_node.addChild(std::make_shared<Node>(camera));
   Scene_graph debug_scene("Debug Scene", root_node);
+
+  earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
+  mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
+  venus_node.addChild(std::make_shared<Geometry_node>(venus_geo));
+  mars_node.addChild(std::make_shared<Geometry_node>(mars_geo));
+  jupiter_node.addChild(std::make_shared<Geometry_node>(jupiter_geo));
+  saturn_node.addChild(std::make_shared<Geometry_node>(saturn_geo));
+  urnaus_node.addChild(std::make_shared<Geometry_node>(urnaus_geo));
+  neptune_node.addChild(std::make_shared<Geometry_node>(neptune_geo));
+  moon_node.addChild(std::make_shared<Geometry_node>(moon_geo));
 //  root_node.addChild(earth_node);
 //  root_node.addChild(neptune_node);
 

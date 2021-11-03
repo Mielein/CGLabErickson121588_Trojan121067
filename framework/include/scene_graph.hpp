@@ -1,6 +1,7 @@
 #ifndef SCENE_GRAPH_HPP
 #define SCENE_GRAPH_HPP
 
+#include "geometry_node.hpp"
 #include "node.hpp"
 #include "camera_node.hpp"
 #include <string>

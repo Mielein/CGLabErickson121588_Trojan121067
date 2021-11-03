@@ -190,6 +190,7 @@ int main(int argc, char* argv[]) {
   //scene graph Debug area
   Node root_node("root element");
   auto root_ptr = std::make_shared<Node>(root_node);
+  
 
   Node mercury_node("Mercury");
   Node venus_node("Venus");
@@ -206,15 +207,13 @@ int main(int argc, char* argv[]) {
   root_node.addChild(std::make_shared<Node>(mercury_node));
   root_node.addChild(std::make_shared<Node>(venus_node));
   root_node.addChild(std::make_shared<Node>(earth_node));
-  Scene_graph debug_scene("Debug Scene", root_node);
-/*   root_node.addChild(std::make_shared<Node>(earth_node));
   root_node.addChild(std::make_shared<Node>(mars_node));
   root_node.addChild(std::make_shared<Node>(jupiter_node));
   root_node.addChild(std::make_shared<Node>(saturn_node));
   root_node.addChild(std::make_shared<Node>(urnaus_node));
   root_node.addChild(std::make_shared<Node>(neptune_node));
-  root_node.addChild(std::make_shared<Node>(camera));  */
-
+  root_node.addChild(std::make_shared<Node>(camera)); 
+  Scene_graph debug_scene("Debug Scene", root_node);
 //  root_node.addChild(earth_node);
 //  root_node.addChild(neptune_node);
 

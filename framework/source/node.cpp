@@ -20,7 +20,7 @@ std::shared_ptr<Node> Node::getParent() const{
 
 void Node::setParent(std::shared_ptr<Node> node){
     parent = node;
-    std::cout << node->getName() << std::endl; 
+    //std::cout << node->getName() << std::endl; 
 }
 
 Node Node::getChild(std::string name) const{

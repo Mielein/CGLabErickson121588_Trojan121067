@@ -20,6 +20,7 @@ std::shared_ptr<Node> Node::getParent() const{
 
 void Node::setParent(std::shared_ptr<Node> node){
     parent = node;
+    std::cout << node->getName() << std::endl; 
 }
 
 Node Node::getChild(std::string name) const{
@@ -68,7 +69,8 @@ void Node::setWorldTransform(glm::mat4 newWorld){
 }
 
 void Node::addChild(std::shared_ptr<Node> newNode){
-    newNode->setParent(this->parent);
+    Node tmp_node = *this;
+    newNode->setParent(std::make_shared<Node>(tmp_node));
     children.insert(children.end(), newNode);
 }
 

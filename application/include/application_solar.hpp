@@ -21,6 +21,8 @@ class ApplicationSolar : public Application {
   //handle resizing
   void resizeCallback(unsigned width, unsigned height);
 
+  void scrollCallback(double pos_x, double pos_y);
+
   // draw all objects
   void render() const;
 

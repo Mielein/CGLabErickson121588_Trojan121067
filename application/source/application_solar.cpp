@@ -263,22 +263,31 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 
 //handle delta mouse movement input
 void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
+  float currentFrame = glfwGetTime();
+  float lastFrame = 0;
+  float deltaTime = currentFrame - lastFrame;
+  lastFrame = currentFrame;
     if(pos_x < 0){
-      m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.1f, 0.0f, 0.0f});
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10 ,glm::fvec3{-0.1f, 0.0f, 0.0f});
       uploadView();
     } 
-    if(pos_x > 0){
-      m_view_transform = glm::translate(m_view_transform, glm::fvec3{-0.1f, 0.0f, 0.0f});
+    else if(pos_x > 0){
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10 ,glm::fvec3{0.1f, -0.1f, -0.1f});
       uploadView();
     }
     if(pos_y < 0){
-      m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, -0.1f, 0.0f});
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10,glm::fvec3{0.0f, 0.1f, 0.0f});
       uploadView();
     } 
     if(pos_y > 0){
-      m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.1f,0.0f});
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10,glm::fvec3{0.0f, -0.1f,0.0f});
       uploadView();
     }
+
+
+}
+
+void ApplicationSolar::scrollCallback(double pos_x, double pos_y){
 
 }
 

@@ -267,22 +267,28 @@ void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
   float lastFrame = 0;
   float deltaTime = currentFrame - lastFrame;
   lastFrame = currentFrame;
-    if(pos_x < 0){
-      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10 ,glm::fvec3{-0.1f, 0.0f, 0.0f});
+  //y-axis rotation
+  m_view_transform = glm::rotate(m_view_transform, float(((pos_x/-100.0f)*glm::radians(deltaTime))),glm::fvec3{0.0f, 1.0f, 0.0f});
+  //x-axix rotation
+  m_view_transform = glm::rotate(m_view_transform, float(((pos_y/-100.0f)*glm::radians(deltaTime))),glm::fvec3{1.0f, 0.0f, 0.0f});
+
+  uploadView();
+/*     if(pos_x < 0){
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/100 ,glm::fvec3{-0.1f, 0.0f, 0.0f});
       uploadView();
     } 
-    else if(pos_x > 0){
-      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10 ,glm::fvec3{0.1f, -0.1f, -0.1f});
+    if(pos_x > 0){
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/100 ,glm::fvec3{0.1f, -0.1f, 0.1f});
       uploadView();
     }
     if(pos_y < 0){
-      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10,glm::fvec3{0.0f, 0.1f, 0.0f});
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/100,glm::fvec3{0.0f, -0.1f, 0.0f});
       uploadView();
     } 
     if(pos_y > 0){
-      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/10,glm::fvec3{0.0f, -0.1f,0.0f});
+      m_view_transform = glm::rotate(m_view_transform, glm::radians(deltaTime)/100,glm::fvec3{0.0f, 0.1f,0.0f});
       uploadView();
-    }
+    } */
 
 
 }

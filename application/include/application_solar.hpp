@@ -36,6 +36,7 @@ class ApplicationSolar : public Application {
   void initializeGeometry();
   // custom render methode for the planets out of the scene graph
   void planetrenderer() const;
+  void starRenderer() const;
   // update uniform values
   void uploadUniforms();
   // upload projection matrix

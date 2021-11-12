@@ -23,6 +23,8 @@ using namespace gl;
 ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
  ,planet_object{}
+ ,star_object{}
+ ,orbit_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,scene_graph_{}
@@ -44,6 +46,8 @@ void ApplicationSolar::initializeSceneGraph() {
   std::cout << "initialize Solar System" << std::endl;
   Node root_node("root element", glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   
+  Node stars_node("stars");
+
   Node mercury_node("Mercury", glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
   Node venus_node("Venus", glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }));
   Node earth_node("Earth", glm::translate({}, glm::fvec3{25.0f, 0.0f, 0.0f }));
@@ -77,6 +81,7 @@ void ApplicationSolar::initializeSceneGraph() {
   moon_node.addChild(std::make_shared<Geometry_node>(moon_geo));
    
   earth_node.addChild(std::make_shared<Node>(moon_node));
+  root_node.addChild(std::make_shared<Node>(stars_node));
   root_node.addChild(std::make_shared<Node>(mercury_node));
   root_node.addChild(std::make_shared<Node>(venus_node));
   root_node.addChild(std::make_shared<Node>(earth_node));
@@ -91,6 +96,41 @@ void ApplicationSolar::initializeSceneGraph() {
   scene_graph_.printClass();
 }
 
+void ApplicationSolar::initializeStars(){
+  unsigned int star_count = 1000;
+  unsigned int max_distance = 400;
+  std::vector<GLfloat> stars;
+
+  for(int i = 0; i < star_count; i++){
+    //random cooradinate positions
+    GLfloat rand_x_pos = (std::rand() % max_distance);
+    GLfloat rand_y_pos = (std::rand() % max_distance);
+    GLfloat rand_z_pos = (std::rand() % max_distance);
+    //random colours
+    // static_cast Returns a value of type new_type. 
+    GLfloat rand_r_colour = static_cast<float>(std::rand() % 255);
+    GLfloat rand_g_colour = static_cast<float>(std::rand() % 255);
+    GLfloat rand_b_colour = static_cast<float>(std::rand() % 255);
+
+    stars.push_back(rand_x_pos);
+    stars.push_back(rand_y_pos);
+    stars.push_back(rand_z_pos);
+    stars.push_back(rand_r_colour);
+    stars.push_back(rand_g_colour);
+    stars.push_back(rand_b_colour);
+  }
+  //initialising Vertex array
+  glGenVertexArrays(1, &star_object.vertex_AO);
+  glBindVertexArray(star_object.vertex_AO);
+  //initialising Vertex Buffer Object and load data
+  glGenBuffers(1, &star_object.vertex_BO);
+  glBindBuffer(GL_ARRAY_BUFFER, star_object.vertex_BO);
+  glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(sizeof(float)*stars.size()), stars.data(), GL_STATIC_DRAW);
+
+  star_object.draw_mode = GL_POINT;
+  star_object.num_elements = GLsizei(star_count);
+
+}
 /////////////////////////////////////////////////////////////////////////////////////
 
 void ApplicationSolar::render() const {

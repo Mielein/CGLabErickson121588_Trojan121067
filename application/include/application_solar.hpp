@@ -13,7 +13,8 @@ class ApplicationSolar : public Application {
   ApplicationSolar(std::string const& resource_path);
   // free allocated objects
   ~ApplicationSolar();
-
+  //star initialisation
+  void initializeStars();
   // react to key input
   void keyCallback(int key, int action, int mods);
   //handle delta mouse movement input
@@ -44,6 +45,8 @@ class ApplicationSolar : public Application {
 
   // cpu representation of model
   model_object planet_object;
+  model_object star_object;
+  model_object orbit_object;
   // camera transform matrix
   glm::fmat4 m_view_transform;
   // camera projection matrix

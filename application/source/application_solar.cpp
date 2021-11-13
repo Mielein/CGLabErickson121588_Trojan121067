@@ -150,8 +150,9 @@ void ApplicationSolar::initializeStars(){
 void ApplicationSolar::render() const {
   
   // bind shader to upload uniforms
-  planetrenderer();
   starRenderer();
+  planetrenderer();
+  
 /*   glUseProgram(m_shaders.at("planet").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
@@ -224,9 +225,9 @@ void ApplicationSolar::planetrenderer() const{
 }
 
 void ApplicationSolar::starRenderer() const{
-    glUseProgram(m_shaders.at("stars").handle);
+    glUseProgram(m_shaders.at("star").handle);
     glBindVertexArray(star_object.vertex_AO);
-    glDrawArrays(star_object.draw_mode, GLint(0), star_object.num_elements);
+    glDrawElements(star_object.draw_mode, GLint(star_object.num_elements), GL_UNSIGNED_BYTE, NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,14 +235,17 @@ void ApplicationSolar::starRenderer() const{
 void ApplicationSolar::uploadView() {
   // vertices are transformed in camera space, so camera transform must be inverted
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
+  glUseProgram(m_shaders.at("star").handle);
+  glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ModelViewMatrix"),
+                      1, GL_FALSE, glm::value_ptr(view_matrix)); 
+
+
   glUseProgram(m_shaders.at("planet").handle);
   // upload matrix to gpu
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ViewMatrix"),
                      1, GL_FALSE, glm::value_ptr(view_matrix));
   
-  glUseProgram(m_shaders.at("stars").handle);
-  glUniformMatrix4fv(m_shaders.at("stars").u_locs.at("ViewMatrix"),
-                      1, GL_FALSE, glm::value_ptr(view_matrix));
+  
 }
 
 void ApplicationSolar::uploadProjection() {
@@ -249,8 +253,8 @@ void ApplicationSolar::uploadProjection() {
   glUseProgram(m_shaders.at("planet").handle);
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ProjectionMatrix"),
                      1, GL_FALSE, glm::value_ptr(m_view_projection));
-  glUseProgram(m_shaders.at("stars").handle);
-  glUniformMatrix4fv(m_shaders.at("stars").u_locs.at("ProjectionMatrix"),
+  glUseProgram(m_shaders.at("star").handle);
+  glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"),
                       1, GL_FALSE, glm::value_ptr(m_view_projection));
 
 
@@ -276,10 +280,10 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
 
-  m_shaders.emplace("stars", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/vao.vert"},
+  m_shaders.emplace("star", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/vao.vert"},
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}}});
-  m_shaders.at("stars").u_locs["ViewMatrix"] = -1;
-  m_shaders.at("stars").u_locs["ProjectionMatrix"] = -1;
+  m_shaders.at("star").u_locs["ModelViewMatrix"] = -1;
+  m_shaders.at("star").u_locs["ProjectionMatrix"] = -1;
 
 }
 

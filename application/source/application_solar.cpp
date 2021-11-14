@@ -102,7 +102,7 @@ void ApplicationSolar::initializeSceneGraph() {
 
 void ApplicationSolar::initializeStars(){
   std::vector<GLfloat> stars;
-  unsigned int star_count = 10;
+  unsigned int star_count = 10000;
   unsigned int max_distance = 100;
 
   for(int i = 0; i < star_count; i++){
@@ -114,11 +114,11 @@ void ApplicationSolar::initializeStars(){
     GLfloat rand_z_pos = (std::rand() % 4100)/100.0f -20;
     stars.push_back(rand_z_pos);
  */
-    GLfloat rand_x_pos = (std::rand() % (max_distance + 1)*2/10);
+    GLfloat rand_x_pos = (std::rand() % max_distance);
     stars.push_back(rand_x_pos);
-    GLfloat rand_y_pos = (std::rand() % (max_distance + 1)*2/10);
+    GLfloat rand_y_pos = (std::rand() % max_distance);
     stars.push_back(rand_y_pos);
-    GLfloat rand_z_pos = (std::rand() % (max_distance + 1)*2/10);
+    GLfloat rand_z_pos = (std::rand() % max_distance);
     stars.push_back(rand_z_pos);
     //random colours
     // static_cast Returns a value of type new_type. 
@@ -148,7 +148,7 @@ void ApplicationSolar::initializeStars(){
   glEnableVertexArrayAttrib(star_object.vertex_AO, 1);
   glVertexAttribPointer(GLuint(1),GLuint(3),GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6) , (void*)(sizeof(float)*3));
 
-  star_object.draw_mode = GL_POINT;
+  star_object.draw_mode = GL_POINTS;
   star_object.num_elements = GLsizei(star_count);
 
 }
@@ -157,7 +157,7 @@ void ApplicationSolar::initializeStars(){
 void ApplicationSolar::render() const {
   
   // bind shader to upload uniforms
-  //starRenderer();
+  starRenderer();
   planetrenderer();
 
 
@@ -167,9 +167,8 @@ void ApplicationSolar::render() const {
 void ApplicationSolar::starRenderer() const{
     glUseProgram(m_shaders.at("star").handle);
     glBindVertexArray(star_object.vertex_AO);
-    glDrawArrays(star_object.draw_mode, GLint(0), GLsizei(star_object.num_elements));
-/*     glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, 0);
- */}
+    glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, &star_object);
+ }
 
 void ApplicationSolar::planetrenderer() const{
   //render sun

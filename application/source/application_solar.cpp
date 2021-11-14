@@ -102,16 +102,23 @@ void ApplicationSolar::initializeSceneGraph() {
 
 void ApplicationSolar::initializeStars(){
   std::vector<GLfloat> stars;
-  unsigned int star_count = 100;
+  unsigned int star_count = 10;
   unsigned int max_distance = 100;
 
   for(int i = 0; i < star_count; i++){
     //random cooradinate positions
-    GLfloat rand_x_pos = (std::rand() % max_distance);
+/*     GLfloat rand_x_pos = (std::rand() % 4100)/100.0f -20;
     stars.push_back(rand_x_pos);
-    GLfloat rand_y_pos = (std::rand() % max_distance);
+    GLfloat rand_y_pos = (std::rand() % 4100)/100.0f -20;
     stars.push_back(rand_y_pos);
-    GLfloat rand_z_pos = (std::rand() % max_distance);
+    GLfloat rand_z_pos = (std::rand() % 4100)/100.0f -20;
+    stars.push_back(rand_z_pos);
+ */
+    GLfloat rand_x_pos = (std::rand() % (max_distance + 1)*2/10);
+    stars.push_back(rand_x_pos);
+    GLfloat rand_y_pos = (std::rand() % (max_distance + 1)*2/10);
+    stars.push_back(rand_y_pos);
+    GLfloat rand_z_pos = (std::rand() % (max_distance + 1)*2/10);
     stars.push_back(rand_z_pos);
     //random colours
     // static_cast Returns a value of type new_type. 
@@ -128,18 +135,18 @@ void ApplicationSolar::initializeStars(){
   }
   
   //initialising Vertex array
-  glGenVertexArrays(1, &star_object.vertex_AO);
+  glGenVertexArrays(GLint(1), &star_object.vertex_AO);
   glBindVertexArray(star_object.vertex_AO);
   //initialising Vertex Buffer Object and load data
-  glGenBuffers(1, &star_object.vertex_BO);
+  glGenBuffers(GLuint(1), &star_object.vertex_BO);
   glBindBuffer(GL_ARRAY_BUFFER, star_object.vertex_BO);
-  glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(sizeof(float)*stars.size()), stars.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float)*stars.size(), stars.data(), GL_STATIC_DRAW);
   // first array attribut for positions
   glEnableVertexArrayAttrib(star_object.vertex_AO, 0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, 0);
+  glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6), NULL);
   //second array for colours
   glEnableVertexArrayAttrib(star_object.vertex_AO, 1);
-  glVertexAttribPointer(1,3,GL_FLOAT, GL_FALSE, GLsizei(6*sizeof(float)*6) , (void*)(sizeof(float)*3));
+  glVertexAttribPointer(GLuint(1),GLuint(3),GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6) , (void*)(sizeof(float)*3));
 
   star_object.draw_mode = GL_POINT;
   star_object.num_elements = GLsizei(star_count);
@@ -160,8 +167,9 @@ void ApplicationSolar::render() const {
 void ApplicationSolar::starRenderer() const{
     glUseProgram(m_shaders.at("star").handle);
     glBindVertexArray(star_object.vertex_AO);
-    glDrawElements(star_object.draw_mode, GLint(star_object.num_elements), model::INDEX.type, 0);
-}
+    glDrawArrays(star_object.draw_mode, GLint(0), GLsizei(star_object.num_elements));
+/*     glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, 0);
+ */}
 
 void ApplicationSolar::planetrenderer() const{
   //render sun

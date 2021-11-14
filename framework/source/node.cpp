@@ -106,9 +106,9 @@ void Node::setLocalTransform(glm::fmat4 newLocal){
 //worldtransform equals worldtransform of parent * localtransform
 glm::fmat4 Node::getWorldTransform() const{
     if(parent == nullptr){
-        return worldTransform;
+        return localTransform;
     }
-    return parent->worldTransform * localTransform;
+    return parent->getWorldTransform() * localTransform;
 }
 
 void Node::setWorldTransform(glm::fmat4 newWorld){

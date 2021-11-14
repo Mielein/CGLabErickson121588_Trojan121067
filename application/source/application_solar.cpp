@@ -124,7 +124,7 @@ void ApplicationSolar::initializeStars(){
 
   }
   for(int i = 0; i < stars.size(); i++){
-    std::cout<<stars[i]<<std::endl;
+    //std::cout<<stars[i]<<std::endl;
   }
   
   //initialising Vertex array
@@ -150,7 +150,7 @@ void ApplicationSolar::initializeStars(){
 void ApplicationSolar::render() const {
   
   // bind shader to upload uniforms
-  starRenderer();
+  //starRenderer();
   planetrenderer();
 
 
@@ -194,31 +194,29 @@ void ApplicationSolar::planetrenderer() const{
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon"));
-
+  int tmp = 1;
   for(std::shared_ptr<Node> x : List_of_Planets){
     //std::cout << x->getName();
     glUseProgram(m_shaders.at("planet").handle);
+   
     glm::fmat4 final_matrix;
-    //x->getChild("geo_"+x->getName());
-    if(x->getName() == "Moon"){
-      std::shared_ptr<Node> moon_geo = x->getChild("geo_Moon");
-      glm::fmat4 parent_matrix = x->getParent()->getLocalTransform();
-      glm::fmat4 rotation_matrix = glm::rotate(x->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
-      moon_geo->getParent()->setLocalTransform(rotation_matrix*moon_geo->getLocalTransform());
-      final_matrix = glm::rotate(moon_geo->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
-    }
-    else{
-      //getting the Geometry-node equivalent to Node x
-      std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
-      //initializes Matrix with localTransform of Parent of x
-      glm::fmat4 parent_matrix = x->getParent()->getLocalTransform();
-      //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
-      glm::fmat4 rotation_matrix = glm::rotate(x->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
-      //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
-      //this way x sees the parent as the center of the orbit
-      planet_geo->getParent()->setLocalTransform(rotation_matrix*planet_geo->getLocalTransform());
-      final_matrix = glm::rotate(planet_geo->getParent()->getLocalTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
-    }
+
+    //getting the Geometry-node equivalent to Node x
+    std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
+    //initializes Matrix with localTransform of Parent of x
+    //glm::fmat4 parent_matrix = x->getParent()->getLocalTransform();
+    //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
+    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}/* planet_geo->getParent()->getLocalTransform() */, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
+    //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
+    //this way x sees the parent as the center of the orbit
+    glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
+    
+    planet_geo->getParent()->setLocalTransform(newTransform);
+    
+    //final_matrix = glm::rotate(planet_geo->getParent()->getWorldTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
+    final_matrix = planet_geo->getWorldTransform();
+    tmp++;
+
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(final_matrix));
     
@@ -227,6 +225,7 @@ void ApplicationSolar::planetrenderer() const{
     glBindVertexArray(planet_object.vertex_AO);
 
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+    
   }
 }
 
@@ -257,7 +256,7 @@ void ApplicationSolar::uploadProjection() {
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"),
                       1, GL_FALSE, glm::value_ptr(m_view_projection));
 
-
+ 
 } 
 
 // update uniform locations

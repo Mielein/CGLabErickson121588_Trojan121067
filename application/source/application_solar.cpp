@@ -102,16 +102,16 @@ void ApplicationSolar::initializeSceneGraph() {
 
 void ApplicationSolar::initializeStars(){
   std::vector<GLfloat> stars;
-  unsigned int star_count = 10000000;
+  unsigned int star_count = 1000000;
   unsigned int max_distance = 1000;
 
   for(int i = 0; i < star_count; i++){
 
-    GLfloat rand_x_pos = (std::rand() % max_distance);
+    GLfloat rand_x_pos = (std::rand() % max_distance)-500.0f;
     stars.push_back(rand_x_pos);
-    GLfloat rand_y_pos = (std::rand() % max_distance);
+    GLfloat rand_y_pos = (std::rand() % max_distance)-500.0f;
     stars.push_back(rand_y_pos);
-    GLfloat rand_z_pos = (std::rand() % max_distance);
+    GLfloat rand_z_pos = (std::rand() % max_distance)-500.0f;
     stars.push_back(rand_z_pos);
     //random colours
     // static_cast Returns a value of type new_type. 

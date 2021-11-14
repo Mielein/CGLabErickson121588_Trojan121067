@@ -102,18 +102,11 @@ void ApplicationSolar::initializeSceneGraph() {
 
 void ApplicationSolar::initializeStars(){
   std::vector<GLfloat> stars;
-  unsigned int star_count = 10000;
-  unsigned int max_distance = 100;
+  unsigned int star_count = 10000000;
+  unsigned int max_distance = 1000;
 
   for(int i = 0; i < star_count; i++){
-    //random cooradinate positions
-/*     GLfloat rand_x_pos = (std::rand() % 4100)/100.0f -20;
-    stars.push_back(rand_x_pos);
-    GLfloat rand_y_pos = (std::rand() % 4100)/100.0f -20;
-    stars.push_back(rand_y_pos);
-    GLfloat rand_z_pos = (std::rand() % 4100)/100.0f -20;
-    stars.push_back(rand_z_pos);
- */
+
     GLfloat rand_x_pos = (std::rand() % max_distance);
     stars.push_back(rand_x_pos);
     GLfloat rand_y_pos = (std::rand() % max_distance);
@@ -167,7 +160,8 @@ void ApplicationSolar::render() const {
 void ApplicationSolar::starRenderer() const{
     glUseProgram(m_shaders.at("star").handle);
     glBindVertexArray(star_object.vertex_AO);
-    glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, &star_object);
+    glDrawArrays(star_object.draw_mode,GLint(0), star_object.num_elements);
+    //glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, &star_object);
  }
 
 void ApplicationSolar::planetrenderer() const{

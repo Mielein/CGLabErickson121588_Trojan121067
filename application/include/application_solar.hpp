@@ -15,6 +15,8 @@ class ApplicationSolar : public Application {
   ~ApplicationSolar();
   //star initialisation
   void initializeStars();
+  //orbit initialisation
+  void initializeOrbits();
   // react to key input
   void keyCallback(int key, int action, int mods);
   //handle delta mouse movement input
@@ -34,9 +36,11 @@ class ApplicationSolar : public Application {
   void initializeSceneGraph();
   void initializeShaderPrograms();
   void initializeGeometry();
+  
   // custom render methode for the planets out of the scene graph
   void planetrenderer() const;
   void starRenderer() const;
+  void orbitRenderer() const;
   // update uniform values
   void uploadUniforms();
   // upload projection matrix

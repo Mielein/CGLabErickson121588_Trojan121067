@@ -32,6 +32,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeSceneGraph();
   initializeGeometry();
   initializeStars();
+  initializeOrbits();
   initializeShaderPrograms();
 }
 
@@ -145,6 +146,58 @@ void ApplicationSolar::initializeStars(){
   star_object.num_elements = GLsizei(star_count);
 
 }
+
+void ApplicationSolar::initializeOrbits(){
+
+  Node root = scene_graph_.getRoot();
+  int numOrbitPoints = 100;
+  std::vector<GLfloat> orbits;
+  std::vector<std::shared_ptr<Node>> list_of_geoPlanets;
+  list_of_geoPlanets.push_back(root.getChild("Mercury"));
+  list_of_geoPlanets.push_back(root.getChild("Venus"));
+  list_of_geoPlanets.push_back(root.getChild("Earth"));
+  list_of_geoPlanets.push_back(root.getChild("Mars"));
+  list_of_geoPlanets.push_back(root.getChild("Jupiter"));
+  list_of_geoPlanets.push_back(root.getChild("Saturn"));
+  list_of_geoPlanets.push_back(root.getChild("Uranus"));
+  list_of_geoPlanets.push_back(root.getChild("Neptune"));
+  list_of_geoPlanets.push_back(root.getChild("Moon"));
+  
+  for(std::shared_ptr<Node> x : list_of_geoPlanets){
+    std::cout<<x->getName()<<std::endl;
+    Node planet = *x->getParent();
+    glm::fvec4 point = planet.getLocalTransform()*glm::fvec4{0.0f,0.0f,0.0f,1.0f};
+    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 3.6f,glm::fvec3{0.0f, 1.0f, 0.0f});
+    //loop for number of points for orbit
+    for(int i = 0; i< numOrbitPoints; i++){
+      orbits.push_back(point.x);
+      orbits.push_back(point.y);
+      orbits.push_back(point.z);
+      point = rotation_matrix * point;
+    }
+    std::cout<<"Debug";
+  }
+  //for(auto x : orbits){
+  std::cout<<orbits.size()<<std::endl;
+  //} 
+  //std::cout<<"hi";
+  glGenVertexArrays(GLint(1), &orbit_object.vertex_AO);
+
+  std::cout<<"genvertex";
+  glBindVertexArray(orbit_object.vertex_AO);
+  std::cout<<"vertex";
+  //initialising Vertex Buffer Object and load data
+  glGenBuffers(GLuint(1), &orbit_object.vertex_BO);
+  glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float)*orbits.size(), orbits.data(), GL_STATIC_DRAW);
+  std::cout<<"buffer";
+  // first array attribut for positions
+  glEnableVertexArrayAttrib(orbit_object.vertex_AO, 0);
+  glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*3), NULL);
+
+  orbit_object.draw_mode = GL_LINE_LOOP;
+  orbit_object.num_elements = numOrbitPoints;
+}
 ////////////////////////////////////rendering/////////////////////////////////////////////////
 
 void ApplicationSolar::render() const {
@@ -152,11 +205,17 @@ void ApplicationSolar::render() const {
   // bind shader to upload uniforms
   starRenderer();
   planetrenderer();
-
+  orbitRenderer();
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+void ApplicationSolar::orbitRenderer() const{
+  glUseProgram(m_shaders.at("orbit").handle);
+  glBindVertexArray(orbit_object.vertex_AO);
+  glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
+}
+
 void ApplicationSolar::starRenderer() const{
     glUseProgram(m_shaders.at("star").handle);
     glBindVertexArray(star_object.vertex_AO);
@@ -166,7 +225,6 @@ void ApplicationSolar::starRenderer() const{
 
 void ApplicationSolar::planetrenderer() const{
   //render sun
-
   glUseProgram(m_shaders.at("planet").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
@@ -205,16 +263,13 @@ void ApplicationSolar::planetrenderer() const{
     //getting the Geometry-node equivalent to Node x
     std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
     //initializes Matrix with localTransform of Parent of x
-    //glm::fmat4 parent_matrix = x->getParent()->getLocalTransform();
     //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
-    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}/* planet_geo->getParent()->getLocalTransform() */, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
+    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
     //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
     //this way x sees the parent as the center of the orbit
     glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
     
     planet_geo->getParent()->setLocalTransform(newTransform);
-    
-    //final_matrix = glm::rotate(planet_geo->getParent()->getWorldTransform(), float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
     final_matrix = planet_geo->getWorldTransform();
     tmp++;
 
@@ -226,7 +281,6 @@ void ApplicationSolar::planetrenderer() const{
     glBindVertexArray(planet_object.vertex_AO);
 
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
-    
   }
 }
 
@@ -237,6 +291,11 @@ void ApplicationSolar::planetrenderer() const{
 void ApplicationSolar::uploadView() {
   // vertices are transformed in camera space, so camera transform must be inverted
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
+
+  glUseProgram(m_shaders.at("orbit").handle);
+  glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ViewMatrix"),
+                      1, GL_FALSE, glm::value_ptr(view_matrix)); 
+
   glUseProgram(m_shaders.at("star").handle);
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ModelViewMatrix"),
                       1, GL_FALSE, glm::value_ptr(view_matrix)); 
@@ -256,7 +315,9 @@ void ApplicationSolar::uploadProjection() {
   glUseProgram(m_shaders.at("star").handle);
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"),
                       1, GL_FALSE, glm::value_ptr(m_view_projection));
-
+  glUseProgram(m_shaders.at("orbit").handle);
+  glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ProjectionMatrix"),
+                      1, GL_FALSE, glm::value_ptr(m_view_projection));
  
 } 
 
@@ -284,6 +345,13 @@ void ApplicationSolar::initializeShaderPrograms() {
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}}});
   m_shaders.at("star").u_locs["ModelViewMatrix"] = -1;
   m_shaders.at("star").u_locs["ProjectionMatrix"] = -1;
+
+  m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/orbit.vert"},
+                                           {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
+  // request uniform locations for shader program
+  m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
+  m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
+  m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
 
 }
 

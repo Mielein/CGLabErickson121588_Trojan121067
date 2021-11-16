@@ -15,6 +15,11 @@ Node::Node(std::string _name):
 Node::Node(std::string _name, glm::fmat4 _localTransform):
     name{_name},
     localTransform{_localTransform}{}
+    
+Node::Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform):
+    name{_name},
+    parent{_parent},
+    localTransform{_localTransform}{}
 
 //constructor for the root node 
 Node::Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTransform):
@@ -45,6 +50,7 @@ void Node::setParent(std::shared_ptr<Node> node){
 
 std::shared_ptr<Node> Node::getChild(std::string name) const{
     if(children.size() == 0){
+        //std::cout<< "this should not happen" << std::endl;
         return nullptr;
     }
     for(auto const& x : children){
@@ -120,14 +126,14 @@ void Node::setWorldTransform(glm::fmat4 newWorld){
 //set new parent for child and insert Node at end of node .child
 void Node::addChild(std::shared_ptr<Node> newNode){
     //Node tmp_node = *this;
-    newNode->setParent(std::make_shared<Node>(*this/* tmp_node */));
+    //newNode->setParent(std::make_shared<Node>(*this/* tmp_node */));
     //std::cout<<"added "+ newNode->getName()<<std::endl;
     //std::cout << newNode->getParent()->getName() << std::endl;
     //std::cout<<tmp_node.getName() + " parent of " + newNode->getName()<<std::endl;
-    std::cout<<"not pushed"<<std::endl;
+    //std::cout<<"not pushed"<<std::endl;
     children.push_back(newNode);
-    std::cout<<newNode->getParent()->getName()<<std::endl;
-    std::cout<<"pushed"<<std::endl;
+    //std::cout<<newNode->getParent()->getName()<<std::endl;
+    //std::cout<<"pushed"<<std::endl;
 
 }
 

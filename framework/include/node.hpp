@@ -20,6 +20,7 @@ class Node{
         Node();
         Node(std::string _name);
         Node(std::string _name, glm::mat4 _localtransform);
+        Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform);
         Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTransform);
         std::shared_ptr<Node> getParent() const;
         void setParent(std::shared_ptr<Node> node);

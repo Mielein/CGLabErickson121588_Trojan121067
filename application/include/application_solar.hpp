@@ -25,6 +25,7 @@ class ApplicationSolar : public Application {
   void resizeCallback(unsigned width, unsigned height);
 
   void scrollCallback(double pos_x, double pos_y);
+  void tmpfunk();
 
   // draw all objects
   void render() const;

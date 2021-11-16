@@ -56,7 +56,7 @@ void ApplicationSolar::initializeSceneGraph() {
   std::cout << "initialize Solar System" << std::endl;
   Node root_node("root element", glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   //Node stars_node("stars");
-  //Node orbit_node("orbit");
+  Node orbit_node("orbit");
   Camera_node camera("Camera");
 
   Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
@@ -79,6 +79,16 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
   Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{5.3f, 0.0f, 0.0f }));
 
+  Geometry_node mercury_geo_orbit("geo_Mercury_orbit", std::make_shared<Node>(mercury_node), glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
+  Geometry_node venus_geo_orbit("geo_Venus_orbit", std::make_shared<Node>(venus_node), glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }));
+  Geometry_node earth_geo_orbit("geo_Earth_orbit", std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{25.0f, 0.0f, 0.0f }));
+  Geometry_node mars_geo_orbit("geo_Mars_orbit", std::make_shared<Node>(mars_node), glm::translate({}, glm::fvec3{36.0f, 0.0f, 0.0f }));
+  Geometry_node jupiter_geo_orbit("geo_Jupiter_orbit", std::make_shared<Node>(jupiter_node), glm::translate({}, glm::fvec3{47.0f, 0.0f, 0.0f }));
+  Geometry_node saturn_geo_orbit("geo_Saturn_orbit", std::make_shared<Node>(saturn_node), glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }));
+  Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{69.0f, 0.0f, 0.0f }));
+  Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
+  Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{5.3f, 0.0f, 0.0f }));
+
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
   venus_node.addChild(std::make_shared<Geometry_node>(venus_geo));
@@ -88,7 +98,17 @@ void ApplicationSolar::initializeSceneGraph() {
   urnaus_node.addChild(std::make_shared<Geometry_node>(urnaus_geo));
   neptune_node.addChild(std::make_shared<Geometry_node>(neptune_geo));
   moon_node.addChild(std::make_shared<Geometry_node>(moon_geo));
+  moon_node.addChild(std::make_shared<Geometry_node>(moon_geo_orbit));
   earth_node.addChild(std::make_shared<Node>(moon_node));
+
+  earth_node.addChild(std::make_shared<Geometry_node>(earth_geo_orbit));
+  mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo_orbit));
+  venus_node.addChild(std::make_shared<Geometry_node>(venus_geo_orbit));
+  mars_node.addChild(std::make_shared<Geometry_node>(mars_geo_orbit));
+  jupiter_node.addChild(std::make_shared<Geometry_node>(jupiter_geo_orbit));
+  saturn_node.addChild(std::make_shared<Geometry_node>(saturn_geo_orbit));
+  urnaus_node.addChild(std::make_shared<Geometry_node>(urnaus_geo_orbit));
+  neptune_node.addChild(std::make_shared<Geometry_node>(neptune_geo_orbit));
    
   //root_node.addChild(std::make_shared<Node>(stars_node));
   root_node.addChild(std::make_shared<Node>(mercury_node));
@@ -181,7 +201,7 @@ void ApplicationSolar::initializeOrbits(){
   for(std::shared_ptr<Node> x : list_of_geoPlanets){
     auto planet = x->getParent();
     glm::fvec4 point = planet->getLocalTransform()*glm::fvec4{0.0f,0.0f,0.0f,1.0f};
-    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.001f,glm::fvec3{0.0f, 1.0f, 0.0f});
+    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 3.6f,glm::fvec3{0.0f, 1.0f, 0.0f});
     for(int i = 0; i< numOrbitPoints; i++){
       orbits.push_back(point.x);
       orbits.push_back(point.y);
@@ -224,20 +244,27 @@ void ApplicationSolar::orbitRenderer() const{
   glUseProgram(m_shaders.at("orbit").handle);
   //for every planet
   for(auto x : scene_graph_.getRoot().getChildrenList()){
-    auto orbit = scene_graph_.getRoot().getChild("geo_" + x->getName() + "_orbit");
-    scene_graph_.printClass();
-    debugPrint(" " + scene_graph_.getRoot().getChild("geo_" + x->getName())->getName());
+    //debugPrint(x->getName());
+    auto orbit = x->getChild("geo_" + x->getName() + "_orbit");
+    //scene_graph_.printClass();
+    //debugPrint(" " + scene_graph_.getRoot().getChild("geo_" + x->getName())->getName());
     std::shared_ptr<Geometry_node> orbit_cast_ptr = std::static_pointer_cast<Geometry_node>(orbit);
     if(orbit == nullptr){
       debugPrint("Stinky");
+      for(auto y : x->getChildrenList()){
+        debugPrint(y->getName());
+      }
+    }
+    else{
+      debugPrint("Succsess " + orbit->getName());
+      glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
+                            1, GL_FALSE, glm::value_ptr(orbit->getWorldTransform())); 
+      glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
+      glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);
+      glBindVertexArray(orbit_object.vertex_AO);
+      glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
     }
 
-    glUniformMatrix4fv(m_shaders.at("orbits").u_locs.at("ModelMatrix"),
-                          1, GL_FALSE, glm::value_ptr(orbit->getWorldTransform()));
-    glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);    
-    glBindVertexArray(orbit_object.vertex_AO);
-    glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
   }
 }
 

@@ -24,14 +24,16 @@ Node::Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTrans
 
 //checks if nullptr else return shared pointer to parent element
 std::shared_ptr<Node> Node::getParent() const{ 
+    //return parent;
     //std::cout << "get Parent Call" << std::endl;
     //std::cout << parent->getName() << std::endl;
     Node tmp_Node("Error Node");
     if(parent != nullptr){
         return parent;
-    }
-    else
+    } 
+    else 
         return std::make_shared<Node>(tmp_Node);
+    
 }
 
 //gives new parent
@@ -117,10 +119,16 @@ void Node::setWorldTransform(glm::fmat4 newWorld){
 
 //set new parent for child and insert Node at end of node .child
 void Node::addChild(std::shared_ptr<Node> newNode){
-    Node tmp_node = *this;
-    newNode->setParent(std::make_shared<Node>(tmp_node));
+    //Node tmp_node = *this;
+    newNode->setParent(std::make_shared<Node>(*this/* tmp_node */));
+    //std::cout<<"added "+ newNode->getName()<<std::endl;
     //std::cout << newNode->getParent()->getName() << std::endl;
-    children.insert(children.end(), newNode);
+    //std::cout<<tmp_node.getName() + " parent of " + newNode->getName()<<std::endl;
+    std::cout<<"not pushed"<<std::endl;
+    children.push_back(newNode);
+    std::cout<<newNode->getParent()->getName()<<std::endl;
+    std::cout<<"pushed"<<std::endl;
+
 }
 
 //...//

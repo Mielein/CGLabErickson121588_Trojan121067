@@ -201,7 +201,7 @@ void ApplicationSolar::initializeOrbits(){
   for(std::shared_ptr<Node> x : list_of_geoPlanets){
     auto planet = x->getParent();
     glm::fvec4 point = planet->getLocalTransform()*glm::fvec4{0.0f,0.0f,0.0f,1.0f};
-    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 3.6f,glm::fvec3{0.0f, 1.0f, 0.0f});
+    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.1f,glm::fvec3{0.0f, 1.0f, 0.0f});
     for(int i = 0; i< numOrbitPoints; i++){
       orbits.push_back(point.x);
       orbits.push_back(point.y);

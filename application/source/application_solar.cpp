@@ -19,7 +19,9 @@ using namespace gl;
 
 #include <iostream>
 
-
+void debugPrint(std::string string){
+  std::cout<<string<<std::endl;
+}
 ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
  ,planet_object{}
@@ -46,7 +48,6 @@ ApplicationSolar::~ApplicationSolar() {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-
 void ApplicationSolar::tmpfunk(){
   std::cout<< "this is tmpfunk" << std::endl;
 }
@@ -193,22 +194,17 @@ void ApplicationSolar::initializeOrbits(){
   }
 
   glGenVertexArrays(GLint(1), &orbit_object.vertex_AO);
-
-  std::cout<<"genvertex";
   glBindVertexArray(orbit_object.vertex_AO);
-  std::cout<<"vertex";
   //initialising Vertex Buffer Object and load data
   glGenBuffers(GLuint(1), &orbit_object.vertex_BO);
   glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float)*orbits.size(), orbits.data(), GL_STATIC_DRAW);
-  std::cout<<"buffer";
   // first array attribut for positions
   glEnableVertexArrayAttrib(orbit_object.vertex_AO, 0);
   glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*3), NULL);
 
-  orbit_object.draw_mode = GL_LINE_LOOP;
+  orbit_object.draw_mode = GL_LINE_STRIP;
   orbit_object.num_elements = numOrbitPoints;
-  std::cout<<"Hello there"<<std::endl;
 }
 ////////////////////////////////////rendering/////////////////////////////////////////////////
 
@@ -218,16 +214,21 @@ void ApplicationSolar::render() const {
 
   starRenderer();
   planetrenderer();
+  //debugPrint("renderer finished");
   orbitRenderer();
-
+  
 } 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::orbitRenderer() const{
+  debugPrint("orbitRenderer1");
   glUseProgram(m_shaders.at("orbit").handle);
+  debugPrint("orbitRenderer2");
   //for every planet
+  std::cout<<scene_graph_.getRoot().getChildrenList().size()<<std::endl;
   for(auto x : scene_graph_.getRoot().getChildrenList()){
-    auto orbit = scene_graph_.getRoot().getChild(x->getName() + "_geo_orbit");
+    std::cout<<x->getName()<<std::endl;
+    auto orbit = scene_graph_.getRoot().getChild("_geo" + x->getName() + "_orbit");
     glBindVertexArray(orbit_object.vertex_AO);
     glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
   }
@@ -310,8 +311,8 @@ void ApplicationSolar::uploadView() {
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
 
   glUseProgram(m_shaders.at("orbit").handle);
-  glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ViewMatrix"),
-                      1, GL_FALSE, glm::value_ptr(view_matrix)); 
+  glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
+                      1, GL_FALSE, glm::value_ptr(view_matrix));
 
   glUseProgram(m_shaders.at("star").handle);
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ModelViewMatrix"),
@@ -334,7 +335,7 @@ void ApplicationSolar::uploadProjection() {
                       1, GL_FALSE, glm::value_ptr(m_view_projection));
   glUseProgram(m_shaders.at("orbit").handle);
   glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ProjectionMatrix"),
-                      1, GL_FALSE, glm::value_ptr(m_view_projection)); 
+                      1, GL_FALSE, glm::value_ptr(m_view_projection));  
 } 
 
 // update uniform locations
@@ -365,10 +366,10 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/orbit.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
   // request uniform locations for shader program
-  m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
-  m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
-  m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
-  std::cout << "initialize shader programms " << std::endl;
+  m_shaders.at("orbit").u_locs["ModelMatrix"] = -1;
+  m_shaders.at("orbit").u_locs["ModelViewMatrix"] = -1;
+  m_shaders.at("orbit").u_locs["ProjectionMatrix"] = -1;
+  //std::cout << "initialize shader programms " << std::endl;
 
 }
 
@@ -408,7 +409,7 @@ void ApplicationSolar::initializeGeometry() {
   planet_object.draw_mode = GL_TRIANGLES;
   // transfer number of indices to model object 
   planet_object.num_elements = GLsizei(planet_model.indices.size());
-  std::cout << "Geometry_initializer" << std::endl;
+  //std::cout << "Geometry_initializer" << std::endl;
 }
 
 ///////////////////////////// callback functions for window events ////////////

@@ -55,8 +55,8 @@ void ApplicationSolar::tmpfunk(){
 void ApplicationSolar::initializeSceneGraph() {
   std::cout << "initialize Solar System" << std::endl;
   Node root_node("root element", glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Node stars_node("stars");
-  Node orbit_node("orbit");
+  //Node stars_node("stars");
+  //Node orbit_node("orbit");
   Camera_node camera("Camera");
 
   Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
@@ -90,7 +90,7 @@ void ApplicationSolar::initializeSceneGraph() {
   moon_node.addChild(std::make_shared<Geometry_node>(moon_geo));
   earth_node.addChild(std::make_shared<Node>(moon_node));
    
-  root_node.addChild(std::make_shared<Node>(stars_node));
+  //root_node.addChild(std::make_shared<Node>(stars_node));
   root_node.addChild(std::make_shared<Node>(mercury_node));
   root_node.addChild(std::make_shared<Node>(venus_node));
   root_node.addChild(std::make_shared<Node>(earth_node));
@@ -181,7 +181,7 @@ void ApplicationSolar::initializeOrbits(){
   for(std::shared_ptr<Node> x : list_of_geoPlanets){
     auto planet = x->getParent();
     glm::fvec4 point = planet->getLocalTransform()*glm::fvec4{0.0f,0.0f,0.0f,1.0f};
-    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 3.6f,glm::fvec3{0.0f, 1.0f, 0.0f});
+    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.001f,glm::fvec3{0.0f, 1.0f, 0.0f});
     for(int i = 0; i< numOrbitPoints; i++){
       orbits.push_back(point.x);
       orbits.push_back(point.y);
@@ -201,10 +201,10 @@ void ApplicationSolar::initializeOrbits(){
   glBufferData(GL_ARRAY_BUFFER, sizeof(float)*orbits.size(), orbits.data(), GL_STATIC_DRAW);
   // first array attribut for positions
   glEnableVertexArrayAttrib(orbit_object.vertex_AO, 0);
-  glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*3), NULL);
+  glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*3), 0);
 
   orbit_object.draw_mode = GL_LINE_STRIP;
-  orbit_object.num_elements = numOrbitPoints;
+  orbit_object.num_elements = GLsizei(numOrbitPoints);
 }
 ////////////////////////////////////rendering/////////////////////////////////////////////////
 
@@ -224,6 +224,16 @@ void ApplicationSolar::orbitRenderer() const{
   //for every planet
   for(auto x : scene_graph_.getRoot().getChildrenList()){
     auto orbit = scene_graph_.getRoot().getChild("_geo" + x->getName() + "_orbit");
+    debugPrint(" " + scene_graph_.getRoot().getChild(x->getName())->getName());
+    std::shared_ptr<Geometry_node> orbit_cast_ptr = std::static_pointer_cast<Geometry_node>(orbit);
+    if(orbit == nullptr){
+      debugPrint("Stinky");
+    }
+
+    glUniformMatrix4fv(m_shaders.at("orbits").u_locs.at("ModelMatrix"),
+                          1, GL_FALSE, glm::value_ptr(orbit->getWorldTransform()));
+    glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);    
     glBindVertexArray(orbit_object.vertex_AO);
     glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
   }

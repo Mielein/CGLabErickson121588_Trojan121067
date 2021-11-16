@@ -214,20 +214,15 @@ void ApplicationSolar::render() const {
 
   starRenderer();
   planetrenderer();
-  //debugPrint("renderer finished");
   orbitRenderer();
   
 } 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::orbitRenderer() const{
-  debugPrint("orbitRenderer1");
   glUseProgram(m_shaders.at("orbit").handle);
-  debugPrint("orbitRenderer2");
   //for every planet
-  std::cout<<scene_graph_.getRoot().getChildrenList().size()<<std::endl;
   for(auto x : scene_graph_.getRoot().getChildrenList()){
-    std::cout<<x->getName()<<std::endl;
     auto orbit = scene_graph_.getRoot().getChild("_geo" + x->getName() + "_orbit");
     glBindVertexArray(orbit_object.vertex_AO);
     glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
@@ -311,7 +306,7 @@ void ApplicationSolar::uploadView() {
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
 
   glUseProgram(m_shaders.at("orbit").handle);
-  glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
+  glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ViewMatrix"),
                       1, GL_FALSE, glm::value_ptr(view_matrix));
 
   glUseProgram(m_shaders.at("star").handle);
@@ -367,7 +362,7 @@ void ApplicationSolar::initializeShaderPrograms() {
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
   // request uniform locations for shader program
   m_shaders.at("orbit").u_locs["ModelMatrix"] = -1;
-  m_shaders.at("orbit").u_locs["ModelViewMatrix"] = -1;
+  m_shaders.at("orbit").u_locs["ViewMatrix"] = -1;
   m_shaders.at("orbit").u_locs["ProjectionMatrix"] = -1;
   //std::cout << "initialize shader programms " << std::endl;
 

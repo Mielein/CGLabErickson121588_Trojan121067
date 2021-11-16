@@ -307,7 +307,6 @@ void ApplicationSolar::planetrenderer() const{
 
 void ApplicationSolar::uploadView() {
   // vertices are transformed in camera space, so camera transform must be inverted
-  //tmpfunk();
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
 
   glUseProgram(m_shaders.at("orbit").handle);
@@ -333,9 +332,9 @@ void ApplicationSolar::uploadProjection() {
   glUseProgram(m_shaders.at("star").handle);
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"),
                       1, GL_FALSE, glm::value_ptr(m_view_projection));
-/*   glUseProgram(m_shaders.at("orbit").handle);
+  glUseProgram(m_shaders.at("orbit").handle);
   glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ProjectionMatrix"),
-                      1, GL_FALSE, glm::value_ptr(m_view_projection)); */
+                      1, GL_FALSE, glm::value_ptr(m_view_projection)); 
 } 
 
 // update uniform locations

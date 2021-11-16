@@ -32,7 +32,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeSceneGraph();
   initializeGeometry();
   initializeStars();
-  //initializeOrbits();
+  initializeOrbits();
   initializeShaderPrograms();
 }
 
@@ -59,23 +59,14 @@ void ApplicationSolar::initializeSceneGraph() {
   Camera_node camera("Camera");
 
   Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
-  //mercury_node.setParent(std::make_shared<Node>(root_node));
   Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }));
-  //venus_node.setParent(std::make_shared<Node>(root_node));
   Node earth_node("Earth", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{25.0f, 0.0f, 0.0f }));
-  //earth_node.setParent(std::make_shared<Node>(root_node));
   Node mars_node("Mars", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{36.0f, 0.0f, 0.0f }));
-  //mars_node.setParent(std::make_shared<Node>(root_node));
   Node jupiter_node("Jupiter",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{47.0f, 0.0f, 0.0f }));
-  //jupiter_node.setParent(std::make_shared<Node>(root_node));
   Node saturn_node("Saturn",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }));
- // saturn_node.setParent(std::make_shared<Node>(root_node));
   Node urnaus_node("Uranus",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{69.0f, 0.0f, 0.0f }));
- // urnaus_node.setParent(std::make_shared<Node>(root_node));
   Node neptune_node("Neptune",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{80.0f, 0.0f, 0.0f }));
-  //neptune_node.setParent(std::make_shared<Node>(root_node));
   Node moon_node("Moon",std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{5.3f, 0.0f, 0.0f }));
-  //moon_node.setParent(std::make_shared<Node>(earth_node));
 
   Geometry_node mercury_geo("geo_Mercury", std::make_shared<Node>(mercury_node), glm::translate({}, glm::fvec3{3.0f, 0.0f, 0.0f }));
   Geometry_node venus_geo("geo_Venus", std::make_shared<Node>(venus_node), glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }));
@@ -188,11 +179,8 @@ void ApplicationSolar::initializeOrbits(){
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Moon"));
   for(std::shared_ptr<Node> x : list_of_geoPlanets){
     auto planet = x->getParent();
-    //std::cout<<planet->getName()<<std::endl;
-    //std::cout<<planet->getParent()->getName()<<std::endl;
     glm::fvec4 point = planet->getLocalTransform()*glm::fvec4{0.0f,0.0f,0.0f,1.0f};
     glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 3.6f,glm::fvec3{0.0f, 1.0f, 0.0f});
-    //loop for number of points for orbit
     for(int i = 0; i< numOrbitPoints; i++){
       orbits.push_back(point.x);
       orbits.push_back(point.y);
@@ -200,14 +188,10 @@ void ApplicationSolar::initializeOrbits(){
       point = rotation_matrix * point;
     }
     auto orbitNode = std::make_shared<Geometry_node>(x->getName()+"_orbit");
-    std::cout<<planet->getParent()->getName()<<std::endl;
     planet->getParent()->addChild(orbitNode);
     orbitNode->setParent(scene_graph_.getRoot().getChild(x->getName())->getParent());
   }
-  //for(auto x : orbits){
-  std::cout<<orbits.size()<<std::endl;
-  //} 
-  //std::cout<<"hi";
+
   glGenVertexArrays(GLint(1), &orbit_object.vertex_AO);
 
   std::cout<<"genvertex";
@@ -231,11 +215,10 @@ void ApplicationSolar::initializeOrbits(){
 void ApplicationSolar::render() const {
   
   // bind shader to upload uniforms
-  //std::cout<<"Start renderer"<<std::endl;
 
   starRenderer();
   planetrenderer();
-  //orbitRenderer();
+  orbitRenderer();
 
 } 
 
@@ -289,7 +272,6 @@ void ApplicationSolar::planetrenderer() const{
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon"));
   int tmp = 1;
   for(std::shared_ptr<Node> x : List_of_Planets){
-    //std::cout << x->getName();
     glUseProgram(m_shaders.at("planet").handle);
    
     glm::fmat4 final_matrix;
@@ -328,9 +310,9 @@ void ApplicationSolar::uploadView() {
   //tmpfunk();
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
 
-/*   glUseProgram(m_shaders.at("orbit").handle);
+  glUseProgram(m_shaders.at("orbit").handle);
   glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ViewMatrix"),
-                      1, GL_FALSE, glm::value_ptr(view_matrix));  */
+                      1, GL_FALSE, glm::value_ptr(view_matrix)); 
 
   glUseProgram(m_shaders.at("star").handle);
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ModelViewMatrix"),

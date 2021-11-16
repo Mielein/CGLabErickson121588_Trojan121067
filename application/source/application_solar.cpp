@@ -188,9 +188,10 @@ void ApplicationSolar::initializeOrbits(){
       orbits.push_back(point.z);
       point = rotation_matrix * point;
     }
-    auto orbitNode = std::make_shared<Geometry_node>(x->getName()+"_orbit");
-    planet->getParent()->addChild(orbitNode);
-    orbitNode->setParent(scene_graph_.getRoot().getChild(x->getName())->getParent());
+    Geometry_node orbitNode(x->getName()+"_orbit", x->getParent(), x->getLocalTransform());
+    //auto orbitNode = std::make_shared<Geometry_node>(x->getName()+"_orbit");
+    planet->getParent()->addChild(std::make_shared<Geometry_node>(orbitNode));
+    //orbitNode->setParent(scene_graph_.getRoot().getChild(x->getName())->getParent());
   }
 
   glGenVertexArrays(GLint(1), &orbit_object.vertex_AO);
@@ -223,8 +224,9 @@ void ApplicationSolar::orbitRenderer() const{
   glUseProgram(m_shaders.at("orbit").handle);
   //for every planet
   for(auto x : scene_graph_.getRoot().getChildrenList()){
-    auto orbit = scene_graph_.getRoot().getChild("_geo" + x->getName() + "_orbit");
-    debugPrint(" " + scene_graph_.getRoot().getChild(x->getName())->getName());
+    auto orbit = scene_graph_.getRoot().getChild("geo_" + x->getName() + "_orbit");
+    scene_graph_.printClass();
+    debugPrint(" " + scene_graph_.getRoot().getChild("geo_" + x->getName())->getName());
     std::shared_ptr<Geometry_node> orbit_cast_ptr = std::static_pointer_cast<Geometry_node>(orbit);
     if(orbit == nullptr){
       debugPrint("Stinky");

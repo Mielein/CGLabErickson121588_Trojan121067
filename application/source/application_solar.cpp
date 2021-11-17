@@ -79,7 +79,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.18f, 0.18f, 0.18f }));
   Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }));
 
-  Geometry_node mercury_geo_orbit("geo_Mercury_orbit", std::make_shared<Node>(mercury_node), glm::translate({},glm::fvec3{1.0f, 0.0f, 0.0f }));
+  Geometry_node mercury_geo_orbit("geo_Mercury_orbit", std::make_shared<Node>(mercury_node), glm::translate({},glm::fvec3{0.0f, 0.0f, 0.0f }));
   Geometry_node venus_geo_orbit("geo_Venus_orbit", std::make_shared<Node>(venus_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   Geometry_node earth_geo_orbit("geo_Earth_orbit", std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   Geometry_node mars_geo_orbit("geo_Mars_orbit", std::make_shared<Node>(mars_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
@@ -87,7 +87,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node saturn_geo_orbit("geo_Saturn_orbit", std::make_shared<Node>(saturn_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
+  Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
 
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
@@ -201,7 +201,7 @@ void ApplicationSolar::initializeOrbits(){
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Moon_orbit"));
   for(std::shared_ptr<Node> x : list_of_geoPlanets){
     auto planet = x->getParent();
-    glm::fvec4 point = planet->getParent()->getLocalTransform()* glm::fvec4{0.0f,0.0f,0.0f,1.0f};
+    glm::fvec4 point = planet->getLocalTransform()* glm::fvec4{0.0f,0.0f,0.0f,1.0f};
     glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.1f,glm::fvec3{0.0f, 1.0f, 0.0f});
     for(int i = 0; i< numOrbitPoints; i++){
       orbits.push_back(point.x);

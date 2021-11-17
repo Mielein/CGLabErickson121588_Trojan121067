@@ -199,7 +199,6 @@ void ApplicationSolar::initializeOrbits(){
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Uranus_orbit"));
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Neptune_orbit"));
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Moon_orbit"));
-  unsigned int tmp = 1;
   if(list_of_geoPlanets[0]->getParent()->getLocalTransform() == list_of_geoPlanets[1]->getParent()->getLocalTransform()){
     debugPrint("there are fukn the same");
   }
@@ -214,7 +213,6 @@ void ApplicationSolar::initializeOrbits(){
       orbits.push_back(point.z);
       point = rotation_matrix * point ;
     }
-    tmp = tmp + 10;
     //Geometry_node orbitNode(x->getName()+"_orbit", x->getParent(), x->getParent()->getLocalTransform());
     //auto orbitNode = std::make_shared<Geometry_node>(x->getName()+"_orbit");
     //planet->getParent()->addChild(std::make_shared<Geometry_node>(orbitNode));
@@ -246,8 +244,8 @@ void ApplicationSolar::render() const {
   // bind shader to upload uniforms
 
   starRenderer();
-  planetrenderer();
   orbitRenderer();
+  planetrenderer();
   
 } 
 
@@ -255,6 +253,19 @@ void ApplicationSolar::render() const {
 void ApplicationSolar::orbitRenderer() const{
   glUseProgram(m_shaders.at("orbit").handle);
   //for every planet
+  std::vector<glm::vec3> scaling_values;
+  scaling_values.push_back(glm::vec3{0.0f, 0.0f, 0.0f});
+  scaling_values.push_back(glm::vec3{2.0f, 2.0f, 2.0f});
+  scaling_values.push_back(glm::vec3{6.0f, 6.0f, 6.0f});
+  scaling_values.push_back(glm::vec3{8.0f, 8.0f, 8.0f});
+  scaling_values.push_back(glm::vec3{12.0f, 12.0f, 12.0f});
+  scaling_values.push_back(glm::vec3{16.0f, 16.0f, 16.0f});
+  scaling_values.push_back(glm::vec3{20.0f, 20.0f, 20.0f});
+  scaling_values.push_back(glm::vec3{24.0f, 24.0f, 24.0f});
+  scaling_values.push_back(glm::vec3{0.5f, 0.5f, 0.5f});
+
+  unsigned int counter = 0; 
+
   for(auto x : scene_graph_.getRoot().getChildrenList()){
     //debugPrint(x->getName());
     auto orbit = x->getChild("geo_" + x->getName() + "_orbit");
@@ -270,11 +281,12 @@ void ApplicationSolar::orbitRenderer() const{
     //else{
       //debugPrint("Succsess " + orbit->getName());
     glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
-                          1, GL_FALSE, glm::value_ptr((orbit->getLocalTransform())*glm::scale({}, glm::fvec3{2.0f, 2.0f, 2.0f }))); 
+                          1, GL_FALSE, glm::value_ptr((orbit_cast_ptr->getLocalTransform()) * glm::scale({}, scaling_values[counter]))); 
     glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);
     glBindVertexArray(orbit_object.vertex_AO);
     glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
+    counter++;
     //}
     }
 }
@@ -290,7 +302,8 @@ void ApplicationSolar::planetrenderer() const{
   //render sun
   glUseProgram(m_shaders.at("planet").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
-  model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
+  model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, 0.0f});
+  model_matrix = glm::scale(model_matrix, glm::fvec3{0.9f, 0.9f, 0.9f});
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(model_matrix));
 
@@ -331,7 +344,6 @@ void ApplicationSolar::planetrenderer() const{
     //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
     //this way x sees the parent as the center of the orbit
     glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
-    
     planet_geo->getParent()->setLocalTransform(newTransform);
     final_matrix = planet_geo->getWorldTransform();
     tmp++;
@@ -345,6 +357,7 @@ void ApplicationSolar::planetrenderer() const{
     glBindVertexArray(planet_object.vertex_AO);
 
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+    //planet_geo->getParent()->setLocalTransform(Local_storage);
   }
 }
 

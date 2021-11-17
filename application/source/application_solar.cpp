@@ -142,16 +142,18 @@ void ApplicationSolar::initializeSceneGraph() {
 void ApplicationSolar::initializeStars(){
 
   std::vector<GLfloat> stars;
+  //number stars
   unsigned int star_count = 1000000;
+  //range of spawn
   unsigned int max_distance = 1000;
 
   for(int i = 0; i < star_count; i++){
 
-    GLfloat rand_x_pos = (std::rand() % max_distance)-500.0f;
+    GLfloat rand_x_pos = (std::rand() % max_distance)-500.0f;// -500 is middle value to spread stars evenly
     stars.push_back(rand_x_pos);
-    GLfloat rand_y_pos = (std::rand() % max_distance)-500.0f;
+    GLfloat rand_y_pos = (std::rand() % max_distance)-500.0f;// -500 is middle value to spread stars evenly
     stars.push_back(rand_y_pos);
-    GLfloat rand_z_pos = (std::rand() % max_distance)-500.0f;
+    GLfloat rand_z_pos = (std::rand() % max_distance)-500.0f;// -500 is middle value to spread stars evenly
     stars.push_back(rand_z_pos);
     //random colours
     // static_cast Returns a value of type new_type. 
@@ -161,10 +163,6 @@ void ApplicationSolar::initializeStars(){
     stars.push_back(rand_g_colour);
     GLfloat rand_b_colour = static_cast<float>(std::rand() % 255)/255.0f;
     stars.push_back(rand_b_colour);
-
-  }
-  for(int i = 0; i < stars.size(); i++){
-    //std::cout<<stars[i]<<std::endl;
   }
   
   //initialising Vertex array
@@ -181,15 +179,17 @@ void ApplicationSolar::initializeStars(){
   glEnableVertexArrayAttrib(star_object.vertex_AO, 1);
   glVertexAttribPointer(GLuint(1),GLuint(3),GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6) , (void*)(sizeof(float)*3));
 
+  //setting the draw mode to GL_POINTS 
   star_object.draw_mode = GL_POINTS;
   star_object.num_elements = GLsizei(star_count);
 
 }
 
 void ApplicationSolar::initializeOrbits(){
-
+  //points per orbit
   int numOrbitPoints = 100;
   std::vector<GLfloat> orbits;
+  //verctor containing all the orbit nodes, that are previously been initialize in the scene graph
   std::vector<std::shared_ptr<Node>> list_of_geoPlanets;
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Mercury_orbit"));
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Venus_orbit"));
@@ -200,12 +200,10 @@ void ApplicationSolar::initializeOrbits(){
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Uranus_orbit"));
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Neptune_orbit"));
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Moon_orbit"));
-  if(list_of_geoPlanets[0]->getParent()->getLocalTransform() == list_of_geoPlanets[1]->getParent()->getLocalTransform()){
-    debugPrint("there are fukn the same");
-  }
+
+  //this loop pushes the elements for each orbit to its geometry
   for(std::shared_ptr<Node> x : list_of_geoPlanets){
     auto planet = x->getParent();
-    //debugPrint(planet->getName());
     glm::fvec4 point = planet->getLocalTransform()* glm::fvec4{0.0f,0.0f,0.0f,1.0f};
     glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.1f,glm::fvec3{0.0f, 1.0f, 0.0f});
     for(int i = 0; i< numOrbitPoints; i++){
@@ -214,10 +212,7 @@ void ApplicationSolar::initializeOrbits(){
       orbits.push_back(point.z);
       point = rotation_matrix * point ;
     }
-    //Geometry_node orbitNode(x->getName()+"_orbit", x->getParent(), x->getParent()->getLocalTransform());
-    //auto orbitNode = std::make_shared<Geometry_node>(x->getName()+"_orbit");
-    //planet->getParent()->addChild(std::make_shared<Geometry_node>(orbitNode));
-    //orbitNode->setParent(scene_graph_.getRoot().getChild(x->getName())->getParent());
+
     model orbit_model; 
     orbit_model.data = orbits; 
     orbit_model.vertex_num = numOrbitPoints;
@@ -235,6 +230,7 @@ void ApplicationSolar::initializeOrbits(){
   glEnableVertexArrayAttrib(orbit_object.vertex_AO, 0);
   glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*3), 0);
 
+  // we use the GL_LINE_STRIP to draw a free line
   orbit_object.draw_mode = GL_LINE_STRIP;
   orbit_object.num_elements = GLsizei(numOrbitPoints);
 }
@@ -253,7 +249,7 @@ void ApplicationSolar::render() const {
 ////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::orbitRenderer() const{
   glUseProgram(m_shaders.at("orbit").handle);
-  //for every planet
+  //this Vector holds the values for which the orbits need to be scaled
   std::vector<glm::vec3> scaling_values;
   scaling_values.push_back(glm::vec3{1.0f, 1.0f, 1.0f});
   scaling_values.push_back(glm::vec3{2.0f, 2.0f, 2.0f});
@@ -271,23 +267,9 @@ void ApplicationSolar::orbitRenderer() const{
     debugPrint(x->getName());
     auto orbit = x->getChild("geo_" + x->getName() + "_orbit");
     std::cout << glm::to_string(x->getLocalTransform()) << std::endl;
-    //debugPrint(orbit->getName());
-    //scene_graph_.printClass();
-    //debugPrint(" " + scene_graph_.getRoot().getChild("geo_" + x->getName())->getName());
     std::shared_ptr<Geometry_node> orbit_cast_ptr = std::static_pointer_cast<Geometry_node>(orbit);
-/*     if(orbit == nullptr){
-      debugPrint("stimky");
-      for(auto y : x->getChildrenList()){
-        debugPrint("Hoi!!");
-      } */
-    //else{
-      //debugPrint("Succsess " + orbit->getName());
 
-/*     std::cout << scaling_values[counter].x << std::endl;
-    std::cout << scaling_values[counter].y << std::endl;
-    std::cout << scaling_values[counter].z << std::endl;
-    std::cout << " " << std::endl; */
-
+    //here we scale the orbits
     glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
                           1, GL_FALSE, glm::value_ptr((orbit->getLocalTransform()) * glm::scale({}, scaling_values[counter]))); 
     glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            

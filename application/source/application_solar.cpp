@@ -79,14 +79,14 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.18f, 0.18f, 0.18f }));
   Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }));
 
-  Geometry_node mercury_geo_orbit("geo_Mercury_orbit", std::make_shared<Node>(mercury_node), glm::translate({},glm::fvec3{0.0f, 0.0f, 0.0f }));
-  Geometry_node venus_geo_orbit("geo_Venus_orbit", std::make_shared<Node>(venus_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Geometry_node earth_geo_orbit("geo_Earth_orbit", std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Geometry_node mars_geo_orbit("geo_Mars_orbit", std::make_shared<Node>(mars_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Geometry_node jupiter_geo_orbit("geo_Jupiter_orbit", std::make_shared<Node>(jupiter_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Geometry_node saturn_geo_orbit("geo_Saturn_orbit", std::make_shared<Node>(saturn_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
-  Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
+  Geometry_node mercury_geo_orbit("geo_Mercury_orbit", std::make_shared<Node>(mercury_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
+  Geometry_node venus_geo_orbit("geo_Venus_orbit", std::make_shared<Node>(venus_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
+  Geometry_node earth_geo_orbit("geo_Earth_orbit", std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
+  Geometry_node mars_geo_orbit("geo_Mars_orbit", std::make_shared<Node>(mars_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
+  Geometry_node jupiter_geo_orbit("geo_Jupiter_orbit", std::make_shared<Node>(jupiter_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
+  Geometry_node saturn_geo_orbit("geo_Saturn_orbit", std::make_shared<Node>(saturn_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
+  Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
+  Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
   Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
 
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
@@ -120,7 +120,7 @@ void ApplicationSolar::initializeSceneGraph() {
   root_node.addChild(std::make_shared<Node>(saturn_node));
   root_node.addChild(std::make_shared<Node>(urnaus_node));
   root_node.addChild(std::make_shared<Node>(neptune_node));
-  root_node.addChild(std::make_shared<Node>(camera));
+  //root_node.addChild(std::make_shared<Node>(camera));
    
 
   scene_graph_= Scene_graph("Solar Scene Graph", root_node);
@@ -199,16 +199,22 @@ void ApplicationSolar::initializeOrbits(){
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Uranus_orbit"));
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Neptune_orbit"));
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Moon_orbit"));
+  unsigned int tmp = 1;
+  if(list_of_geoPlanets[0]->getParent()->getLocalTransform() == list_of_geoPlanets[1]->getParent()->getLocalTransform()){
+    debugPrint("there are fukn the same");
+  }
   for(std::shared_ptr<Node> x : list_of_geoPlanets){
     auto planet = x->getParent();
+    //debugPrint(planet->getName());
     glm::fvec4 point = planet->getLocalTransform()* glm::fvec4{0.0f,0.0f,0.0f,1.0f};
     glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.1f,glm::fvec3{0.0f, 1.0f, 0.0f});
     for(int i = 0; i< numOrbitPoints; i++){
       orbits.push_back(point.x);
       orbits.push_back(point.y);
       orbits.push_back(point.z);
-      point = rotation_matrix * point;
+      point = rotation_matrix * point ;
     }
+    tmp = tmp + 10;
     //Geometry_node orbitNode(x->getName()+"_orbit", x->getParent(), x->getParent()->getLocalTransform());
     //auto orbitNode = std::make_shared<Geometry_node>(x->getName()+"_orbit");
     //planet->getParent()->addChild(std::make_shared<Geometry_node>(orbitNode));
@@ -252,26 +258,25 @@ void ApplicationSolar::orbitRenderer() const{
   for(auto x : scene_graph_.getRoot().getChildrenList()){
     //debugPrint(x->getName());
     auto orbit = x->getChild("geo_" + x->getName() + "_orbit");
+    //debugPrint(orbit->getName());
     //scene_graph_.printClass();
     //debugPrint(" " + scene_graph_.getRoot().getChild("geo_" + x->getName())->getName());
     std::shared_ptr<Geometry_node> orbit_cast_ptr = std::static_pointer_cast<Geometry_node>(orbit);
-    if(orbit == nullptr){
-      //debugPrint("Stinky");
+/*     if(orbit == nullptr){
+      debugPrint("stimky");
       for(auto y : x->getChildrenList()){
-        debugPrint(y->getName());
-      }
-    }
-    else{
+        debugPrint("Hoi!!");
+      } */
+    //else{
       //debugPrint("Succsess " + orbit->getName());
-      glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
-                            1, GL_FALSE, glm::value_ptr(orbit->getLocalTransform())); 
-      glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
-      glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);
-      glBindVertexArray(orbit_object.vertex_AO);
-      glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
+    glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
+                          1, GL_FALSE, glm::value_ptr((orbit->getLocalTransform())*glm::scale({}, glm::fvec3{2.0f, 2.0f, 2.0f }))); 
+    glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);
+    glBindVertexArray(orbit_object.vertex_AO);
+    glDrawArrays(orbit_object.draw_mode, GLint(0), orbit_object.num_elements);
+    //}
     }
-
-  }
 }
 
 void ApplicationSolar::starRenderer() const{
@@ -312,7 +317,7 @@ void ApplicationSolar::planetrenderer() const{
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
   
-  int tmp = 100;
+  int tmp = 10;
   for(std::shared_ptr<Node> x : List_of_Planets){
     glUseProgram(m_shaders.at("planet").handle);
    
@@ -457,19 +462,19 @@ void ApplicationSolar::initializeGeometry() {
 // handle key input
 void ApplicationSolar::keyCallback(int key, int action, int mods) {
   if (key == GLFW_KEY_W  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, -0.1f});
+    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, -0.5f});
     uploadView();
   }
   else if (key == GLFW_KEY_S  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, 0.1f});
+    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, 0.5f});
     uploadView();
   }
   else if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.1f, 0.0f, 0.0f});
+    m_view_transform = glm::translate(m_view_transform, glm::fvec3{-0.5f, 0.0f, 0.0f});
     uploadView();
   }
     else if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    m_view_transform = glm::translate(m_view_transform, glm::fvec3{-0.1f, 0.0f, 0.0f});
+    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.5f, 0.0f, 0.0f});
     uploadView();
   }
 }

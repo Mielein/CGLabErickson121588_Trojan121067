@@ -264,7 +264,7 @@ void ApplicationSolar::orbitRenderer() const{
     else{
       //debugPrint("Succsess " + orbit->getName());
       glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
-                            1, GL_FALSE, glm::value_ptr(orbit->getWorldTransform())); 
+                            1, GL_FALSE, glm::value_ptr(orbit->getLocalTransform())); 
       glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
       glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);
       glBindVertexArray(orbit_object.vertex_AO);

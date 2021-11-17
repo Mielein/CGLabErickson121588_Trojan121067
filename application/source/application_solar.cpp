@@ -245,8 +245,8 @@ void ApplicationSolar::render() const {
   // bind shader to upload uniforms
 
   starRenderer();
-  orbitRenderer();
   planetrenderer();
+  orbitRenderer();
   
 } 
 
@@ -255,21 +255,22 @@ void ApplicationSolar::orbitRenderer() const{
   glUseProgram(m_shaders.at("orbit").handle);
   //for every planet
   std::vector<glm::vec3> scaling_values;
+  scaling_values.push_back(glm::vec3{1.0f, 1.0f, 1.0f});
   scaling_values.push_back(glm::vec3{2.0f, 2.0f, 2.0f});
+  scaling_values.push_back(glm::vec3{3.0f, 3.0f, 3.0f});
+  scaling_values.push_back(glm::vec3{4.0f, 4.0f, 4.0f});
   scaling_values.push_back(glm::vec3{6.0f, 6.0f, 6.0f});
   scaling_values.push_back(glm::vec3{8.0f, 8.0f, 8.0f});
+  scaling_values.push_back(glm::vec3{10.0f, 10.0f, 10.0f});
   scaling_values.push_back(glm::vec3{12.0f, 12.0f, 12.0f});
-  scaling_values.push_back(glm::vec3{16.0f, 16.0f, 16.0f});
-  scaling_values.push_back(glm::vec3{20.0f, 20.0f, 20.0f});
-  scaling_values.push_back(glm::vec3{24.0f, 24.0f, 24.0f});
-  scaling_values.push_back(glm::vec3{0.5f, 0.5f, 0.5f});
+  scaling_values.push_back(glm::vec3{20.5f, 20.5f, 20.5f});
 
   unsigned int counter = 0; 
 
   for(auto x : scene_graph_.getRoot().getChildrenList()){
-    //debugPrint(x->getName());
+    debugPrint(x->getName());
     auto orbit = x->getChild("geo_" + x->getName() + "_orbit");
-    std::cout << glm::to_string(x->getChild("geo_" + x->getName())->getLocalTransform()) << std::endl;
+    std::cout << glm::to_string(x->getLocalTransform()) << std::endl;
     //debugPrint(orbit->getName());
     //scene_graph_.printClass();
     //debugPrint(" " + scene_graph_.getRoot().getChild("geo_" + x->getName())->getName());
@@ -288,7 +289,7 @@ void ApplicationSolar::orbitRenderer() const{
     std::cout << " " << std::endl; */
 
     glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
-                          1, GL_FALSE, glm::value_ptr((orbit->getWorldTransform()) * glm::scale({}, scaling_values[counter]))); 
+                          1, GL_FALSE, glm::value_ptr((orbit->getLocalTransform()) * glm::scale({}, scaling_values[counter]))); 
     glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);
     glBindVertexArray(orbit_object.vertex_AO);

@@ -16,6 +16,7 @@ using namespace gl;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <iostream>
 
@@ -254,7 +255,6 @@ void ApplicationSolar::orbitRenderer() const{
   glUseProgram(m_shaders.at("orbit").handle);
   //for every planet
   std::vector<glm::vec3> scaling_values;
-  scaling_values.push_back(glm::vec3{0.0f, 0.0f, 0.0f});
   scaling_values.push_back(glm::vec3{2.0f, 2.0f, 2.0f});
   scaling_values.push_back(glm::vec3{6.0f, 6.0f, 6.0f});
   scaling_values.push_back(glm::vec3{8.0f, 8.0f, 8.0f});
@@ -269,6 +269,7 @@ void ApplicationSolar::orbitRenderer() const{
   for(auto x : scene_graph_.getRoot().getChildrenList()){
     //debugPrint(x->getName());
     auto orbit = x->getChild("geo_" + x->getName() + "_orbit");
+    std::cout << glm::to_string(x->getChild("geo_" + x->getName())->getLocalTransform()) << std::endl;
     //debugPrint(orbit->getName());
     //scene_graph_.printClass();
     //debugPrint(" " + scene_graph_.getRoot().getChild("geo_" + x->getName())->getName());
@@ -280,8 +281,14 @@ void ApplicationSolar::orbitRenderer() const{
       } */
     //else{
       //debugPrint("Succsess " + orbit->getName());
+
+/*     std::cout << scaling_values[counter].x << std::endl;
+    std::cout << scaling_values[counter].y << std::endl;
+    std::cout << scaling_values[counter].z << std::endl;
+    std::cout << " " << std::endl; */
+
     glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelMatrix"),
-                          1, GL_FALSE, glm::value_ptr((orbit_cast_ptr->getLocalTransform()) * glm::scale({}, scaling_values[counter]))); 
+                          1, GL_FALSE, glm::value_ptr((orbit->getWorldTransform()) * glm::scale({}, scaling_values[counter]))); 
     glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);            
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)* orbit_cast_ptr->getGeometry().data.size(), orbit_cast_ptr->getGeometry().data.data(), GL_STATIC_DRAW);
     glBindVertexArray(orbit_object.vertex_AO);
@@ -352,7 +359,7 @@ void ApplicationSolar::planetrenderer() const{
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(final_matrix));
     
-    final_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * final_matrix);
+    final_matrix = glm::inverseTranspose(final_matrix);
 
     glBindVertexArray(planet_object.vertex_AO);
 

@@ -77,7 +77,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node saturn_geo("geo_Saturn", std::make_shared<Node>(saturn_node), glm::scale({}, glm::fvec3{0.25f, 0.25f, 0.25f }));
   Geometry_node urnaus_geo("geo_Uranus", std::make_shared<Node>(urnaus_node), glm::scale({}, glm::fvec3{0.2f, 0.2f, 0.2f }));
   Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.18f, 0.18f, 0.18f }));
-  Node moon_node("Moon",std::make_shared<Geometry_node>(earth_geo), glm::translate({}, glm::fvec3{.5f, 0.0f, 0.0f }));
+  Node moon_node("Moon",std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{0.9f, 0.0f, 0.0f }));
   Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }));
 
   Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
@@ -90,9 +90,6 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
   Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
 
-  moon_node.addChild(std::make_shared<Geometry_node>(moon_geo));
-  moon_node.addChild(std::make_shared<Geometry_node>(moon_geo_orbit));
-  earth_geo.addChild(std::make_shared<Node>(moon_node));
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
   venus_node.addChild(std::make_shared<Geometry_node>(venus_geo));
@@ -101,6 +98,9 @@ void ApplicationSolar::initializeSceneGraph() {
   saturn_node.addChild(std::make_shared<Geometry_node>(saturn_geo));
   urnaus_node.addChild(std::make_shared<Geometry_node>(urnaus_geo));
   neptune_node.addChild(std::make_shared<Geometry_node>(neptune_geo));
+  moon_node.addChild(std::make_shared<Geometry_node>(moon_geo));
+  moon_node.addChild(std::make_shared<Geometry_node>(moon_geo_orbit));
+  earth_node.addChild(std::make_shared<Node>(moon_node));
 
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo_orbit));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo_orbit));
@@ -328,26 +328,37 @@ void ApplicationSolar::planetrenderer() const{
    
     glm::fmat4 final_matrix;
 
-    //getting the Geometry-node equivalent to Node x
-    std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
-    //initializes Matrix with localTransform of Parent of x
-    //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
-    glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
-    //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
-    //this way x sees the parent as the center of the orbit
-    glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
-    planet_geo->getParent()->setLocalTransform(newTransform);
-    final_matrix = planet_geo->getWorldTransform();
-    tmp++;
+    if(x->getName() == "Moon"){
+      //getting the Geometry-node equivalent to Node x
+      std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
+      //initializes Matrix with localTransform of Parent of x
+      //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
+      glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
+      //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
+      //this way x sees the parent as the center of the orbit
+      glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
+      planet_geo->getParent()->setLocalTransform(newTransform);
+      debugPrint(glm::to_string(planet_geo->getParent()->getParent()->getLocalTransform()));
+      final_matrix = planet_geo->getWorldTransform();
+    }
+    else{
+      //getting the Geometry-node equivalent to Node x
+      std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
+      //initializes Matrix with localTransform of Parent of x
+      //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
+      glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
+      //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
+      //this way x sees the parent as the center of the orbit
+      glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
+      planet_geo->getParent()->setLocalTransform(newTransform);
+      final_matrix = planet_geo->getWorldTransform();
+    }
 
-    
+    tmp++;
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(final_matrix));
-    
     final_matrix = glm::inverseTranspose(final_matrix);
-
     glBindVertexArray(planet_object.vertex_AO);
-
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
     //planet_geo->getParent()->setLocalTransform(Local_storage);
   }

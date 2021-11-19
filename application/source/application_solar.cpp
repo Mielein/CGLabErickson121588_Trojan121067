@@ -251,7 +251,7 @@ void ApplicationSolar::initializeOrbits(){
 }
 ////////////////////////////////////rendering/////////////////////////////////////////////////
 
-void ApplicationSolar::render() const {
+void ApplicationSolar::render() {
   
   // bind shader to upload uniforms
 
@@ -290,7 +290,7 @@ void ApplicationSolar::starRenderer() const{
     //glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, &star_object);
  }
 
-void ApplicationSolar::planetrenderer() const{
+void ApplicationSolar::planetrenderer(){
   //render sun
   glUseProgram(m_shaders.at("planet").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
@@ -338,8 +338,12 @@ void ApplicationSolar::planetrenderer() const{
       //this way x sees the parent as the center of the orbit
       glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
       planet_geo->getParent()->setLocalTransform(newTransform);
-      debugPrint(glm::to_string(planet_geo->getParent()->getParent()->getLocalTransform()));
-      final_matrix = planet_geo->getWorldTransform();
+      //debugPrint(glm::to_string(earth_local_transform));
+      //debugPrint(glm::to_string(planet_geo->getLocalTransform()));
+      //debugPrint(glm::to_string(planet_geo->getParent()->getLocalTransform()));
+      final_matrix = earth_local_transform * planet_geo->getParent()->getLocalTransform() * planet_geo->getLocalTransform();
+      debugPrint("moon1 " + glm::to_string(planet_geo->getWorldTransform()));
+      debugPrint("moon2 " + glm::to_string(final_matrix));
     }
     else{
       //getting the Geometry-node equivalent to Node x
@@ -351,7 +355,14 @@ void ApplicationSolar::planetrenderer() const{
       //this way x sees the parent as the center of the orbit
       glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
       planet_geo->getParent()->setLocalTransform(newTransform);
+      //debugPrint(glm::to_string(planet_geo->getParent()->getLocalTransform()));
       final_matrix = planet_geo->getWorldTransform();
+      //debugPrint(glm::to_string(planet_geo->getLocalTransform()));
+      if(x->getName() == "Earth"){
+        earth_local_transform = newTransform;
+        //debugPrint("earth " + glm::to_string(final_matrix));
+      }
+      //debugPrint(glm::to_string(final_matrix));
     }
 
     tmp++;

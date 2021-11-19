@@ -28,9 +28,10 @@ class ApplicationSolar : public Application {
   void tmpfunk();
 
   // draw all objects
-  void render() const;
+  void render() ;
 
   Scene_graph scene_graph_;
+  glm::fmat4 earth_local_transform;
 
  protected:
   // initialize all objects in the graph to create the sun system
@@ -39,7 +40,7 @@ class ApplicationSolar : public Application {
   void initializeGeometry();
   
   // custom render methode for the planets out of the scene graph
-  void planetrenderer() const;
+  void planetrenderer();
   void starRenderer() const;
   void orbitRenderer() const;
   // update uniform values

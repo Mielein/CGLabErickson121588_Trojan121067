@@ -342,8 +342,8 @@ void ApplicationSolar::planetrenderer(){
       //debugPrint(glm::to_string(planet_geo->getLocalTransform()));
       //debugPrint(glm::to_string(planet_geo->getParent()->getLocalTransform()));
       final_matrix = earth_local_transform * planet_geo->getParent()->getLocalTransform() * planet_geo->getLocalTransform();
-      debugPrint("moon1 " + glm::to_string(planet_geo->getWorldTransform()));
-      debugPrint("moon2 " + glm::to_string(final_matrix));
+      //debugPrint("moon1 " + glm::to_string(planet_geo->getWorldTransform()));
+      //debugPrint("moon2 " + glm::to_string(final_matrix));
     }
     else{
       //getting the Geometry-node equivalent to Node x

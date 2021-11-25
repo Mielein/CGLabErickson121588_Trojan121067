@@ -12,6 +12,10 @@ Node::Node():
 Node::Node(std::string _name):
     name{_name}{}
 
+Node::Node(std::string _name, std::shared_ptr<Node> _parent):
+    name{_name},
+    parent{_parent}{}
+
 Node::Node(std::string _name, glm::fmat4 _localTransform):
     name{_name},
     localTransform{_localTransform}{}

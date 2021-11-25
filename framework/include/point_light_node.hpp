@@ -12,6 +12,7 @@ class Point_light_node : public Node{
         Point_light_node(std::string _name);
         Point_light_node(std::string _name, glm::fvec3 lightColour);
         Point_light_node(std::string _name, glm::fvec3 lightColour, int lightIntesity);
+        Point_light_node(std::string _name, std::shared_ptr<Node> _parent, glm::fvec3 lightColour, int lightIntesity);
         int getLightIntesity();
         void setLightIntesity(int light);
         glm::fvec3 getLightColour();

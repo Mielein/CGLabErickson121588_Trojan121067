@@ -263,6 +263,8 @@ void ApplicationSolar::render() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::orbitRenderer() const{
+  //we still need an Orbit for the moon here...
+
   glUseProgram(m_shaders.at("orbit").handle);
   //this Vector holds the values for which the orbits need to be scaled
 

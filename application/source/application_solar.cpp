@@ -327,7 +327,7 @@ void ApplicationSolar::planetrenderer(){
     glUseProgram(m_shaders.at("planet").handle);
     int location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
     glm::vec3 colour = {0.3f, 0.2f, 0.6f};
-    glUniform3f(location, colour.x, colour.y, colour.z);
+    glUniform3f(location, x->getColour().x, x->getColour().y, x->getColour().z);
     
     glm::fmat4 final_matrix;
 

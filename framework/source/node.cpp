@@ -20,6 +20,11 @@ Node::Node(std::string _name, glm::fmat4 _localTransform):
     name{_name},
     localTransform{_localTransform}{}
     
+Node::Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform):
+    name{_name},
+    parent{_parent},
+    localTransform{_localTransform}{}
+
 Node::Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform, glm::vec3 _colour):
     name{_name},
     parent{_parent},

@@ -27,6 +27,12 @@ Node::Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTrans
     localTransform{_localTransform},
     worldTransform{_worldTransform}{}
 
+Node::Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTransform, glm::vec3 _colour):
+    name{_name},
+    localTransform{_localTransform},
+    worldTransform{_worldTransform},
+    colour{_colour}{}
+
 //checks if nullptr else return shared pointer to parent element
 std::shared_ptr<Node> Node::getParent() const{ 
     //return parent;

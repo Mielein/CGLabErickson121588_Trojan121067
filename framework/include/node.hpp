@@ -16,12 +16,14 @@ class Node{
         int depth;
         glm::fmat4 localTransform;
         glm::fmat4 worldTransform;
+        glm::vec3 colour;
     public:
         Node();
         Node(std::string _name);
         Node(std::string _name, glm::mat4 _localtransform);
         Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform);
         Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTransform);
+        Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTransform, glm::vec3 _colour);
         std::shared_ptr<Node> getParent() const;
         void setParent(std::shared_ptr<Node> node);
         std::shared_ptr<Node> getChild(std::string name) const;

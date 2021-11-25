@@ -90,7 +90,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
   Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
 
-  Point_light_node light();
+  Point_light_node schimmer("Schimmer", std::make_shared<Node>(root_node), glm::vec3{0.7f, 0.05f, 0.25f}, 1000.0f);
 
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
@@ -123,6 +123,7 @@ void ApplicationSolar::initializeSceneGraph() {
   root_node.addChild(std::make_shared<Node>(saturn_node));
   root_node.addChild(std::make_shared<Node>(urnaus_node));
   root_node.addChild(std::make_shared<Node>(neptune_node));
+  root_node.addChild(std::make_shared<Point_light_node>(schimmer));
   //root_node.addChild(std::make_shared<Node>(camera));
    
 
@@ -270,7 +271,11 @@ void ApplicationSolar::orbitRenderer() const{
 
   for(auto x : scene_graph_.getRoot().getChildrenList()){
     //debugPrint(x->getName());
+    //debugPrint(x->getName());
     auto orbit = x->getChild("geo_" + x->getName() + "_orbit");
+    if(orbit == nullptr){
+      continue;
+    }
     //std::cout << glm::to_string(x->getLocalTransform()) << std::endl;
     std::shared_ptr<Geometry_node> orbit_cast_ptr = std::static_pointer_cast<Geometry_node>(orbit);
 
@@ -324,12 +329,19 @@ void ApplicationSolar::planetrenderer(){
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
   
+  std::shared_ptr<Point_light_node> Schimmer = std::static_pointer_cast<Point_light_node>(scene_graph_.getRoot().getChild("Schimmer"));
+
+  
+  int planet_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
+  int light_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_colour");
+  int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
+  glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
+  glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
+
   int tmp = 10;
   for(std::shared_ptr<Node> x : List_of_Planets){
     glUseProgram(m_shaders.at("planet").handle);
-    int location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
-    glm::vec3 colour = {0.3f, 0.2f, 0.6f};
-    glUniform3f(location, x->getColour().x, x->getColour().y, x->getColour().z);
+    glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
     
     glm::fmat4 final_matrix;
 

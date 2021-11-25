@@ -20,9 +20,10 @@ Node::Node(std::string _name, glm::fmat4 _localTransform):
     name{_name},
     localTransform{_localTransform}{}
     
-Node::Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform):
+Node::Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform, glm::vec3 _colour):
     name{_name},
     parent{_parent},
+    colour{_colour},
     localTransform{_localTransform}{}
 
 //constructor for the root node 
@@ -145,6 +146,10 @@ void Node::addChild(std::shared_ptr<Node> newNode){
     //std::cout<<newNode->getParent()->getName()<<std::endl;
     //std::cout<<"pushed"<<std::endl;
 
+}
+
+glm::vec3 Node::getColour(){
+    return colour;
 }
 
 //...//

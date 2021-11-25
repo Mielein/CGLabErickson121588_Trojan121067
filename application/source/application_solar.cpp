@@ -333,7 +333,7 @@ void ApplicationSolar::planetrenderer(){
       std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
       //initializes Matrix with localTransform of Parent of x
       //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
-      glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
+      glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp*speed ,glm::fvec3{0.0f, 1.0f, 0.0f});
       //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
       //this way x sees the parent as the center of the orbit
       glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
@@ -350,7 +350,7 @@ void ApplicationSolar::planetrenderer(){
       std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
       //initializes Matrix with localTransform of Parent of x
       //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
-      glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp ,glm::fvec3{0.0f, 1.0f, 0.0f});
+      glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp*speed ,glm::fvec3{0.0f, 1.0f, 0.0f});
       //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
       //this way x sees the parent as the center of the orbit
       glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
@@ -500,8 +500,21 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{-0.5f, 0.0f, 0.0f});
     uploadView();
   }
-    else if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+  else if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.5f, 0.0f, 0.0f});
+    uploadView();
+  }
+//---------------------------------------------------------------------------------------------------------
+  else if (key == GLFW_KEY_1 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    speed = speed-0.1f;
+    uploadView();
+  }
+  else if (key == GLFW_KEY_P && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    speed = 0.0f;
+    uploadView();
+  }
+  else if (key == GLFW_KEY_2 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    speed = speed+0.1f;
     uploadView();
   }
 }

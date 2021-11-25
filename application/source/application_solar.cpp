@@ -90,6 +90,8 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
   Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
 
+  Point_light_node light();
+
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
   venus_node.addChild(std::make_shared<Geometry_node>(venus_geo));

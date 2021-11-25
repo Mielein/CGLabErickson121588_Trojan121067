@@ -4,6 +4,7 @@
 #include "geometry_node.hpp"
 #include "node.hpp"
 #include "camera_node.hpp"
+#include "point_light_node.hpp"
 #include <string>
 
 class Scene_graph{

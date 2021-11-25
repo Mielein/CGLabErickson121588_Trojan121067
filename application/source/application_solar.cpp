@@ -508,7 +508,7 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     uploadView();
   }
 //---------------------------------------------------------------------------------------------------------
-  else if (key == GLFW_KEY_1 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+  else if (key == GLFW_KEY_LEFT && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     speed = speed-0.1f;
     uploadView();
   }
@@ -516,7 +516,11 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     speed = 0.0f;
     uploadView();
   }
-  else if (key == GLFW_KEY_2 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+  else if (key == GLFW_KEY_P && (action == GLFW_RELEASE || action == GLFW_REPEAT)) {
+    speed = 3.0f;
+    uploadView();
+  }
+  else if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     speed = speed+0.1f;
     uploadView();
   }

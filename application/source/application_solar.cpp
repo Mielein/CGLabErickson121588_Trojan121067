@@ -311,9 +311,11 @@ void ApplicationSolar::planetrenderer(){
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
 
+  
   // bind the VAO to draw
   glBindVertexArray(planet_object.vertex_AO);
-
+/*     glBindVertexArray(planet_object.vertex_AO);
+    glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);  */
   // draw bound vertex array using bound shader
   glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 
@@ -335,9 +337,10 @@ void ApplicationSolar::planetrenderer(){
   int planet_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
   int light_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_colour");
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
+
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
-
+  
   int tmp = 10;
   for(std::shared_ptr<Node> x : List_of_Planets){
     glUseProgram(m_shaders.at("planet").handle);
@@ -386,7 +389,9 @@ void ApplicationSolar::planetrenderer(){
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(final_matrix));
     final_matrix = glm::inverseTranspose(final_matrix);
-    glBindVertexArray(planet_object.vertex_AO);
+
+    glEnableVertexArrayAttrib(planet_object.vertex_AO,0);
+
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
     //planet_geo->getParent()->setLocalTransform(Local_storage);
   }

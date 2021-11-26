@@ -34,6 +34,8 @@ vec3 beta = phi/(4*M_PI*length(pass_Position)*length(pass_Position));
 vec3 light_direction = normalize(normal-pos);
 float attenuation = max(dot(normal, light_direction),0.0);
 
+//here comes the spectular color, it is kinda triccy
+
 vec3 phong = ambient + (beta * attenuation); 
 
 void main() {

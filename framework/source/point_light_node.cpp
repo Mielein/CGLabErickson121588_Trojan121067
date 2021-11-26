@@ -20,6 +20,11 @@
         Node( _name),
         lightColour{lightColour},
         lightIntesity{lightIntesity}{} 
+
+    Point_light_node::Point_light_node(std::string _name, glm::fmat4 _localtransform, std::shared_ptr<Node> _parent, glm::fvec3 lightColour, int lightIntesity):
+        Node( _name),
+        lightColour{lightColour},
+        lightIntesity{lightIntesity}{} 
         
     int Point_light_node::getLightIntesity(){
         return lightIntesity;

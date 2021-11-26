@@ -5,28 +5,20 @@ out vec4 out_Color;
 
 uniform vec3 planet_colour;
 uniform vec3 light_colour;
-uniform float light_intensity;
+uniform float light_intensity; //k_a
 
-//norm vector from point to viewer
-vec3 v = pass_Position;
-
-//normalized vector from point to viewable point light source
-vec3 l = normalize(pass_Normal);
-
-//normal
-vec3 n = normalize(l);
-//bisector
-//float h = (v+l)/norm(v+l);
-
-//float theta = cos(n*h);
-float diffuse_light_intesity = 0.1;
-float diffuse_reflection_coefficient = 0.5;
+float diffuse_light_intesity = 0.1; //I_p
+float diffuse_reflection_coefficient = 0.5; //k_d
 
 vec3 ambient = light_colour*light_intensity;
-//vec3 diffuse =
+
+vec3 normal = normalize(pass_Normal); //N
+float bisector = (dot(normal,pass_Position))/(length(normal)*length(pass_Position)); //cos_theta
+
+float diffuse = light_intensity*diffuse_reflection_coefficient*bisector;
 
 void main() {
 
-  out_Color = vec4(abs(normalize(planet_colour))*ambient, 1.0);
+  out_Color = vec4(abs(normalize(planet_colour))*(/* ambient +  */diffuse), 1.0);
   
 }

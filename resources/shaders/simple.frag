@@ -1,7 +1,7 @@
 #version 150
 #define M_PI 3.1415926535897932384626433832795
 
-in  vec3 pass_Normal, pass_Position;
+in  vec3 pass_Normal, pass_Position, pass_Camera;
 out vec4 out_Color;
 
 uniform vec3 planet_colour;
@@ -33,10 +33,17 @@ vec3 beta = phi/(4*M_PI*length(pass_Position)*length(pass_Position));
 //this is Cd from the slides, the deffuse color
 vec3 light_direction = normalize(normal-pos);
 float attenuation = max(dot(normal, light_direction),0.0);
+vec3 diffuse = beta * attenuation;
 
 //here comes the spectular color, it is kinda triccy
-
-vec3 phong = ambient + (beta * attenuation); 
+float shininess = 30.0f;
+vec3 view_direction = normalize(pass_Camera - pos);
+//halfway vector is vector halfway between view direction and light direction
+//if halfway vector aligns with normal, the higher the specular 
+vec3 halfway_vector = normalize(light_direction + view_direction);
+float spec = pow(max(dot(normal,halfway_vector), 0.0), shininess*4);
+vec3 specular = light_colour * spec;
+vec3 phong = ambient + diffuse + specular; 
 
 void main() {
 

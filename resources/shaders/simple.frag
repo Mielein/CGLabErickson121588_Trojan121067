@@ -28,11 +28,11 @@ vec3 phi = light_colour * light_intensity;
 //Y is the position of light, X is the Position of the Fragment of the Object
 //the length of the pass Position is X
 //Y is (0 0 0) so we could leave it just in this case out
-vec3 beta = phi/(4*M_PI*length(pass_Position)*length(pass_Position));
+vec3 beta = phi/(4*M_PI*(length(pass_Position))*(length(pass_Position)));
 
 
 //this is Cd from the slides, the deffuse color
-vec3 light_direction = normalize(normal-pos);
+vec3 light_direction = normalize(vec3(0, 0, 0)-pass_Position);
 float attenuation = max(dot(normal, light_direction),0.0);
 vec3 diffuse = beta * attenuation;
 
@@ -44,7 +44,7 @@ vec3 view_direction = normalize(pass_Camera - pos);
 vec3 halfway_vector = normalize(light_direction + view_direction);
 float spec = pow(max(dot(normal,halfway_vector), 0.0), shininess*4);
 vec3 specular = light_colour * spec;
-vec3 phong = ambient + diffuse + specular; 
+vec3 phong = ambient + diffuse + specular ; 
 
 void main() {
 

@@ -7,6 +7,9 @@ Camera_node::Camera_node():
 Camera_node::Camera_node(std::string _name):
     Node{_name}{}
 
+Camera_node::Camera_node(std::string name, glm::fmat4 _localTransform, std::shared_ptr<Node> _parent):
+    Node{name, _parent, _localTransform}{}
+
 bool Camera_node::getEnabled(){
     return isEnabled;
 }

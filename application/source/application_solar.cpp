@@ -58,7 +58,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Node root_node("root element", glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   //Node stars_node("stars");
   Node orbit_node("orbit");
-  Camera_node camera("Camera");
+  Camera_node camera("Camera", glm::inverse(m_view_transform), std::make_shared<Node>(root_node));
 
   Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{2.0f, 0.0f, 0.0f }),{0.8f,0.8f,0.8f});
   Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{4.0f, 0.0f, 0.0f }),{0.99f,0.8f,0.8f});
@@ -124,7 +124,7 @@ void ApplicationSolar::initializeSceneGraph() {
   root_node.addChild(std::make_shared<Node>(urnaus_node));
   root_node.addChild(std::make_shared<Node>(neptune_node));
   root_node.addChild(std::make_shared<Point_light_node>(schimmer));
-  //root_node.addChild(std::make_shared<Node>(camera));
+  root_node.addChild(std::make_shared<Node>(camera));
    
 
   scene_graph_= Scene_graph("Solar Scene Graph", root_node);
@@ -332,12 +332,13 @@ void ApplicationSolar::planetrenderer(){
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
   
   std::shared_ptr<Point_light_node> Schimmer = std::static_pointer_cast<Point_light_node>(scene_graph_.getRoot().getChild("Schimmer"));
-
-  
+  int camera_location = glGetUniformLocation(m_shaders.at("planet").handle, "pass_Camera");
   int planet_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
   int light_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_colour");
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
 
+  glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getWorldTransform()*glm::vec4{0.0f,0.0f,0.0f,1.0f};
+  glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
   

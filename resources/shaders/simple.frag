@@ -1,12 +1,13 @@
 #version 150
 #define M_PI 3.1415926535897932384626433832795
 
-in  vec3 pass_Normal, pass_Position, pass_Camera;
+in  vec3 pass_Normal, pass_Position;
 out vec4 out_Color;
 
 uniform vec3 planet_colour;
 uniform vec3 light_colour;
 uniform float light_intensity;
+uniform vec3 pass_Camera;
 
 // all of these is not Phong i think
 

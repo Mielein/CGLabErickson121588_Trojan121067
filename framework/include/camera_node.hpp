@@ -12,6 +12,7 @@ class Camera_node : public Node{
     public:
         Camera_node();
         Camera_node(std::string name);
+        Camera_node(std::string name, glm::fmat4 _localTransform, std::shared_ptr<Node> _parent);
         bool getPerspective();
         bool getEnabled();
         void setEnable(bool enable);

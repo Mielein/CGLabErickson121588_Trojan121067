@@ -58,7 +58,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Node root_node("root element", glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }));
   //Node stars_node("stars");
   Node orbit_node("orbit");
-  Camera_node camera("Camera", glm::inverse(m_view_transform), std::make_shared<Node>(root_node));
+  Camera_node camera("Camera",glm::transpose(glm::inverse(m_view_transform)) , std::make_shared<Node>(root_node));
 
   Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{2.0f, 0.0f, 0.0f }),{0.8f,0.8f,0.8f});
   Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{4.0f, 0.0f, 0.0f }),{0.99f,0.8f,0.8f});

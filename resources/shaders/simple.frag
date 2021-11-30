@@ -13,8 +13,8 @@ uniform vec3 pass_Camera;
 
 vec3 ambient_colour = vec3(1.0f,1.0f,1.0f);
 
-float ambient_light_intesity = 0.2;
-float diffuse_reflection_coefficient = 0.9; 
+float ambient_light_intesity = 0.1;
+float diffuse_reflection_coefficient = 0.6; 
 
 //this is not normilize
 vec3 ambient = ambient_colour*ambient_light_intesity;
@@ -34,17 +34,17 @@ vec3 beta = phi/(4*M_PI*(length(pass_Position))*(length(pass_Position)));
 //this is Cd from the slides, the deffuse color
 vec3 light_direction = normalize(vec3(0, 0, 0)-pass_Position);
 float attenuation = max(dot(normal, light_direction),0.0);
-vec3 diffuse = beta * attenuation;
+vec3 diffuse = attenuation * light_colour;
 
 //here comes the spectular color, it is kinda triccy
-float shininess = 30.0f;
-vec3 view_direction = normalize(pass_Camera - pos);
+float shininess = 10.0f;
+vec3 view_direction = normalize(pass_Camera - pass_Position);
 //halfway vector is vector halfway between view direction and light direction
 //if halfway vector aligns with normal, the higher the specular 
 vec3 halfway_vector = normalize(light_direction + view_direction);
 float spec = pow(max(dot(normal,halfway_vector), 0.0), shininess*4);
 vec3 specular = light_colour * spec;
-vec3 phong = ambient + diffuse + specular ; 
+vec3 phong = ambient + beta*(diffuse + specular); 
 
 void main() {
 

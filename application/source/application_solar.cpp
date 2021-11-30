@@ -60,25 +60,27 @@ void ApplicationSolar::initializeSceneGraph() {
   Node orbit_node("orbit");
   Camera_node camera("Camera",glm::transpose(glm::inverse(m_view_transform)) , std::make_shared<Node>(root_node));
 
-  Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{2.0f, 0.0f, 0.0f }),{0.8f,0.8f,0.8f});
-  Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{4.0f, 0.0f, 0.0f }),{0.99f,0.8f,0.8f});
-  Node earth_node("Earth", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{6.0f, 0.0f, 0.0f }),{0.0f,1.0f,1.0f});
-  Node mars_node("Mars", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{8.0f, 0.0f, 0.0f }),{1.0f,0.8f,0.8f});
-  Node jupiter_node("Jupiter",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{12.0f, 0.0f, 0.0f }),{0.8f,0.5f,0.5f});
-  Node saturn_node("Saturn",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{16.0f, 0.0f, 0.0f }),{1.0f,1.0f,0.0f});
-  Node urnaus_node("Uranus",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{20.0f, 0.0f, 0.0f }),{0.0f,0.0f,1.0f});
-  Node neptune_node("Neptune",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{24.0f, 0.0f, 0.0f }),{0.2f,0.2f,1.0f});
+  Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }),{0.8f,0.8f,0.8f});
+  Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{18.0f, 0.0f, 0.0f }),{0.99f,0.8f,0.8f});
+  Node earth_node("Earth", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{22.0f, 0.0f, 0.0f }),{0.0f,1.0f,1.0f});
+  Node mars_node("Mars", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{26.0f, 0.0f, 0.0f }),{1.0f,0.8f,0.8f});
+  Node jupiter_node("Jupiter",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{34.0f, 0.0f, 0.0f }),{0.8f,0.5f,0.5f});
+  Node saturn_node("Saturn",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{42.0f, 0.0f, 0.0f }),{1.0f,1.0f,0.0f});
+  Node urnaus_node("Uranus",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{50.0f, 0.0f, 0.0f }),{0.0f,0.0f,1.0f});
+  Node neptune_node("Neptune",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }),{0.2f,0.2f,1.0f});
 
-  Geometry_node mercury_geo("geo_Mercury", std::make_shared<Node>(mercury_node), glm::scale({}, glm::fvec3{0.1f, 0.1f, 0.1f }));
-  Geometry_node venus_geo("geo_Venus", std::make_shared<Node>(venus_node), glm::scale({}, glm::fvec3{0.14f, 0.14f, 0.14f }));
-  Geometry_node earth_geo("geo_Earth", std::make_shared<Node>(earth_node), glm::scale({}, glm::fvec3{0.16f, 0.16f, 0.16f }));
-  Geometry_node mars_geo("geo_Mars", std::make_shared<Node>(mars_node), glm::scale({}, glm::fvec3{0.13f, 0.13f, 0.13f }));
-  Geometry_node jupiter_geo("geo_Jupiter", std::make_shared<Node>(jupiter_node), glm::scale({}, glm::fvec3{0.3f, 0.3f, 0.3f }));
-  Geometry_node saturn_geo("geo_Saturn", std::make_shared<Node>(saturn_node), glm::scale({}, glm::fvec3{0.25f, 0.25f, 0.25f }));
-  Geometry_node urnaus_geo("geo_Uranus", std::make_shared<Node>(urnaus_node), glm::scale({}, glm::fvec3{0.5f, 0.5f, 0.5f }));
-  Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.45f, 0.45f, 0.45f }));
+  float bigger = 3.3f;
+
+  Geometry_node mercury_geo("geo_Mercury", std::make_shared<Node>(mercury_node), glm::scale({}, glm::fvec3{0.1f, 0.1f, 0.1f } * bigger));
+  Geometry_node venus_geo("geo_Venus", std::make_shared<Node>(venus_node), glm::scale({}, glm::fvec3{0.14f, 0.14f, 0.14f }* bigger));
+  Geometry_node earth_geo("geo_Earth", std::make_shared<Node>(earth_node), glm::scale({}, glm::fvec3{0.16f, 0.16f, 0.16f }* bigger));
+  Geometry_node mars_geo("geo_Mars", std::make_shared<Node>(mars_node), glm::scale({}, glm::fvec3{0.13f, 0.13f, 0.13f }* bigger));
+  Geometry_node jupiter_geo("geo_Jupiter", std::make_shared<Node>(jupiter_node), glm::scale({}, glm::fvec3{0.3f, 0.3f, 0.3f }* bigger));
+  Geometry_node saturn_geo("geo_Saturn", std::make_shared<Node>(saturn_node), glm::scale({}, glm::fvec3{0.25f, 0.25f, 0.25f }* bigger));
+  Geometry_node urnaus_geo("geo_Uranus", std::make_shared<Node>(urnaus_node), glm::scale({}, glm::fvec3{0.5f, 0.5f, 0.5f }* bigger));
+  Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.45f, 0.45f, 0.45f }* bigger));
   Node moon_node("Moon",std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), {0.5f,0.5f,0.5f});
-  Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }));
+  Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }* bigger));
 
   Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
   Geometry_node mercury_geo_orbit("geo_Mercury_orbit", std::make_shared<Node>(mercury_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
@@ -90,7 +92,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node urnaus_geo_orbit("geo_Uranus_orbit", std::make_shared<Node>(urnaus_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
   Geometry_node neptune_geo_orbit("geo_Neptune_orbit", std::make_shared<Node>(neptune_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
 
-  Point_light_node schimmer("Schimmer", glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }), std::make_shared<Node>(root_node), glm::vec3{1.0f, 1.0f, 1.0f}, 500.0f);
+  Point_light_node schimmer("Schimmer", glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }), std::make_shared<Node>(root_node), glm::vec3{1.0f, 1.0f, 1.0f}, 3500.0f);
 
   earth_node.addChild(std::make_shared<Geometry_node>(earth_geo));
   mercury_node.addChild(std::make_shared<Geometry_node>(mercury_geo));
@@ -205,15 +207,22 @@ void ApplicationSolar::initializeOrbits(){
   list_of_geoPlanets.push_back(scene_graph_.getRoot().getChild("geo_Moon_orbit"));
 
   std::vector<glm::vec3> scaling_values;
-  scaling_values.push_back(glm::vec3{1.0f, 1.0f, 1.0f});
-  scaling_values.push_back(glm::vec3{2.0f, 2.0f, 2.0f});
-  scaling_values.push_back(glm::vec3{3.0f, 3.0f, 3.0f});
-  scaling_values.push_back(glm::vec3{4.0f, 4.0f, 4.0f});
-  scaling_values.push_back(glm::vec3{6.0f, 6.0f, 6.0f});
-  scaling_values.push_back(glm::vec3{8.0f, 8.0f, 8.0f});
-  scaling_values.push_back(glm::vec3{10.0f, 10.0f, 10.0f});
-  scaling_values.push_back(glm::vec3{12.0f, 12.0f, 12.0f});
-  scaling_values.push_back(glm::vec3{20.5f, 20.5f, 20.5f});
+
+/*   for(auto x : list_of_geoPlanets){
+    debugPrint(x->getParent()->getName() + ": " + glm::to_string(x->getParent()->getLocalTransform()));
+  } */
+  //some good ol' hardcoding
+  float make_smol = 0.07152f;
+
+  scaling_values.push_back(glm::vec3{14.0f, 14.0f, 14.0f} * make_smol);
+  scaling_values.push_back(glm::fvec3{18.0f, 18.0f, 18.0f }* make_smol);
+  scaling_values.push_back(glm::vec3{22.0f, 22.0f, 22.0f}* make_smol);
+  scaling_values.push_back(glm::vec3{26.0f, 26.0f, 26.0f}* make_smol);
+  scaling_values.push_back(glm::vec3{34.0f, 34.0f, 34.0f}* make_smol);
+  scaling_values.push_back(glm::vec3{42.0f, 42.0f, 42.0f}* make_smol);
+  scaling_values.push_back(glm::vec3{50.0f, 50.0f, 50.0f}* make_smol);
+  scaling_values.push_back(glm::vec3{58.0f, 58.0f, 58.0f}* make_smol);
+  scaling_values.push_back(glm::vec3{0.08f, 0.08f, 0.08f}* make_smol);
 
   unsigned int counter = 0; 
 
@@ -302,7 +311,7 @@ void ApplicationSolar::planetrenderer(){
   glUseProgram(m_shaders.at("sun").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, 0.0f});
-  model_matrix = glm::scale(model_matrix, glm::fvec3{0.9f, 0.9f, 0.9f});
+  model_matrix = glm::scale(model_matrix, glm::fvec3{5.0f, 5.0f, 5.0f});
   glUniformMatrix4fv(m_shaders.at("sun").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(model_matrix));
 
@@ -339,7 +348,7 @@ void ApplicationSolar::planetrenderer(){
 
   glUseProgram(m_shaders.at("planet").handle);
 
-  glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getWorldTransform()*glm::vec4{0.0f,0.0f,0.0f,1.0f};
+  glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
   glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
@@ -554,10 +563,10 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     speed = 0.0f;
     uploadView();
   }
-  else if (key == GLFW_KEY_P && (action == GLFW_RELEASE || action == GLFW_REPEAT)) {
+/*   else if (key == GLFW_KEY_P && (action == GLFW_RELEASE || action == GLFW_REPEAT)) {
     speed = 3.0f;
     uploadView();
-  }
+  } */
   else if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     speed = speed+0.1f;
     uploadView();

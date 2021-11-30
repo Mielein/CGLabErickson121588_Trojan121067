@@ -348,16 +348,20 @@ void ApplicationSolar::planetrenderer(){
 
   glUseProgram(m_shaders.at("planet").handle);
 
+
+  
+
   glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
   glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
-  
   int tmp = 10;
   for(std::shared_ptr<Node> x : List_of_Planets){
     glUseProgram(m_shaders.at("planet").handle);
-    glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
     
+    glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
+
+
     glm::fmat4 final_matrix;
 
     if(x->getName() == "Moon"){

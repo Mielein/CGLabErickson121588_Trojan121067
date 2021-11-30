@@ -35,7 +35,8 @@ vec3 beta = phi/(4*M_PI*(length(pass_Position))*(length(pass_Position)));
 //this is Cd from the slides, the deffuse color
 vec3 light_direction = normalize(vec3(0, 0, 0)-pass_Position);
 float attenuation = max(dot(normal, light_direction),0.0);
-vec3 diffuse = ceil(attenuation * (light_colour*3))/3;
+vec3 diffuse = attenuation * light_colour;
+vec3 diffuse_cel = ceil(attenuation * (light_colour*3))/3;
 
 //here comes the spectular color, it is kinda triccy
 float shininess = 10.0f;
@@ -45,8 +46,10 @@ vec3 view_direction = normalize(pass_Camera - pass_Position);
 //if halfway vector aligns with normal, the higher the specular 
 vec3 halfway_vector = normalize(light_direction + view_direction);
 float spec = pow(max(dot(normal,halfway_vector), 0.0), shininess*4);
-vec3 specular = ceil((light_colour*3) * spec)/3;
+vec3 specular = light_colour * spec;
+vec3 specular_cel = ceil((light_colour*3) * spec)/3;
 vec3 phong = ambient + beta*(diffuse + specular); 
+vec3 phong_cel = ambient + beta*(diffuse_cel + specular_cel);
 
 
 float cel_shade_view = dot(normal, view_direction);
@@ -56,12 +59,14 @@ vec3 colour_change;
 void main() {
 
   if(switch_appearance){
+
+    
     if(cel_shade_view > 0.35){
     colour_change = planet_colour;
-  }
-  else colour_change = vec3(0.3,0.4,0.0); // dehydrated piss
-    out_Color = vec4(normalize(colour_change)*(phong), 1.0);
-  }
+    }
+    else colour_change = vec3(0.3,0.4,0.0); // dehydrated piss
+      out_Color = vec4(normalize(colour_change)*(phong_cel), 1.0);
+    }
   else out_Color = vec4(normalize(planet_colour)*(phong), 1.0);
   
 }

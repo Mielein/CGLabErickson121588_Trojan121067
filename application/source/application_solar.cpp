@@ -345,16 +345,16 @@ void ApplicationSolar::planetrenderer(){
   int planet_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
   int light_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_colour");
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
+  int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
 
   glUseProgram(m_shaders.at("planet").handle);
-
-
   
 
   glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
   glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
+  glUniform1f(switch_app_bool, switch_appearence);
   int tmp = 10;
   for(std::shared_ptr<Node> x : List_of_Planets){
     glUseProgram(m_shaders.at("planet").handle);
@@ -573,6 +573,16 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
   } */
   else if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     speed = speed+0.1f;
+    uploadView();
+  }
+//---------------------------------------------------------------------------------------------------------
+
+  else if (key == GLFW_KEY_1 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    switch_appearence = false;
+    uploadView();
+  }
+  else if (key == GLFW_KEY_2 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    switch_appearence = true;
     uploadView();
   }
 }

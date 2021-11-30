@@ -8,6 +8,7 @@ uniform vec3 planet_colour;
 uniform vec3 light_colour;
 uniform float light_intensity;
 uniform vec3 pass_Camera;
+uniform bool switch_appearance;
 
 // all of these is not Phong i think
 
@@ -34,7 +35,7 @@ vec3 beta = phi/(4*M_PI*(length(pass_Position))*(length(pass_Position)));
 //this is Cd from the slides, the deffuse color
 vec3 light_direction = normalize(vec3(0, 0, 0)-pass_Position);
 float attenuation = max(dot(normal, light_direction),0.0);
-vec3 diffuse = attenuation * light_colour;
+vec3 diffuse = ceil(attenuation * (light_colour*3))/3;
 
 //here comes the spectular color, it is kinda triccy
 float shininess = 10.0f;
@@ -44,44 +45,23 @@ vec3 view_direction = normalize(pass_Camera - pass_Position);
 //if halfway vector aligns with normal, the higher the specular 
 vec3 halfway_vector = normalize(light_direction + view_direction);
 float spec = pow(max(dot(normal,halfway_vector), 0.0), shininess*4);
-vec3 specular = light_colour * spec;
+vec3 specular = ceil((light_colour*3) * spec)/3;
 vec3 phong = ambient + beta*(diffuse + specular); 
 
 
 float cel_shade_view = dot(normal, view_direction);
 
-float colour_change;
+vec3 colour_change;
   
 void main() {
 
-  /* if(cel_shade_view > 0.9){
-    colour_change = 0.4;
+  if(switch_appearance){
+    if(cel_shade_view > 0.35){
+    colour_change = planet_colour;
   }
-  else if(cel_shade_view > 0.8){
-    colour_change = 0.8;
+  else colour_change = vec3(0.3,0.4,0.0); // dehydrated piss
+    out_Color = vec4(normalize(colour_change)*(phong), 1.0);
   }
-  else if(cel_shade_view > 0.7){
-    colour_change = 0.7;
-  }
-  else if(cel_shade_view > 0.6){
-    colour_change = 0.6;
-  }
-  else if(cel_shade_view > 0.5){
-    colour_change = 0.5;
-  }
-  else if(cel_shade_view > 0.4){
-    colour_change = 0.4;
-  }
-  else if(cel_shade_view > 0.3){
-    colour_change = 0.3;
-  }
-  else if(cel_shade_view > 0.2){
-    colour_change = 0.2;
-  } */
-  if(cel_shade_view > 0.3){
-    colour_change = 1.0;
-  }
-  else colour_change = 0.4;
-  out_Color = vec4(normalize(planet_colour)*(phong)*colour_change, 1.0);
+  else out_Color = vec4(normalize(planet_colour)*(phong), 1.0);
   
 }

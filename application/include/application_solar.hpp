@@ -33,6 +33,7 @@ class ApplicationSolar : public Application {
   Scene_graph scene_graph_;
   glm::fmat4 earth_local_transform;
   float speed = 1.0f; 
+  bool switch_appearence = false;
 
  protected:
   // initialize all objects in the graph to create the sun system

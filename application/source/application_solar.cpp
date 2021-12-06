@@ -396,9 +396,13 @@ void ApplicationSolar::planetrenderer(){
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
   int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
 
+  
+  
+  int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "YourTexture");
+
   glUseProgram(m_shaders.at("planet").handle);
   
-
+ 
   glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
   glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
@@ -406,8 +410,13 @@ void ApplicationSolar::planetrenderer(){
   glUniform1f(switch_app_bool, switch_appearence);
   int tmp = 10;
   for(std::shared_ptr<Node> x : List_of_Planets){
-    glUseProgram(m_shaders.at("planet").handle);
     
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_object.vertex_AO);
+
+    glUseProgram(m_shaders.at("planet").handle);
+
+    glUniform1i(sampler_location, 0);
     glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
 
 

@@ -2,6 +2,7 @@
 #define M_PI 3.1415926535897932384626433832795
 
 in  vec3 pass_Normal, pass_Position;
+in vec2 TexCoord;
 out vec4 out_Color;
 
 uniform vec3 planet_colour;
@@ -11,7 +12,8 @@ uniform vec3 pass_Camera;
 uniform bool switch_appearance;
 
 // all of these is not Phong i think
-
+uniform sampler2D YourTexture;
+vec4 colour_from_tex;
 vec3 ambient_colour = vec3(1.0f,1.0f,1.0f);
 
 float ambient_light_intesity = 0.1;
@@ -57,7 +59,7 @@ float cel_shade_view = dot(normal, view_direction);
 vec3 colour_change;
   
 void main() {
-
+  colour_from_tex = texture(YourTexture, TexCoord);
   if(switch_appearance){
 
     
@@ -65,8 +67,8 @@ void main() {
     colour_change = planet_colour;
     }
     else colour_change = vec3(0.3,0.4,0.0); // dehydrated piss
-      out_Color = vec4(normalize(colour_change)*(phong_cel), 1.0);
+      out_Color = colour_from_tex*vec4(normalize(colour_change)*(phong_cel), 1.0);
     }
-  else out_Color = vec4(normalize(planet_colour)*(phong), 1.0);
+  else out_Color = colour_from_tex*vec4(normalize(planet_colour)*(phong), 1.0);
   
 }

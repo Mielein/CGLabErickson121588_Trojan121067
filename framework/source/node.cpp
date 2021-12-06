@@ -172,3 +172,11 @@ Node Node::removeChild(std::string name){
       
     return tmp_Node;
 }
+
+void Node::setTexture(std::shared_ptr<texture_object> texture_new){
+    texture = texture_new;
+}
+
+std::shared_ptr<texture_object> Node::getTexture(){
+    return texture;
+}

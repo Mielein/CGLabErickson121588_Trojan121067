@@ -4,6 +4,7 @@
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
+#include "pixel_data.hpp"
 #include <scene_graph.hpp>
 
 // gpu representation of model
@@ -40,6 +41,7 @@ class ApplicationSolar : public Application {
   void initializeSceneGraph();
   void initializeShaderPrograms();
   void initializeGeometry();
+  void initializeTextures();
   
   // custom render methode for the planets out of the scene graph
   void planetrenderer();
@@ -56,6 +58,7 @@ class ApplicationSolar : public Application {
   model_object planet_object;
   model_object star_object;
   model_object orbit_object;
+  model_object texture_object;
   // camera transform matrix
   glm::fmat4 m_view_transform;
   // camera projection matrix

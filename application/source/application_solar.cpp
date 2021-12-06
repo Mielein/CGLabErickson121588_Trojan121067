@@ -28,6 +28,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,planet_object{}
  ,star_object{}
  ,orbit_object{}
+ ,texture_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,scene_graph_{}
@@ -36,6 +37,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeGeometry();
   initializeStars();
   initializeOrbits();
+  initializeTextures();
   initializeShaderPrograms();
 }
 
@@ -144,6 +146,7 @@ void ApplicationSolar::initializeSceneGraph() {
 
 }
 
+
 void ApplicationSolar::initializeStars(){
 
   std::vector<GLfloat> stars;
@@ -189,7 +192,38 @@ void ApplicationSolar::initializeStars(){
   star_object.num_elements = GLsizei(star_count);
 
 }
+void ApplicationSolar::initializeTextures(){
+  std::vector<std::shared_ptr<Node>> list_of_Planets;
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Venus"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Earth"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Mars"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Jupiter"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Saturn"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon"));
 
+for(auto p : list_of_Planets){
+  
+  pixel_data planet_data;
+  try{
+    planet_data = texture loader::file(m_resource_path + "textures/" + )
+  }
+  //Initialise Texture
+  glActiveTexture(GL_TEXTURE);
+  glGenTextures(1, &texture_object.vertex_AO);
+  glBindTexture(GL_TEXTURE_2D, texture_object.vertex_AO);
+  //Define Texture Sampling Parameters (mandatory)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  //Define Texture Data and Format
+  glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , planet_data.width, planet_data.height, 0,
+  planet_data.channels, planet_data.channel_type, planet_data.ptr());
+}
+
+
+}
 void ApplicationSolar::initializeOrbits(){
   //points per orbit
   int numOrbitPoints = 100;

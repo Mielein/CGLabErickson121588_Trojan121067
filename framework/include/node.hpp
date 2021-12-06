@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include "structs.hpp"
 
 class Node{
     private:
@@ -17,6 +18,7 @@ class Node{
         glm::fmat4 localTransform;
         glm::fmat4 worldTransform;
         glm::vec3 colour;
+        std::shared_ptr<texture_object> texture;
     public:
         Node();
         Node(std::string _name);
@@ -40,6 +42,8 @@ class Node{
         void addChild(std::shared_ptr<Node> newNode);
         glm::vec3 getColour();
         Node removeChild(std::string name);
+        void setTexture(std::shared_ptr<texture_object> texture_new);
+        std::shared_ptr<texture_object> getTexture();
 };
 
 #endif

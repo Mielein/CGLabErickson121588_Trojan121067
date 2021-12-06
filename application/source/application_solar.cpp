@@ -71,6 +71,17 @@ void ApplicationSolar::initializeSceneGraph() {
   Node urnaus_node("Uranus",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{50.0f, 0.0f, 0.0f }),{0.0f,0.0f,1.0f});
   Node neptune_node("Neptune",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }),{0.2f,0.2f,1.0f});
 
+  root_node.setTexture(m_resource_path + "textures/sunmap.jpg");
+  mercury_node.setTexture(m_resource_path + "textures/mercurymap.jpg");
+  venus_node.setTexture(m_resource_path + "textures/venusmap.jpg");
+  earth_node.setTexture(m_resource_path + "textures/earthmap1k.jpg");
+  mars_node.setTexture(m_resource_path + "textures/mars_1k_color.jpg");
+  jupiter_node.setTexture(m_resource_path + "textures/jupitermap.jpg");
+  saturn_node.setTexture(m_resource_path + "textures/saturnmap.jpg");
+  urnaus_node.setTexture(m_resource_path + "textures/uranusmap.jpg");
+  neptune_node.setTexture(m_resource_path + "textures/neptunemap.jpg");
+  
+
   float bigger = 3.3f;
 
   Geometry_node mercury_geo("geo_Mercury", std::make_shared<Node>(mercury_node), glm::scale({}, glm::fvec3{0.1f, 0.1f, 0.1f } * bigger));
@@ -82,6 +93,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node urnaus_geo("geo_Uranus", std::make_shared<Node>(urnaus_node), glm::scale({}, glm::fvec3{0.5f, 0.5f, 0.5f }* bigger));
   Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.45f, 0.45f, 0.45f }* bigger));
   Node moon_node("Moon",std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), {0.5f,0.5f,0.5f});
+  moon_node.setTexture(m_resource_path + "textures/earthmap1k.jpg");
   Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }* bigger));
 
   Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
@@ -202,16 +214,19 @@ void ApplicationSolar::initializeTextures(){
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Saturn"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
-  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon"));
+  list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon")); 
 
 for(auto p : list_of_Planets){
   
   pixel_data planet_data;
   try{
-    planet_data = texture loader::file(m_resource_path + "textures/" + )
+    planet_data = texture_loader::file(p->getTexture());
+  }
+  catch(std::exception e){
+    std::cout<<"texture could not load for " + p->getName()<<std::endl;
   }
   //Initialise Texture
-  glActiveTexture(GL_TEXTURE);
+  glActiveTexture(GL_TEXTURE0);
   glGenTextures(1, &texture_object.vertex_AO);
   glBindTexture(GL_TEXTURE_2D, texture_object.vertex_AO);
   //Define Texture Sampling Parameters (mandatory)

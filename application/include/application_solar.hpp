@@ -5,6 +5,7 @@
 #include "model.hpp"
 #include "structs.hpp"
 #include "pixel_data.hpp"
+#include "texture_loader.hpp"
 #include <scene_graph.hpp>
 
 // gpu representation of model

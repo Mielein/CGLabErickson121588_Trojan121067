@@ -413,7 +413,6 @@ void ApplicationSolar::planetrenderer(){
   int tmp = 10;
   unsigned int planet = 0;
   for(std::shared_ptr<Node> x : List_of_Planets){
-    debugPrint(x->getTexture());
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_object.vertex_AO);

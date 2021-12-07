@@ -215,7 +215,7 @@ void ApplicationSolar::initializeTextures(){
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon")); 
-
+  int planet = 0;
 for(auto p : list_of_Planets){
   
   pixel_data planet_data;
@@ -225,6 +225,7 @@ for(auto p : list_of_Planets){
   catch(std::exception e){
     std::cout<<"texture could not load for " + p->getName()<<std::endl;
   }
+  //debugPrint(p->getTexture());
   //Initialise Texture
   glActiveTexture(GL_TEXTURE0);
   glGenTextures(1, &texture_object.vertex_AO);
@@ -235,6 +236,7 @@ for(auto p : list_of_Planets){
   //Define Texture Data and Format
   glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , planet_data.width, planet_data.height, 0,
   planet_data.channels, planet_data.channel_type, planet_data.ptr());
+  planet++;
 }
 
 
@@ -409,7 +411,9 @@ void ApplicationSolar::planetrenderer(){
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
   glUniform1f(switch_app_bool, switch_appearence);
   int tmp = 10;
+  unsigned int planet = 0;
   for(std::shared_ptr<Node> x : List_of_Planets){
+    debugPrint(x->getTexture());
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_object.vertex_AO);
@@ -469,6 +473,7 @@ void ApplicationSolar::planetrenderer(){
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
     //planet_geo->getParent()->setLocalTransform(Local_storage);
   }
+  planet++;
 }
 
 

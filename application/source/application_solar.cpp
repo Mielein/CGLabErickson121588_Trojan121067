@@ -71,15 +71,15 @@ void ApplicationSolar::initializeSceneGraph() {
   Node urnaus_node("Uranus",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{50.0f, 0.0f, 0.0f }),{0.0f,0.0f,1.0f});
   Node neptune_node("Neptune",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }),{0.2f,0.2f,1.0f});
 
-  root_node.setTexture(m_resource_path + "textures/sunmap.jpg");
-  mercury_node.setTexture(m_resource_path + "textures/mercurymap.jpg");
-  venus_node.setTexture(m_resource_path + "textures/venusmap.jpg");
-  earth_node.setTexture(m_resource_path + "textures/earthmap1k.jpg");
-  mars_node.setTexture(m_resource_path + "textures/mars_1k_color.jpg");
-  jupiter_node.setTexture(m_resource_path + "textures/jupitermap.jpg");
-  saturn_node.setTexture(m_resource_path + "textures/saturnmap.jpg");
-  urnaus_node.setTexture(m_resource_path + "textures/uranusmap.jpg");
-  neptune_node.setTexture(m_resource_path + "textures/neptunemap.jpg");
+  root_node.setTexture(m_resource_path + "textures/sunmap.png");
+  mercury_node.setTexture(m_resource_path + "textures/mercurymap.png");
+  venus_node.setTexture(m_resource_path + "textures/venusmap.png");
+  earth_node.setTexture(m_resource_path + "textures/earthmap1k.png");
+  mars_node.setTexture(m_resource_path + "textures/mars_1k_color.png");
+  jupiter_node.setTexture(m_resource_path + "textures/jupitermap.png");
+  saturn_node.setTexture(m_resource_path + "textures/saturnmap.png");
+  urnaus_node.setTexture(m_resource_path + "textures/uranusmap.png");
+  neptune_node.setTexture(m_resource_path + "textures/neptunemap.png");
   
 
   float bigger = 3.3f;
@@ -225,7 +225,6 @@ for(auto p : list_of_Planets){
   catch(std::exception e){
     std::cout<<"texture could not load for " + p->getName()<<std::endl;
   }
-  p->setTexInt(m_texture);
   //debugPrint(p->getTexture());
   //Initialise Texture
   glGenTextures(1, &m_texture);
@@ -423,9 +422,9 @@ void ApplicationSolar::planetrenderer(){
   unsigned int planet = 0;
 
   for(std::shared_ptr<Node> x : List_of_Planets){
-    glActiveTexture(GL_TEXTURE1+2*planet);
+    glActiveTexture(GL_TEXTURE0+planet);
     
-    glBindTexture(GL_TEXTURE_2D, x->getTexInt()); 
+    glBindTexture(GL_TEXTURE_2D, planet); 
 
     glBindVertexArray(planet_object.vertex_AO);
     

@@ -429,7 +429,7 @@ void ApplicationSolar::planetrenderer(){
 
     glBindVertexArray(planet_object.vertex_AO);
     
-    debugPrint(std::to_string(x->getTexInt()));
+    //debugPrint(std::to_string(x->getTexInt()));
 
     glUseProgram(m_shaders.at("planet").handle);
 

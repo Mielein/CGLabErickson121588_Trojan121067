@@ -49,7 +49,7 @@ ApplicationSolar::~ApplicationSolar() {
   glDeleteVertexArrays(1, &planet_object.vertex_AO);
   glDeleteVertexArrays(1, &star_object.vertex_AO);
 }
-
+unsigned int m_texture;
 /////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::tmpfunk(){
   std::cout<< "this is tmpfunk" << std::endl;
@@ -215,9 +215,9 @@ void ApplicationSolar::initializeTextures(){
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon")); 
-  int planet = 0;
+  unsigned int planet = 0;
 for(auto p : list_of_Planets){
-  
+
   pixel_data planet_data;
   try{
     planet_data = texture_loader::file(p->getTexture());
@@ -225,17 +225,29 @@ for(auto p : list_of_Planets){
   catch(std::exception e){
     std::cout<<"texture could not load for " + p->getName()<<std::endl;
   }
+  p->setTexInt(m_texture);
   //debugPrint(p->getTexture());
   //Initialise Texture
-  glActiveTexture(GL_TEXTURE0);
-  glGenTextures(1, &texture_object.vertex_AO);
-  glBindTexture(GL_TEXTURE_2D, texture_object.vertex_AO);
+  glGenTextures(1, &m_texture);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
   //Define Texture Sampling Parameters (mandatory)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   //Define Texture Data and Format
-  glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , planet_data.width, planet_data.height, 0,
-  planet_data.channels, planet_data.channel_type, planet_data.ptr());
+  std::cout<<"texture: "<< m_texture<<std::endl;
+  std::cout<<"channel_type: "<< planet_data.channel_type<<std::endl;
+  std::cout<<"width: "<< planet_data.width<<std::endl;
+  std::cout<<"height: "<< planet_data.height<<std::endl;
+  std::cout<<"channels: "<< planet_data.channels<<std::endl; 
+  if(planet_data.ptr()){
+    glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , planet_data.width, planet_data.height, 0,
+    planet_data.channels, planet_data.channel_type, planet_data.ptr());
+
+  }
+  else{
+    debugPrint("stinky poo");
+  }
+  p->setTexInt(m_texture);
   planet++;
 }
 
@@ -397,9 +409,6 @@ void ApplicationSolar::planetrenderer(){
   int light_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_colour");
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
   int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
-
-  
-  
   int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "YourTexture");
 
   glUseProgram(m_shaders.at("planet").handle);
@@ -412,16 +421,20 @@ void ApplicationSolar::planetrenderer(){
   glUniform1f(switch_app_bool, switch_appearence);
   int tmp = 10;
   unsigned int planet = 0;
+
   for(std::shared_ptr<Node> x : List_of_Planets){
+    glActiveTexture(GL_TEXTURE1+2*planet);
     
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_object.vertex_AO);
+    glBindTexture(GL_TEXTURE_2D, x->getTexInt()); 
+
+    glBindVertexArray(planet_object.vertex_AO);
+    
+    debugPrint(std::to_string(x->getTexInt()));
 
     glUseProgram(m_shaders.at("planet").handle);
 
-    glUniform1i(sampler_location, 0);
+    glUniform1i(sampler_location, x->getTexInt());
     glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
-
 
     glm::fmat4 final_matrix;
 
@@ -471,8 +484,9 @@ void ApplicationSolar::planetrenderer(){
 
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
     //planet_geo->getParent()->setLocalTransform(Local_storage);
+    planet++;
   }
-  planet++;
+  
 }
 
 

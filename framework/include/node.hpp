@@ -15,6 +15,7 @@ class Node{
         std::string name;
         std::string path;
         int depth;
+        unsigned int texture_;
         glm::fmat4 localTransform;
         glm::fmat4 worldTransform;
         glm::vec3 colour;
@@ -44,6 +45,8 @@ class Node{
         Node removeChild(std::string name);
         void setTexture(std::string texture_new);
         std::string getTexture();
+        void setTexInt(unsigned int texture);
+        unsigned int getTexInt();
 };
 
 #endif

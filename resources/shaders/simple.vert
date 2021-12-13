@@ -13,7 +13,7 @@ uniform mat4 NormalMatrix;
 
 out vec3 pass_Normal;
 out vec3 pass_Position;
-out vec2 TexCoord;
+out vec2 pass_TexCoord;
 //out vec3 pass_Normal_Camera;
 
 void main(void)
@@ -21,7 +21,7 @@ void main(void)
 	gl_Position = (ProjectionMatrix  * ViewMatrix * ModelMatrix) * vec4(in_Position, 1.0);
 	pass_Position = vec3(ModelMatrix * vec4(in_Position, 1.0)); 
 	pass_Normal = (transpose(inverse(ModelMatrix)) * vec4(in_Normal, 1.0)).xyz;
-	TexCoord = in_TexCoord;
+	pass_TexCoord = in_TexCoord;
 	//pass_Normal_Camera = ModelMatrix * vec4(in_Normal,1.0)).xyz;
 
 }

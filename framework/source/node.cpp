@@ -180,3 +180,9 @@ void Node::setTexture(std::string texture_new){
 std::string Node::getTexture(){
     return texture;
 }
+void Node::setTexInt(unsigned int texture){
+    texture_ = texture;
+}
+unsigned int Node::getTexInt(){
+    return texture_;
+}

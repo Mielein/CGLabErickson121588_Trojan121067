@@ -234,11 +234,11 @@ void ApplicationSolar::initializeSun(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     //Define Texture Data and Format
-    std::cout<<"texture: "<< m_sunTexture<<std::endl;
+/*     std::cout<<"texture: "<< m_sunTexture<<std::endl;
     std::cout<<"channel_type: "<< sun_data.channel_type<<std::endl;
     std::cout<<"width: "<< sun_data.width<<std::endl;
     std::cout<<"height: "<< sun_data.height<<std::endl;
-    std::cout<<"channels: "<< sun_data.channels<<std::endl; 
+    std::cout<<"channels: "<< sun_data.channels<<std::endl;  */
 
     glTexImage2D(GL_TEXTURE_2D, 0, sun_data.channels , sun_data.width, sun_data.height, 0,
     sun_data.channels, sun_data.channel_type, sun_data.ptr());
@@ -278,11 +278,11 @@ void ApplicationSolar::initializeTextures(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     //Define Texture Data and Format
-    std::cout<<"texture: "<< m_texture<<std::endl;
+/*     std::cout<<"texture: "<< m_texture<<std::endl;
     std::cout<<"channel_type: "<< planet_data.channel_type<<std::endl;
     std::cout<<"width: "<< planet_data.width<<std::endl;
     std::cout<<"height: "<< planet_data.height<<std::endl;
-    std::cout<<"channels: "<< planet_data.channels<<std::endl; 
+    std::cout<<"channels: "<< planet_data.channels<<std::endl;  */
 
     glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , (GLsizei)planet_data.width, (GLsizei)planet_data.height, 0,
     planet_data.channels, planet_data.channel_type, planet_data.ptr());
@@ -412,7 +412,7 @@ void ApplicationSolar::initializeOrbits(){
 void ApplicationSolar::render() {
   
   // bind shader to upload uniforms
-
+  skyboxrenderer();
   starRenderer();
   planetrenderer();
   orbitRenderer();
@@ -452,7 +452,21 @@ void ApplicationSolar::starRenderer() const{
     //glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, &star_object);
  }
 
+void ApplicationSolar::skyboxrenderer(){
+  glDepthMask(GL_FALSE);
+  glUseProgram(m_shaders.at("skybox").handle);
+
+  int skybox_location = glGetUniformLocation(m_shaders.at("skybox").handle, "skybox_location");
+  glUniform1i(skybox_location, m_skytextures);
+
+  glBindVertexArray(planet_object.vertex_AO);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
+  glDrawArrays(GL_TRIANGLES, 0, 36);
+  glDepthMask(GL_TRUE);
+}
+
 void ApplicationSolar::planetrenderer(){
+
   //render sun
   glUseProgram(m_shaders.at("sun").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
@@ -495,8 +509,9 @@ void ApplicationSolar::planetrenderer(){
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Jupiter"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
-  
-  
+
+  glUseProgram(m_shaders.at("planet").handle);
+
   std::shared_ptr<Point_light_node> Schimmer = std::static_pointer_cast<Point_light_node>(scene_graph_.getRoot().getChild("Schimmer"));
   int camera_location = glGetUniformLocation(m_shaders.at("planet").handle, "pass_Camera");
   int planet_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
@@ -504,16 +519,12 @@ void ApplicationSolar::planetrenderer(){
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
   int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
   int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "YourTexture");
-  int skybox_location = glGetUniformLocation(m_shaders.at("skybox").handle, "skybox_location");
-
-  glUseProgram(m_shaders.at("planet").handle);
   
   glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
   glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
   glUniform1f(switch_app_bool, switch_appearence);
-  glUniform1i(skybox_location, m_skytextures);
 
 
   int tmp = 10;

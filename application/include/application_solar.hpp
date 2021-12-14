@@ -53,6 +53,8 @@ class ApplicationSolar : public Application {
   
   // custom render methode for the planets out of the scene graph
   void planetrenderer();
+  void skyboxrenderer();
+
   void starRenderer() const;
   void orbitRenderer() const;
   // update uniform values

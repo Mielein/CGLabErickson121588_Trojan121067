@@ -38,6 +38,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeStars();
   initializeOrbits();
   initializeTextures();
+  initializeSkybox();
   initializeSun();
   initializeShaderPrograms();
 }
@@ -256,7 +257,6 @@ void ApplicationSolar::initializeTextures(){
   unsigned int planet = 0;
 
   for(auto p : list_of_Planets){
-
     pixel_data planet_data;
     try{
       planet_data = texture_loader::file(p->getTexture());
@@ -288,12 +288,16 @@ void ApplicationSolar::initializeTextures(){
 
     p->setTexInt(m_texture);
     planet++;
+  }
+}
+
+void ApplicationSolar::initializeSkybox(){
+  
 }
 
 //create Orbits
 //-----------------------------------------------------------------------------------------------------------------------------------------
 
-}
 void ApplicationSolar::initializeOrbits(){
   //points per orbit
   int numOrbitPoints = 100;
@@ -430,12 +434,10 @@ void ApplicationSolar::planetrenderer(){
   glBindVertexArray(planet_object.vertex_AO);
   glActiveTexture(GL_TEXTURE10);
   glBindTexture(GL_TEXTURE_2D, 10); 
+  glUniform1i(sampler_sun_location, 10);
 
-    //debugPrint(std::to_string(x->getTexInt()));
+  //debugPrint(std::to_string(x->getTexInt()));
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
-
-
- 
 
   // bind the VAO to draw
   glBindVertexArray(planet_object.vertex_AO);

@@ -44,6 +44,7 @@ class ApplicationSolar : public Application {
   void initializeGeometry();
   void initializeTextures();
   void initializeSun();
+  void initializeSkybox();
 
   
   // custom render methode for the planets out of the scene graph

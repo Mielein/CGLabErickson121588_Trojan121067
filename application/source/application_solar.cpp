@@ -263,8 +263,11 @@ void ApplicationSolar::initializeTextures(){
     glGenTextures(1, &m_texture);
     glBindTexture(GL_TEXTURE_2D, m_texture);
     //Define Texture Sampling Parameters (mandatory)
+/*     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); */
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
     //Define Texture Data and Format
     std::cout<<"texture: "<< m_texture<<std::endl;
     std::cout<<"channel_type: "<< planet_data.channel_type<<std::endl;
@@ -403,24 +406,24 @@ void ApplicationSolar::starRenderer() const{
 
 void ApplicationSolar::planetrenderer(){
   //render sun
-  glUseProgram(m_shaders.at("sun").handle);
+  glUseProgram(m_shaders.at("planet").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, 0.0f});
   model_matrix = glm::scale(model_matrix, glm::fvec3{5.0f, 5.0f, 5.0f});
-  glUniformMatrix4fv(m_shaders.at("sun").u_locs.at("ModelMatrix"),
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(model_matrix));
 
   // extra matrix for normal transformation to keep them orthogonal to surface
   glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
-  glUniformMatrix4fv(m_shaders.at("sun").u_locs.at("NormalMatrix"),
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
 
   
   int sampler_sun_location = glGetUniformLocation(m_shaders.at("sun").handle, "YourTexture");
   glUniform1i(sampler_sun_location, m_sunTexture);
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE10);
     
-  glBindTexture(GL_TEXTURE_2D, 0); 
+  glBindTexture(GL_TEXTURE_2D, 10); 
 
   glBindVertexArray(planet_object.vertex_AO);
     

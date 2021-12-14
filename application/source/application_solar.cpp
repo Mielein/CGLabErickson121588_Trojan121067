@@ -312,8 +312,15 @@ void ApplicationSolar::initializeSkybox(){
     catch(const std::exception& e){
       std::cout << "oh oh stinky" << '\n';
     }
-      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, sky_data.channels, sky_data.width, sky_data.height, 0, 
-      sky_data.channels, sky_data.channel_type, sky_data.ptr());
+    std::cout<<"SKYBOX"<<std::endl;
+    std::cout<<"texture: "<< m_skytextures<<std::endl;
+    std::cout<<"channel_type: "<< sky_data.channel_type<<std::endl;
+    std::cout<<"width: "<< sky_data.width<<std::endl;
+    std::cout<<"height: "<< sky_data.height<<std::endl;
+    std::cout<<"channels: "<< sky_data.channels<<std::endl;
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, sky_data.channels, sky_data.width, sky_data.height, 0, 
+    sky_data.channels, sky_data.channel_type, sky_data.ptr());
+    
     
 
   }

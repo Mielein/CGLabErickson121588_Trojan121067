@@ -673,6 +673,7 @@ void ApplicationSolar::initializeShaderPrograms() {
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/skybox.frag"}}});
   m_shaders.at("skybox").u_locs["ViewMatrix"] = -1;
   m_shaders.at("skybox").u_locs["ProjectionMatrix"] = -1;
+  m_shaders.at("star").u_locs["ModelViewMatrix"] = -1;
 
   m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/orbit.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});

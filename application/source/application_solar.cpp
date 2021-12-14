@@ -216,38 +216,38 @@ void ApplicationSolar::initializeTextures(){
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon")); 
   unsigned int planet = 0;
-for(auto p : list_of_Planets){
+  for(auto p : list_of_Planets){
 
-  pixel_data planet_data;
-  try{
-    planet_data = texture_loader::file(p->getTexture());
-  }
-  catch(std::exception e){
-    std::cout<<"texture could not load for " + p->getName()<<std::endl;
-  }
-  //debugPrint(p->getTexture());
-  //Initialise Texture
-  glGenTextures(1, &m_texture);
-  glBindTexture(GL_TEXTURE_2D, m_texture);
-  //Define Texture Sampling Parameters (mandatory)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  //Define Texture Data and Format
-  std::cout<<"texture: "<< m_texture<<std::endl;
-  std::cout<<"channel_type: "<< planet_data.channel_type<<std::endl;
-  std::cout<<"width: "<< planet_data.width<<std::endl;
-  std::cout<<"height: "<< planet_data.height<<std::endl;
-  std::cout<<"channels: "<< planet_data.channels<<std::endl; 
-  if(planet_data.ptr()){
-    glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , planet_data.width, planet_data.height, 0,
-    planet_data.channels, planet_data.channel_type, planet_data.ptr());
+    pixel_data planet_data;
+    try{
+      planet_data = texture_loader::file(p->getTexture());
+    }
+    catch(std::exception e){
+      std::cout<<"texture could not load for " + p->getName()<<std::endl;
+    }
+    //debugPrint(p->getTexture());
+    //Initialise Texture
+    glGenTextures(1, &m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+    //Define Texture Sampling Parameters (mandatory)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //Define Texture Data and Format
+    std::cout<<"texture: "<< m_texture<<std::endl;
+    std::cout<<"channel_type: "<< planet_data.channel_type<<std::endl;
+    std::cout<<"width: "<< planet_data.width<<std::endl;
+    std::cout<<"height: "<< planet_data.height<<std::endl;
+    std::cout<<"channels: "<< planet_data.channels<<std::endl; 
+    if(planet_data.ptr()){
+      glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , planet_data.width, planet_data.height, 0,
+      planet_data.channels, planet_data.channel_type, planet_data.ptr());
+    }
 
-  }
-  else{
+  else {
     debugPrint("stinky poo");
   }
-  p->setTexInt(m_texture);
-  planet++;
+    p->setTexInt(m_texture);
+    planet++;
 }
 
 
@@ -382,7 +382,50 @@ void ApplicationSolar::planetrenderer(){
   glUniformMatrix4fv(m_shaders.at("sun").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
 
-  
+  //-------------------initialising sun texture-------------------
+
+  pixel_data sun_data;
+  try{
+      sun_data = texture_loader::file(m_resource_path + "textures/sunmap.png");
+    }
+    catch(std::exception e){
+      std::cout<<"texture could not load for sun"<<std::endl;
+    }
+  //Initialise Texture
+    glGenTextures(1, &m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+    //Define Texture Sampling Parameters (mandatory)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    debugPrint("SUN");
+    std::cout<<"texture: "<< m_texture<<std::endl;
+    std::cout<<"channel_type: "<< sun_data.channel_type<<std::endl;
+    std::cout<<"width: "<< sun_data.width<<std::endl;
+    std::cout<<"height: "<< sun_data.height<<std::endl;
+    std::cout<<"channels: "<< sun_data.channels<<std::endl; 
+    if(sun_data.ptr()){
+      glTexImage2D(GL_TEXTURE_2D, 0, sun_data.channels , sun_data.width, sun_data.height, 0,
+      sun_data.channels, sun_data.channel_type, sun_data.ptr());
+    }
+
+  else {
+    debugPrint("stinky poo");
+  }
+  int sampler_sun_location = glGetUniformLocation(m_shaders.at("sun").handle, "YourTexture");
+  glUniform1i(sampler_sun_location, 0);
+  glActiveTexture(GL_TEXTURE0);
+    
+  glBindTexture(GL_TEXTURE_2D, 0); 
+
+  glBindVertexArray(planet_object.vertex_AO);
+    
+    //debugPrint(std::to_string(x->getTexInt()));
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
+  glUseProgram(m_shaders.at("planet").handle);
+
+
+ 
+
   // bind the VAO to draw
   glBindVertexArray(planet_object.vertex_AO);
 /*     glBindVertexArray(planet_object.vertex_AO);
@@ -419,7 +462,7 @@ void ApplicationSolar::planetrenderer(){
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
   glUniform1f(switch_app_bool, switch_appearence);
   int tmp = 10;
-  unsigned int planet = 0;
+  unsigned int planet = 1;
 
   for(std::shared_ptr<Node> x : List_of_Planets){
     glActiveTexture(GL_TEXTURE0+planet);
@@ -429,7 +472,7 @@ void ApplicationSolar::planetrenderer(){
     glBindVertexArray(planet_object.vertex_AO);
     
     //debugPrint(std::to_string(x->getTexInt()));
-
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
     glUseProgram(m_shaders.at("planet").handle);
 
     glUniform1i(sampler_location, x->getTexInt());

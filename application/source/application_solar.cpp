@@ -303,10 +303,10 @@ void ApplicationSolar::initializeSkybox(){
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
-
+/* 
   glGenTextures(1, &m_skytextures);
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
-
+ */
   glGenBuffers(GLuint(1), &skybox_object.vertex_BO);
   glBindBuffer(GL_ARRAY_BUFFER, skybox_object.vertex_BO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float)*sky_img.size(), sky_img.data(), GL_STATIC_DRAW);
@@ -462,13 +462,15 @@ void ApplicationSolar::starRenderer() const{
 void ApplicationSolar::skyboxrenderer(){
   glDepthMask(GL_FALSE);
   glUseProgram(m_shaders.at("skybox").handle);
+  glBindVertexArray(skybox_object.vertex_AO);
+
   glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
 
   int skybox_location = glGetUniformLocation(m_shaders.at("skybox").handle, "skybox_location");
   glUniform1i(skybox_location, m_skytextures);
 
-  glBindVertexArray(skybox_object.vertex_AO);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
+  
   glDrawArrays(GL_TRIANGLES, 0, skybox_object.num_elements);
   debugPrint("num elements: " + skybox_object.num_elements);
   glDepthMask(GL_TRUE);

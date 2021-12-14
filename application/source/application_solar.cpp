@@ -485,6 +485,7 @@ void ApplicationSolar::planetrenderer(){
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
   
+  
   std::shared_ptr<Point_light_node> Schimmer = std::static_pointer_cast<Point_light_node>(scene_graph_.getRoot().getChild("Schimmer"));
   int camera_location = glGetUniformLocation(m_shaders.at("planet").handle, "pass_Camera");
   int planet_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");

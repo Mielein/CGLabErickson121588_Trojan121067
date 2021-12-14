@@ -95,7 +95,7 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node urnaus_geo("geo_Uranus", std::make_shared<Node>(urnaus_node), glm::scale({}, glm::fvec3{0.5f, 0.5f, 0.5f }* bigger));
   Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.45f, 0.45f, 0.45f }* bigger));
   Node moon_node("Moon",std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), {0.5f,0.5f,0.5f});
-  moon_node.setTexture(m_resource_path + "textures/earthmap1k.jpg");
+  moon_node.setTexture(m_resource_path + "textures/moon.png");
   Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }* bigger));
 
   Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
@@ -218,25 +218,25 @@ void ApplicationSolar::initializeSun(){
       std::cout<<"texture could not load for sun"<<std::endl;
     }
   //Initialise Texture
+    glActiveTexture(GL_TEXTURE10);
     glGenTextures(1, &m_sunTexture);
     glBindTexture(GL_TEXTURE_2D, m_sunTexture);
     //Define Texture Sampling Parameters (mandatory)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    debugPrint("sun");
+    
+    //Define Texture Data and Format
     std::cout<<"texture: "<< m_sunTexture<<std::endl;
     std::cout<<"channel_type: "<< sun_data.channel_type<<std::endl;
     std::cout<<"width: "<< sun_data.width<<std::endl;
     std::cout<<"height: "<< sun_data.height<<std::endl;
     std::cout<<"channels: "<< sun_data.channels<<std::endl; 
-    if(sun_data.ptr()){
-      glTexImage2D(GL_TEXTURE_2D, 0, sun_data.channels , sun_data.width, sun_data.height, 0,
-      sun_data.channels, sun_data.channel_type, sun_data.ptr());
-    }
 
-  else {
-    debugPrint("stinky poo");
-  }
+    glTexImage2D(GL_TEXTURE_2D, 0, sun_data.channels , sun_data.width, sun_data.height, 0,
+    sun_data.channels, sun_data.channel_type, sun_data.ptr());
 }
 
 void ApplicationSolar::initializeTextures(){
@@ -406,28 +406,27 @@ void ApplicationSolar::starRenderer() const{
 
 void ApplicationSolar::planetrenderer(){
   //render sun
-  glUseProgram(m_shaders.at("planet").handle);
+  glUseProgram(m_shaders.at("sun").handle);
   glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 0.0f, 1.0f});
   model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, 0.0f});
   model_matrix = glm::scale(model_matrix, glm::fvec3{5.0f, 5.0f, 5.0f});
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+  glUniformMatrix4fv(m_shaders.at("sun").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(model_matrix));
 
   // extra matrix for normal transformation to keep them orthogonal to surface
   glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+  glUniformMatrix4fv(m_shaders.at("sun").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
 
   
   int sampler_sun_location = glGetUniformLocation(m_shaders.at("sun").handle, "YourTexture");
+  
+  glBindVertexArray(planet_object.vertex_AO);
   glActiveTexture(GL_TEXTURE10);
-    
   glBindTexture(GL_TEXTURE_2D, 10); 
 
-  glBindVertexArray(planet_object.vertex_AO);
-    
     //debugPrint(std::to_string(x->getTexInt()));
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
+  //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
   glUseProgram(m_shaders.at("planet").handle);
 
 
@@ -475,15 +474,14 @@ void ApplicationSolar::planetrenderer(){
     glUseProgram(m_shaders.at("planet").handle);
 
     glBindVertexArray(planet_object.vertex_AO);
-
     glActiveTexture(GL_TEXTURE0+planet);
-
     glBindTexture(GL_TEXTURE_2D, planet); 
 
     glUniform1i(sampler_location, x->getTexInt());
     glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
 
     glm::fmat4 final_matrix;
+
 
     if(x->getName() == "Moon"){
       //getting the Geometry-node equivalent to Node x
@@ -495,12 +493,8 @@ void ApplicationSolar::planetrenderer(){
       //this way x sees the parent as the center of the orbit
       glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
       planet_geo->getParent()->setLocalTransform(newTransform);
-      //debugPrint(glm::to_string(earth_local_transform));
-      //debugPrint(glm::to_string(planet_geo->getLocalTransform()));
-      //debugPrint(glm::to_string(planet_geo->getParent()->getLocalTransform()));
+
       final_matrix = earth_local_transform * planet_geo->getParent()->getLocalTransform() * planet_geo->getLocalTransform();
-      //debugPrint("moon1 " + glm::to_string(planet_geo->getWorldTransform()));
-      //debugPrint("moon2 " + glm::to_string(final_matrix));
     }
     else{
       //getting the Geometry-node equivalent to Node x
@@ -651,7 +645,6 @@ void ApplicationSolar::initializeGeometry() {
   //for the Textures
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::TEXCOORD]);
-  
 
 
    // generate generic buffer

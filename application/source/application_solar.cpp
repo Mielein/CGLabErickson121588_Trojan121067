@@ -51,6 +51,7 @@ ApplicationSolar::~ApplicationSolar() {
   glDeleteVertexArrays(1, &star_object.vertex_AO);
 }
 unsigned int m_texture;
+unsigned int m_sunTexture;
 /////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::tmpfunk(){
   std::cout<< "this is tmpfunk" << std::endl;
@@ -215,13 +216,13 @@ void ApplicationSolar::initializeSun(){
       std::cout<<"texture could not load for sun"<<std::endl;
     }
   //Initialise Texture
-    glGenTextures(1, &m_texture);
-    glBindTexture(GL_TEXTURE_2D, m_texture);
+    glGenTextures(1, &m_sunTexture);
+    glBindTexture(GL_TEXTURE_2D, m_sunTexture);
     //Define Texture Sampling Parameters (mandatory)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-    std::cout<<"texture: "<< m_texture<<std::endl;
+    debugPrint("sun");
+    std::cout<<"texture: "<< m_sunTexture<<std::endl;
     std::cout<<"channel_type: "<< sun_data.channel_type<<std::endl;
     std::cout<<"width: "<< sun_data.width<<std::endl;
     std::cout<<"height: "<< sun_data.height<<std::endl;
@@ -416,7 +417,7 @@ void ApplicationSolar::planetrenderer(){
 
   
   int sampler_sun_location = glGetUniformLocation(m_shaders.at("sun").handle, "YourTexture");
-  glUniform1i(sampler_sun_location, 0);
+  glUniform1i(sampler_sun_location, m_sunTexture);
   glActiveTexture(GL_TEXTURE0);
     
   glBindTexture(GL_TEXTURE_2D, 0); 

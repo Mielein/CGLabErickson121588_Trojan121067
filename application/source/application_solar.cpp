@@ -312,6 +312,7 @@ void ApplicationSolar::initializeSkybox(){
     catch(const std::exception& e){
       std::cout << "oh oh stinky" << '\n';
     }
+<<<<<<< HEAD
     std::cout<<"SKYBOX"<<std::endl;
     std::cout<<"texture: "<< m_skytextures<<std::endl;
     std::cout<<"channel_type: "<< sky_data.channel_type<<std::endl;
@@ -323,6 +324,10 @@ void ApplicationSolar::initializeSkybox(){
     
     
 
+=======
+      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, sky_data.channels, sky_data.width, sky_data.height, 0, 
+      sky_data.channels, sky_data.channel_type, sky_data.ptr());
+>>>>>>> 381efd6a4ff4af2c0a7695ec09d441324ae5d19f
   }
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -493,6 +498,7 @@ void ApplicationSolar::planetrenderer(){
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Jupiter"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   List_of_Planets.push_back(scene_graph_.getRoot().getChild("Mercury"));
+  
   
   std::shared_ptr<Point_light_node> Schimmer = std::static_pointer_cast<Point_light_node>(scene_graph_.getRoot().getChild("Schimmer"));
   int camera_location = glGetUniformLocation(m_shaders.at("planet").handle, "pass_Camera");

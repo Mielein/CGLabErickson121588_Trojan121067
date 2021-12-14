@@ -310,7 +310,7 @@ void ApplicationSolar::initializeSkybox(){
   glGenBuffers(GLuint(1), &skybox_object.vertex_BO);
   glBindBuffer(GL_ARRAY_BUFFER, skybox_object.vertex_BO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float)*sky_img.size(), sky_img.data(), GL_STATIC_DRAW);
-  glEnableVertexArrayAttrib(skybox_object.vertex_AO, 0);
+  glEnableVertexAttribArray(0);
   glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6), NULL);
 
   for(int i = 0; i < 6; i++){

@@ -37,6 +37,10 @@ class ApplicationSolar : public Application {
   float speed = 1.0f; 
   bool switch_appearence = false;
 
+  unsigned int m_sunTexture;
+  unsigned int m_texture;
+  unsigned int m_skytextures;
+
  protected:
   // initialize all objects in the graph to create the sun system
   void initializeSceneGraph();

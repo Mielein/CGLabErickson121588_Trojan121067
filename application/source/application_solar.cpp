@@ -53,6 +53,7 @@ ApplicationSolar::~ApplicationSolar() {
 }
 unsigned int m_texture;
 unsigned int m_sunTexture;
+unsigned int m_skytextures;
 /////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::tmpfunk(){
   std::cout<< "this is tmpfunk" << std::endl;
@@ -166,7 +167,7 @@ void ApplicationSolar::initializeStars(){
 
   std::vector<GLfloat> stars;
   //number stars
-  unsigned int star_count = 1000000;
+  unsigned int star_count = 10000;
   //range of spawn
   unsigned int max_distance = 1000;
 
@@ -224,7 +225,7 @@ void ApplicationSolar::initializeSun(){
   //Initialise Texture
     glActiveTexture(GL_TEXTURE10);
     glGenTextures(1, &m_sunTexture);
-    glBindTexture(GL_TEXTURE_2D, 10);
+    glBindTexture(GL_TEXTURE_2D, m_sunTexture);
     //Define Texture Sampling Parameters (mandatory)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -292,7 +293,35 @@ void ApplicationSolar::initializeTextures(){
 }
 
 void ApplicationSolar::initializeSkybox(){
-  
+  glGenTextures(1, &m_skytextures);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
+
+  std::vector<std::string> sky_img;
+  sky_img.push_back(m_resource_path + "textures/galaxie.png");
+  sky_img.push_back(m_resource_path + "textures/galaxie.png");
+  sky_img.push_back(m_resource_path + "textures/galaxie.png");  
+  sky_img.push_back(m_resource_path + "textures/galaxie.png");
+  sky_img.push_back(m_resource_path + "textures/galaxie.png");
+  sky_img.push_back(m_resource_path + "textures/galaxie.png");
+
+  for(int i = 0; i < 6; i++){
+    pixel_data sky_data;
+    try{
+      sky_data = texture_loader::file(sky_img[i]);
+    }
+    catch(const std::exception& e){
+      std::cout << "oh oh stinky" << '\n';
+    }
+      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, sky_data.channels, sky_data.width, sky_data.height, 0, 
+      sky_data.channels, sky_data.channel_type, sky_data.ptr());
+    
+
+  }
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
 //create Orbits
@@ -433,7 +462,7 @@ void ApplicationSolar::planetrenderer(){
 
   glBindVertexArray(planet_object.vertex_AO);
   glActiveTexture(GL_TEXTURE10);
-  glBindTexture(GL_TEXTURE_2D, 10); 
+  glBindTexture(GL_TEXTURE_2D, m_sunTexture); 
   glUniform1i(sampler_sun_location, 10);
 
   //debugPrint(std::to_string(x->getTexInt()));
@@ -465,17 +494,21 @@ void ApplicationSolar::planetrenderer(){
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
   int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
   int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "YourTexture");
+  int skybox_location = glGetUniformLocation(m_shaders.at("skybox").handle, "skybox_location");
 
   glUseProgram(m_shaders.at("planet").handle);
   
- 
   glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
   glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
   glUniform1f(light_intensity_shader_location, Schimmer->getLightIntesity());
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
   glUniform1f(switch_app_bool, switch_appearence);
+  glUniform1i(skybox_location, m_skytextures);
+
+
   int tmp = 10;
   unsigned int planet = 1;
+  
 
   for(std::shared_ptr<Node> x : List_of_Planets){
     glUseProgram(m_shaders.at("planet").handle);
@@ -533,8 +566,9 @@ void ApplicationSolar::planetrenderer(){
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
     //planet_geo->getParent()->setLocalTransform(Local_storage);
     planet++;
+
+
   }
-  
 }
 
 
@@ -613,6 +647,11 @@ void ApplicationSolar::initializeShaderPrograms() {
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}}});
   m_shaders.at("star").u_locs["ModelViewMatrix"] = -1;
   m_shaders.at("star").u_locs["ProjectionMatrix"] = -1;
+
+  m_shaders.emplace("skybox", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/skybox.vert"},
+                                           {GL_FRAGMENT_SHADER, m_resource_path + "shaders/skybox.frag"}}});
+  m_shaders.at("skybox").u_locs["ViewMatrix"] = -1;
+  m_shaders.at("skybox").u_locs["ProjectionMatrix"] = -1;
 
   m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/orbit.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});

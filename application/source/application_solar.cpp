@@ -420,7 +420,6 @@ void ApplicationSolar::planetrenderer(){
 
   
   int sampler_sun_location = glGetUniformLocation(m_shaders.at("sun").handle, "YourTexture");
-  glUniform1i(sampler_sun_location, m_sunTexture);
   glActiveTexture(GL_TEXTURE10);
     
   glBindTexture(GL_TEXTURE_2D, 10); 

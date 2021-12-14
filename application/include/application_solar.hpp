@@ -43,6 +43,8 @@ class ApplicationSolar : public Application {
   void initializeShaderPrograms();
   void initializeGeometry();
   void initializeTextures();
+  void initializeSun();
+
   
   // custom render methode for the planets out of the scene graph
   void planetrenderer();

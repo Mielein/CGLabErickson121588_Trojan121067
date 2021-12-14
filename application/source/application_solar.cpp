@@ -201,6 +201,8 @@ void ApplicationSolar::initializeStars(){
   glEnableVertexArrayAttrib(star_object.vertex_AO, 1);
   glVertexAttribPointer(GLuint(1),GLuint(3),GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6) , (void*)(sizeof(float)*3));
 
+
+
   //setting the draw mode to GL_POINTS 
   star_object.draw_mode = GL_POINTS;
   star_object.num_elements = GLsizei(star_count);
@@ -260,11 +262,13 @@ void ApplicationSolar::initializeTextures(){
     }
     //debugPrint(p->getTexture());
     //Initialise Texture
+    glActiveTexture(GL_TEXTURE1+planet);
     glGenTextures(1, &m_texture);
     glBindTexture(GL_TEXTURE_2D, m_texture);
     //Define Texture Sampling Parameters (mandatory)
-/*     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); */
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
@@ -274,14 +278,10 @@ void ApplicationSolar::initializeTextures(){
     std::cout<<"width: "<< planet_data.width<<std::endl;
     std::cout<<"height: "<< planet_data.height<<std::endl;
     std::cout<<"channels: "<< planet_data.channels<<std::endl; 
-    if(planet_data.ptr()){
-      glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , planet_data.width, planet_data.height, 0,
-      planet_data.channels, planet_data.channel_type, planet_data.ptr());
-    }
 
-  else {
-    debugPrint("stinky poo");
-  }
+    glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , (GLsizei)planet_data.width, (GLsizei)planet_data.height, 0,
+    planet_data.channels, planet_data.channel_type, planet_data.ptr());
+
     p->setTexInt(m_texture);
     planet++;
 }
@@ -473,15 +473,13 @@ void ApplicationSolar::planetrenderer(){
   unsigned int planet = 1;
 
   for(std::shared_ptr<Node> x : List_of_Planets){
-    glActiveTexture(GL_TEXTURE0+planet);
-    
-    glBindTexture(GL_TEXTURE_2D, planet); 
+    glUseProgram(m_shaders.at("planet").handle);
 
     glBindVertexArray(planet_object.vertex_AO);
-    
-    //debugPrint(std::to_string(x->getTexInt()));
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
-    glUseProgram(m_shaders.at("planet").handle);
+
+    glActiveTexture(GL_TEXTURE0+planet);
+
+    glBindTexture(GL_TEXTURE_2D, planet); 
 
     glUniform1i(sampler_location, x->getTexInt());
     glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
@@ -628,7 +626,7 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // load models
 void ApplicationSolar::initializeGeometry() {
-  model planet_model = model_loader::obj(m_resource_path + "models/sphere1.obj", model::NORMAL | model::TEXCOORD);
+  model planet_model = model_loader::obj(m_resource_path + "models/planet_ball_test.obj", model::NORMAL | model::TEXCOORD);
 
   // generate vertex array object
   glGenVertexArrays(1, &planet_object.vertex_AO);
@@ -650,6 +648,12 @@ void ApplicationSolar::initializeGeometry() {
   glEnableVertexAttribArray(1);
   // second attribute is 3 floats with no offset & stride
   glVertexAttribPointer(1, model::NORMAL.components, model::NORMAL.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::NORMAL]);
+  
+  //for the Textures
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::TEXCOORD]);
+  
+
 
    // generate generic buffer
   glGenBuffers(1, &planet_object.element_BO);

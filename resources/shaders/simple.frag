@@ -2,8 +2,8 @@
 #define M_PI 3.1415926535897932384626433832795
 
 in  vec3 pass_Normal, pass_Position;
-in vec2 pass_TexCoord;
 out vec4 out_Color;
+in vec2 pass_TexCoord;
 
 uniform vec3 planet_colour;
 uniform vec3 light_colour;
@@ -12,7 +12,8 @@ uniform vec3 pass_Camera;
 uniform bool switch_appearance;
 uniform sampler2D YourTexture;
 
-vec4 colour_from_tex;
+vec4 colour_from_tex = texture(YourTexture, pass_TexCoord);
+
 vec3 ambient_colour = vec3(1.0f,1.0f,1.0f);
 
 float ambient_light_intesity = 0.1;
@@ -52,16 +53,13 @@ vec3 specular_cel = ceil((light_colour*3) * spec)/3;
 vec3 phong = ambient + beta*(diffuse + specular); 
 vec3 phong_cel = ambient + beta*(diffuse_cel + specular_cel);
 
-
 float cel_shade_view = dot(normal, view_direction);
 
 vec3 colour_change;
   
-void main() {
-  colour_from_tex = texture(YourTexture, pass_TexCoord);
-  if(switch_appearance){
 
-    
+void main() {
+  if(switch_appearance){    
     if(cel_shade_view > 0.35){
     colour_change = planet_colour;
     }
@@ -69,5 +67,4 @@ void main() {
       out_Color = colour_from_tex /* *vec4(normalize(colour_change)* (phong_cel), 1.0)*/;
     }
   else out_Color = colour_from_tex/**vec4( normalize(planet_colour) *(phong), 1.0)*/ ;
-  
 }

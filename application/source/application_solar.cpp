@@ -209,6 +209,9 @@ void ApplicationSolar::initializeStars(){
 
 }
 
+//initialize Textures
+//-----------------------------------------------------------------------------------------------------------------------------------------
+
 void ApplicationSolar::initializeSun(){
   pixel_data sun_data;
   try{
@@ -220,7 +223,7 @@ void ApplicationSolar::initializeSun(){
   //Initialise Texture
     glActiveTexture(GL_TEXTURE10);
     glGenTextures(1, &m_sunTexture);
-    glBindTexture(GL_TEXTURE_2D, m_sunTexture);
+    glBindTexture(GL_TEXTURE_2D, 10);
     //Define Texture Sampling Parameters (mandatory)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -251,6 +254,7 @@ void ApplicationSolar::initializeTextures(){
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon")); 
   unsigned int planet = 0;
+
   for(auto p : list_of_Planets){
 
     pixel_data planet_data;
@@ -286,6 +290,8 @@ void ApplicationSolar::initializeTextures(){
     planet++;
 }
 
+//create Orbits
+//-----------------------------------------------------------------------------------------------------------------------------------------
 
 }
 void ApplicationSolar::initializeOrbits(){
@@ -420,14 +426,13 @@ void ApplicationSolar::planetrenderer(){
 
   
   int sampler_sun_location = glGetUniformLocation(m_shaders.at("sun").handle, "YourTexture");
-  
+
   glBindVertexArray(planet_object.vertex_AO);
   glActiveTexture(GL_TEXTURE10);
   glBindTexture(GL_TEXTURE_2D, 10); 
 
     //debugPrint(std::to_string(x->getTexInt()));
-  //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
-  glUseProgram(m_shaders.at("planet").handle);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
 
 
  

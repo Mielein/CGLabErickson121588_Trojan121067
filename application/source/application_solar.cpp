@@ -29,6 +29,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,star_object{}
  ,orbit_object{}
  ,texture_object{}
+ ,skybox_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,scene_graph_{}
@@ -48,6 +49,8 @@ ApplicationSolar::~ApplicationSolar() {
   glDeleteBuffers(1, &planet_object.element_BO);
   glDeleteBuffers(1, &star_object.vertex_BO);
   glDeleteBuffers(1, &star_object.element_BO);
+  glDeleteBuffers(1, &skybox_object.vertex_BO);
+  glDeleteBuffers(1, &skybox_object.element_BO);
   glDeleteVertexArrays(1, &planet_object.vertex_AO);
   glDeleteVertexArrays(1, &star_object.vertex_AO);
 }
@@ -293,9 +296,6 @@ void ApplicationSolar::initializeTextures(){
 }
 
 void ApplicationSolar::initializeSkybox(){
-  glGenTextures(1, &m_skytextures);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
-
   std::vector<std::string> sky_img;
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
@@ -303,6 +303,15 @@ void ApplicationSolar::initializeSkybox(){
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
+
+  glGenTextures(1, &m_skytextures);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
+
+  glGenBuffers(GLuint(1), &skybox_object.vertex_BO);
+  glBindBuffer(GL_ARRAY_BUFFER, skybox_object.vertex_BO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float)*sky_img.size(), sky_img.data(), GL_STATIC_DRAW);
+  glEnableVertexArrayAttrib(skybox_object.vertex_AO, 0);
+  glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6), NULL);
 
   for(int i = 0; i < 6; i++){
     pixel_data sky_data;
@@ -323,8 +332,6 @@ void ApplicationSolar::initializeSkybox(){
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, sky_data.channels, sky_data.width, sky_data.height, 0, 
     sky_data.channels, sky_data.channel_type, sky_data.ptr());
     
-    
-
   }
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -455,13 +462,15 @@ void ApplicationSolar::starRenderer() const{
 void ApplicationSolar::skyboxrenderer(){
   glDepthMask(GL_FALSE);
   glUseProgram(m_shaders.at("skybox").handle);
+  glActiveTexture(GL_TEXTURE0);
 
   int skybox_location = glGetUniformLocation(m_shaders.at("skybox").handle, "skybox_location");
   glUniform1i(skybox_location, m_skytextures);
 
-  glBindVertexArray(planet_object.vertex_AO);
+  glBindVertexArray(skybox_object.vertex_AO);
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
-  glDrawArrays(GL_TRIANGLES, 0, 36);
+  glDrawArrays(GL_TRIANGLES, 0, skybox_object.num_elements);
+  debugPrint("num elements: " + skybox_object.num_elements);
   glDepthMask(GL_TRUE);
 }
 

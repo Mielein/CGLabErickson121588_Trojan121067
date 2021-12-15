@@ -14,57 +14,91 @@ uniform sampler2D YourTexture;
 
 //inmports for normal mapping
 uniform bool use_mapping;
-uniform sampler2D NormalMap;
+uniform sampler2D MappingTex;
 
-//For just one planet we can choose just one value for this 
-vec2 mapping_intensity = vec2(1.0f,1.0f);
-
-vec3 ambient_colour = vec3(1.0f,1.0f,1.0f);
-vec4 colour_from_tex = texture(YourTexture, pass_TexCoord);
-
+float mapping_intensity = 1.0f;
+float shininess = 10.0f;
 float ambient_light_intesity = 0.1;
 float diffuse_reflection_coefficient = 0.6; 
 
-//this is not normilize
-vec3 ambient = ambient_colour*ambient_light_intesity;
+vec3 mapping_normal(){
+   //aplying the normal Map
+  //------------------------------------------------------------------------------------------------------------------
+  vec4 map_color = texture(MappingTex, pass_TexCoord); //for debugging reasons
+  //For just one planet we can choose just one value for this 
 
-//normalized before used
-vec3 normal = normalize(pass_Normal);
-vec3 pos = normalize(pass_Position);
+  //change of eye-space pos an TexCoordinate, using dFdx and dFdy (return derivative)
+  vec3 viewpoint0 = dFdx(pass_Camera.xyz);
+  vec3 viewpoint1 = dFdy(pass_Camera.xyz);
+  vec2 tex0 = dFdx(pass_TexCoord.st);
+  vec2 tex1 = dFdy(pass_TexCoord.st);
 
-vec3 phi = light_colour * light_intensity;
+  vec3 N = normalize(pass_Normal);
+  vec3 S = normalize(viewpoint0 * tex1.t - viewpoint1 * tex0.t); //!
+  vec3 T = normalize(viewpoint0 * tex1.s + viewpoint0 * tex0.s); //!
 
-//Y is the position of light, X is the Position of the Fragment of the Object
-//the length of the pass Position is X
-//Y is (0 0 0) so we could leave it just in this case out
-vec3 beta = phi/(4*M_PI*(length(pass_Position))*(length(pass_Position)));
+  vec3 tNorm = (texture2D(MappingTex ,pass_TexCoord).xyz * 2.0 - 1.0);
+  mat3 tension_verse = mat3(S, T, N);
+  return (tension_verse * tNorm);  //!
 
+  //vec3 ST = cross(S, T);
+  //------------------------------------------------------------------------------------------------------------------
+}
 
-//this is Cd from the slides, the deffuse color
-vec3 light_direction = normalize(vec3(0, 0, 0)-pass_Position);
-float attenuation = max(dot(normal, light_direction),0.0);
-vec3 diffuse = attenuation * light_colour;
-vec3 diffuse_cel = ceil(attenuation * (light_colour*3))/3;
-
-//here comes the spectular color, it is kinda triccy
-float shininess = 10.0f;
-vec3 view_direction = normalize(pass_Camera - pass_Position);
-
-//halfway vector is vector halfway between view direction and light direction
-//if halfway vector aligns with normal, the higher the specular 
-vec3 halfway_vector = normalize(light_direction + view_direction);
-float spec = pow(max(dot(normal,halfway_vector), 0.0), shininess*4);
-vec3 specular = light_colour * spec;
-vec3 specular_cel = ceil((light_colour*3) * spec)/3;
-vec3 phong = ambient + beta*(diffuse + specular); 
-vec3 phong_cel = ambient + beta*(diffuse_cel + specular_cel);
-
-float cel_shade_view = dot(normal, view_direction);
-
-vec3 colour_change;
-  
+vec3 get_normal(){
+  if(use_mapping){
+    return normalize(mapping_normal());
+  }
+  else{
+    return normalize(pass_Normal);
+  }
+}
 
 void main() {
+ 
+  vec3 ambient_colour = vec3(1.0f,1.0f,1.0f);
+  vec4 colour_from_tex = texture(YourTexture, pass_TexCoord);
+
+
+  //this is not normilize
+  vec3 ambient = ambient_colour*ambient_light_intesity;
+
+  //normalized before used
+
+  vec3 pos = normalize(pass_Position);
+
+  vec3 phi = light_colour * light_intensity;
+
+  //Y is the position of light, X is the Position of the Fragment of the Object
+  //the length of the pass Position is X
+  //Y is (0 0 0) so we could leave it just in this case out
+  vec3 beta = phi/(4*M_PI*(length(pass_Position))*(length(pass_Position)));
+
+  //this is Cd from the slides, the deffuse color
+  vec3 light_direction = normalize(vec3(0, 0, 0)-pass_Position);
+  float attenuation = max(dot(get_normal(), light_direction),0.0);
+  vec3 diffuse = attenuation * light_colour;
+  vec3 diffuse_cel = ceil(attenuation * (light_colour*3))/3;
+
+  //here comes the spectular color, it is kinda triccy
+  vec3 view_direction = normalize(pass_Camera - pass_Position);
+
+  //halfway vector is vector halfway between view direction and light direction
+  //if halfway vector aligns with normal, the higher the specular 
+  vec3 halfway_vector = normalize(light_direction + view_direction);
+  float spec = pow(max(dot(get_normal(),halfway_vector), 0.0), shininess*4);
+  vec3 specular = light_colour * spec;
+  vec3 specular_cel = ceil((light_colour*3) * spec)/3;
+  vec3 phong = ambient + beta*(diffuse + specular); 
+  vec3 phong_cel = ambient + beta*(diffuse_cel + specular_cel);
+
+  float cel_shade_view = dot(get_normal(), view_direction);
+
+  vec3 colour_change;
+
+  out_Color = vec4(get_normal(), 1);
+  return;
+  
   if(switch_appearance){    
     if(cel_shade_view > 0.35){
     colour_change = planet_colour;

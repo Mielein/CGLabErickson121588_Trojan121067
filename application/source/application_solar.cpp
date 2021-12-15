@@ -72,7 +72,7 @@ void ApplicationSolar::initializeSceneGraph() {
 
   Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }),{0.8f,0.8f,0.8f});
   Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{18.0f, 0.0f, 0.0f }),{0.99f,0.8f,0.8f});
-  Node earth_node("Earth", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{22.0f, 0.0f, 0.0f }),{0.0f,1.0f,1.0f});
+  Node earth_node("Earth", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{22.0f, 0.0f, 0.0f }),{0.0f,1.0f,1.0f}, true);
   Node mars_node("Mars", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{26.0f, 0.0f, 0.0f }),{1.0f,0.8f,0.8f});
   Node jupiter_node("Jupiter",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{34.0f, 0.0f, 0.0f }),{0.8f,0.5f,0.5f});
   Node saturn_node("Saturn",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{42.0f, 0.0f, 0.0f }),{1.0f,1.0f,0.0f});
@@ -82,7 +82,8 @@ void ApplicationSolar::initializeSceneGraph() {
   root_node.setTexture(m_resource_path + "textures/sunmap.png");
   mercury_node.setTexture(m_resource_path + "textures/mercurymap.png");
   venus_node.setTexture(m_resource_path + "textures/venusmap.png");
-  earth_node.setTexture(m_resource_path + "textures/earthmap1k.png");
+  earth_node.setTexture(m_resource_path + "textures/uv_grid.png");
+  earth_node.setMapping(m_resource_path + "textures/blubb.png");
   mars_node.setTexture(m_resource_path + "textures/mars_1k_color.png");
   jupiter_node.setTexture(m_resource_path + "textures/jupitermap.png");
   saturn_node.setTexture(m_resource_path + "textures/saturnmap.png");
@@ -616,7 +617,7 @@ void ApplicationSolar::planetrenderer(){
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
   int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "YourTexture");
   int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
-  int mapping_location = glGetUniformLocation(m_shaders.at("planet").handle, "NormalMap");
+  int mapping_location = glGetUniformLocation(m_shaders.at("planet").handle, "MappingTex");
   int using_mapping = glGetUniformLocation(m_shaders.at("planet").handle, "use_mapping");
   
   glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
@@ -804,7 +805,7 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // load models
 void ApplicationSolar::initializeGeometry() {
-  model planet_model = model_loader::obj(m_resource_path + "models/planet_ball_test.obj", model::NORMAL | model::TEXCOORD);
+  model planet_model = model_loader::obj(m_resource_path + "models/cube.obj", model::NORMAL | model::TEXCOORD);
 
   // generate vertex array object
   glGenVertexArrays(1, &planet_object.vertex_AO);

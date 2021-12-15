@@ -24,22 +24,26 @@ float diffuse_reflection_coefficient = 0.6;
 vec3 mapping_normal(){
    //aplying the normal Map
   //------------------------------------------------------------------------------------------------------------------
-  vec4 map_color = texture(MappingTex, pass_TexCoord); //for debugging reasons
+  //vec4 map_color = texture(MappingTex, pass_TexCoord); //for debugging reasons
   //For just one planet we can choose just one value for this 
 
   //change of eye-space pos an TexCoordinate, using dFdx and dFdy (return derivative)
-  vec3 viewpoint0 = dFdx(pass_Camera.xyz);
-  vec3 viewpoint1 = dFdy(pass_Camera.xyz);
+  vec3 viewpoint0 = dFdx(pass_Position.xyz);
+  vec3 viewpoint1 = dFdy(pass_Position.xyz);
   vec2 tex0 = dFdx(pass_TexCoord.st);
   vec2 tex1 = dFdy(pass_TexCoord.st);
 
-  vec3 N = normalize(pass_Normal);
-  vec3 S = normalize(viewpoint0 * tex1.t - viewpoint1 * tex0.t); //!
-  vec3 T = normalize(viewpoint0 * tex1.s + viewpoint0 * tex0.s); //!
 
+  //N is normal of the two tangents 
+  //all three vectors create tension space
+  vec3 N = normalize(pass_Normal);
+  vec3 S = normalize(viewpoint0 * tex1.t - viewpoint1 * tex0.t); 
+  vec3 T = normalize(viewpoint0 * tex1.s + viewpoint0 * tex0.s); 
+
+  //map tension space onto woldspace
   vec3 tNorm = (texture2D(MappingTex ,pass_TexCoord).xyz * 2.0 - 1.0);
   mat3 tension_verse = mat3(S, T, N);
-  return (tension_verse * tNorm);  //!
+  return (tension_verse * tNorm);  //mapped normal in worldspace
 
   //vec3 ST = cross(S, T);
   //------------------------------------------------------------------------------------------------------------------
@@ -95,9 +99,6 @@ void main() {
   float cel_shade_view = dot(get_normal(), view_direction);
 
   vec3 colour_change;
-
-  out_Color = vec4(get_normal(), 1);
-  return;
   
   if(switch_appearance){    
     if(cel_shade_view > 0.35){

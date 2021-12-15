@@ -82,8 +82,8 @@ void ApplicationSolar::initializeSceneGraph() {
   root_node.setTexture(m_resource_path + "textures/sunmap.png");
   mercury_node.setTexture(m_resource_path + "textures/mercurymap.png");
   venus_node.setTexture(m_resource_path + "textures/venusmap.png");
-  earth_node.setTexture(m_resource_path + "textures/uv_grid.png");
-  earth_node.setMapping(m_resource_path + "textures/blubb.png");
+  earth_node.setTexture(m_resource_path + "textures/earthmap1k.png");
+  earth_node.setMapping(m_resource_path + "textures/earth_normal_map.png");
   mars_node.setTexture(m_resource_path + "textures/mars_1k_color.png");
   jupiter_node.setTexture(m_resource_path + "textures/jupitermap.png");
   saturn_node.setTexture(m_resource_path + "textures/saturnmap.png");
@@ -805,7 +805,7 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // load models
 void ApplicationSolar::initializeGeometry() {
-  model planet_model = model_loader::obj(m_resource_path + "models/cube.obj", model::NORMAL | model::TEXCOORD);
+  model planet_model = model_loader::obj(m_resource_path + "models/sphere1.obj", model::NORMAL | model::TEXCOORD);
 
   // generate vertex array object
   glGenVertexArrays(1, &planet_object.vertex_AO);

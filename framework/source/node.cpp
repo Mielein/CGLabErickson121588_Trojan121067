@@ -31,6 +31,13 @@ Node::Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTr
     colour{_colour},
     localTransform{_localTransform}{}
 
+Node::Node(std::string _name, std::shared_ptr<Node> _parent, glm::fmat4 _localTransform, glm::vec3 _colour, bool _usesMapping):
+    name{_name},
+    parent{_parent},
+    colour{_colour},
+    localTransform{_localTransform},
+    usesMapping{_usesMapping}{}
+
 //constructor for the root node 
 Node::Node(std::string _name, glm::fmat4 _localTransform, glm::fmat4 _worldTransform):
     name{_name},
@@ -90,6 +97,10 @@ std::vector<std::shared_ptr<Node>> Node::getChildrenList() const{
 //no explanation nassessary
 std::string Node::getName() const{
     return name;
+}
+
+bool Node::is_using_mapping()const{
+    return usesMapping;
 }
 
 //calls recursive to check where a path is leading thoug
@@ -180,9 +191,27 @@ void Node::setTexture(std::string texture_new){
 std::string Node::getTexture(){
     return texture;
 }
+
 void Node::setTexInt(unsigned int texture){
     texture_ = texture;
 }
+
+void Node::setMappingInt(unsigned int mapping){
+    mappingtexture_ = mapping;
+}
+
 unsigned int Node::getTexInt(){
     return texture_;
+}
+
+unsigned int Node::getMappingInt(){
+    return mappingtexture_;
+}
+
+void Node::setMapping(std::string mapping_file_location){
+    mapping_texture = mapping_file_location;
+}
+
+std::string Node::getMapping(){
+    return mapping_texture;
 }

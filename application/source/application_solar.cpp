@@ -100,8 +100,9 @@ void ApplicationSolar::initializeSceneGraph() {
   Geometry_node saturn_geo("geo_Saturn", std::make_shared<Node>(saturn_node), glm::scale({}, glm::fvec3{0.25f, 0.25f, 0.25f }* bigger));
   Geometry_node urnaus_geo("geo_Uranus", std::make_shared<Node>(urnaus_node), glm::scale({}, glm::fvec3{0.5f, 0.5f, 0.5f }* bigger));
   Geometry_node neptune_geo("geo_Neptune", std::make_shared<Node>(neptune_node), glm::scale({}, glm::fvec3{0.45f, 0.45f, 0.45f }* bigger));
-  Node moon_node("Moon",std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), {0.5f,0.5f,0.5f});
+  Node moon_node("Moon",std::make_shared<Node>(earth_node), glm::translate({}, glm::fvec3{1.0f, 0.0f, 0.0f }), {0.5f,0.5f,0.5f}, true);   // using boolean to know if using Mapping
   moon_node.setTexture(m_resource_path + "textures/moon.png");
+  moon_node.setMapping(m_resource_path + "textures/moon_normal_map.png"); //setting mapping texture
   Geometry_node moon_geo("geo_Moon", std::make_shared<Node>(moon_node), glm::scale({}, glm::fvec3{0.08f, 0.08f, 0.08f }* bigger));
 
   Geometry_node moon_geo_orbit("geo_Moon_orbit", std::make_shared<Node>(moon_node), glm::translate({}, glm::fvec3{0.0f, 0.0f, 0.0f }));
@@ -259,7 +260,6 @@ void ApplicationSolar::initializeTextures(){
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Uranus"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Neptune"));
   list_of_Planets.push_back(scene_graph_.getRoot().getChild("Moon")); 
-  unsigned int planet = 0;
 
   for(auto p : list_of_Planets){
     pixel_data planet_data;
@@ -271,7 +271,7 @@ void ApplicationSolar::initializeTextures(){
     }
     //debugPrint(p->getTexture());
     //Initialise Texture
-    glActiveTexture(GL_TEXTURE1+planet);
+    //glActiveTexture(GL_TEXTURE1+planet);
     glGenTextures(1, &m_texture);
     glBindTexture(GL_TEXTURE_2D, m_texture);
     //Define Texture Sampling Parameters (mandatory)
@@ -292,7 +292,39 @@ void ApplicationSolar::initializeTextures(){
     planet_data.channels, planet_data.channel_type, planet_data.ptr());
 
     p->setTexInt(m_texture);
-    planet++;
+
+    //setting mapping texture?
+    if(p->is_using_mapping()){
+        try{
+        planet_data = texture_loader::file(p->getMapping());
+      }
+      catch(std::exception e){
+        std::cout<<"texture could not load for " + p->getName()<<std::endl;
+      }
+      //debugPrint(p->getTexture());
+      //Initialise Texture
+        //glActiveTexture(GL_TEXTURE1+planet);
+        glGenTextures(1, &m_mappingtexture);
+        glBindTexture(GL_TEXTURE_2D, m_mappingtexture);
+        //Define Texture Sampling Parameters (mandatory)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      
+      //Define Texture Data and Format
+  /*     std::cout<<"texture: "<< m_texture<<std::endl;
+      std::cout<<"channel_type: "<< planet_data.channel_type<<std::endl;
+      std::cout<<"width: "<< planet_data.width<<std::endl;
+      std::cout<<"height: "<< planet_data.height<<std::endl;
+      std::cout<<"channels: "<< planet_data.channels<<std::endl;  */
+
+      glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , (GLsizei)planet_data.width, (GLsizei)planet_data.height, 0,
+      planet_data.channels, planet_data.channel_type, planet_data.ptr());
+
+      p->setMappingInt(m_mappingtexture);
+    }
   }
 }
 
@@ -582,8 +614,10 @@ void ApplicationSolar::planetrenderer(){
   int planet_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "planet_colour");
   int light_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_colour");
   int light_intensity_shader_location = glGetUniformLocation(m_shaders.at("planet").handle, "light_intensity");
-  int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
   int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "YourTexture");
+  int switch_app_bool = glGetUniformLocation(m_shaders.at("planet").handle, "switch_appearance");
+  int mapping_location = glGetUniformLocation(m_shaders.at("planet").handle, "NormalMap");
+  int using_mapping = glGetUniformLocation(m_shaders.at("planet").handle, "use_mapping");
   
   glm::vec4 cam_pos = scene_graph_.getRoot().getChild("Camera")->getLocalTransform()* m_view_transform *glm::vec4{0.0f,0.0f,0.0f,1.0f};
   glUniform3f(camera_location, cam_pos.x, cam_pos.y, cam_pos.z);
@@ -591,20 +625,29 @@ void ApplicationSolar::planetrenderer(){
   glUniform3f(light_shader_location, Schimmer->getLightColour().x, Schimmer->getLightColour().y, Schimmer->getLightColour().z);
   glUniform1f(switch_app_bool, switch_appearence);
 
-
   int tmp = 10;
   unsigned int planet = 1;
-  
 
   for(std::shared_ptr<Node> x : List_of_Planets){
+    //if it doesent work maybe here an if statement
+    //glUniform1i(mapping_location, x->getMappingInt());
     glUseProgram(m_shaders.at("planet").handle);
 
     glBindVertexArray(planet_object.vertex_AO);
-    glActiveTexture(GL_TEXTURE0+planet);
-    glBindTexture(GL_TEXTURE_2D, planet); 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, x->getTexInt()); 
 
-    glUniform1i(sampler_location, x->getTexInt());
+    glUniform1i(sampler_location, 0);
     glUniform3f(planet_shader_location, x->getColour().x, x->getColour().y, x->getColour().z);
+
+    glActiveTexture(GL_TEXTURE1);
+
+    if(x->is_using_mapping()){
+      glBindTexture(GL_TEXTURE_2D, x->getMappingInt());
+    }
+
+    glUniform1i(mapping_location, 1);
+    glUniform1b(using_mapping, x->is_using_mapping());
 
     glm::fmat4 final_matrix;
 

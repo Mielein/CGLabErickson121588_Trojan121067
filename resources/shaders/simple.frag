@@ -12,9 +12,15 @@ uniform vec3 pass_Camera;
 uniform bool switch_appearance;
 uniform sampler2D YourTexture;
 
-vec4 colour_from_tex = texture(YourTexture, pass_TexCoord);
+//inmports for normal mapping
+uniform bool use_mapping;
+uniform sampler2D NormalMap;
+
+//For just one planet we can choose just one value for this 
+vec2 mapping_intensity = vec2(1.0f,1.0f);
 
 vec3 ambient_colour = vec3(1.0f,1.0f,1.0f);
+vec4 colour_from_tex = texture(YourTexture, pass_TexCoord);
 
 float ambient_light_intesity = 0.1;
 float diffuse_reflection_coefficient = 0.6; 

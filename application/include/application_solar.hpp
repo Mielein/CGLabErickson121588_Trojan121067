@@ -39,6 +39,7 @@ class ApplicationSolar : public Application {
 
   unsigned int m_sunTexture;
   unsigned int m_texture;
+  unsigned int m_mappingtexture;
   unsigned int m_skytextures;
 
  protected:

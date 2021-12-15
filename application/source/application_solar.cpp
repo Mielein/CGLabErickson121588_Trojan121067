@@ -70,26 +70,32 @@ void ApplicationSolar::initializeSceneGraph() {
   Node orbit_node("orbit");
   Camera_node camera("Camera",glm::transpose(glm::inverse(m_view_transform)) , std::make_shared<Node>(root_node));
 
-  Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }),{0.8f,0.8f,0.8f});
-  Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{18.0f, 0.0f, 0.0f }),{0.99f,0.8f,0.8f});
+  Node mercury_node("Mercury", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{14.0f, 0.0f, 0.0f }),{0.8f,0.8f,0.8f}, true);
+  Node venus_node("Venus", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{18.0f, 0.0f, 0.0f }),{0.99f,0.8f,0.8f}, true);
   Node earth_node("Earth", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{22.0f, 0.0f, 0.0f }),{0.0f,1.0f,1.0f}, true);
-  Node mars_node("Mars", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{26.0f, 0.0f, 0.0f }),{1.0f,0.8f,0.8f});
-  Node jupiter_node("Jupiter",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{34.0f, 0.0f, 0.0f }),{0.8f,0.5f,0.5f});
-  Node saturn_node("Saturn",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{42.0f, 0.0f, 0.0f }),{1.0f,1.0f,0.0f});
-  Node urnaus_node("Uranus",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{50.0f, 0.0f, 0.0f }),{0.0f,0.0f,1.0f});
-  Node neptune_node("Neptune",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }),{0.2f,0.2f,1.0f});
+  Node mars_node("Mars", std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{26.0f, 0.0f, 0.0f }),{1.0f,0.8f,0.8f}, true);
+  Node jupiter_node("Jupiter",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{34.0f, 0.0f, 0.0f }),{0.8f,0.5f,0.5f}, true);
+  Node saturn_node("Saturn",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{42.0f, 0.0f, 0.0f }),{1.0f,1.0f,0.0f}, true);
+  Node urnaus_node("Uranus",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{50.0f, 0.0f, 0.0f }),{0.0f,0.0f,1.0f}, true);
+  Node neptune_node("Neptune",std::make_shared<Node>(root_node), glm::translate({}, glm::fvec3{58.0f, 0.0f, 0.0f }),{0.2f,0.2f,1.0f}, true);
 
   root_node.setTexture(m_resource_path + "textures/sunmap.png");
   mercury_node.setTexture(m_resource_path + "textures/mercurymap.png");
+  mercury_node.setMapping(m_resource_path + "textures/mercury_normal_map.png");
   venus_node.setTexture(m_resource_path + "textures/venusmap.png");
+  venus_node.setMapping(m_resource_path + "textures/venus_normal_map.png");
   earth_node.setTexture(m_resource_path + "textures/earthmap1k.png");
   earth_node.setMapping(m_resource_path + "textures/earth_normal_map.png");
   mars_node.setTexture(m_resource_path + "textures/mars_1k_color.png");
+  mars_node.setMapping(m_resource_path + "textures/mars_normal_map.png");
   jupiter_node.setTexture(m_resource_path + "textures/jupitermap.png");
+  jupiter_node.setMapping(m_resource_path + "textures/jupiter_normal_map.png");
   saturn_node.setTexture(m_resource_path + "textures/saturnmap.png");
+  saturn_node.setMapping(m_resource_path + "textures/saturn_normal_map.png");
   urnaus_node.setTexture(m_resource_path + "textures/uranusmap.png");
+  urnaus_node.setMapping(m_resource_path + "textures/uranus_normal_map.png");
   neptune_node.setTexture(m_resource_path + "textures/neptunemap.png");
-  
+  neptune_node.setMapping(m_resource_path + "textures/neptune_normal_map.png");  
 
   float bigger = 3.3f;
 

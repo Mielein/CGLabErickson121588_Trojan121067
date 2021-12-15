@@ -630,6 +630,7 @@ void ApplicationSolar::planetrenderer(){
   unsigned int planet = 1;
 
   for(std::shared_ptr<Node> x : List_of_Planets){
+    
     //if it doesent work maybe here an if statement
     //glUniform1i(mapping_location, x->getMappingInt());
     glUseProgram(m_shaders.at("planet").handle);
@@ -652,16 +653,17 @@ void ApplicationSolar::planetrenderer(){
 
     glm::fmat4 final_matrix;
 
-
+    glm::fmat4 rotation_around_self = glm::rotate(glm::fmat4{}, 0.0005f*tmp*speed ,glm::fvec3{0.0f, 1.0f, 0.0f});
     if(x->getName() == "Moon"){
       //getting the Geometry-node equivalent to Node x
       std::shared_ptr<Node> planet_geo = x->getChild("geo_" + x->getName());
       //initializes Matrix with localTransform of Parent of x
       //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
       glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp*speed ,glm::fvec3{0.0f, 1.0f, 0.0f});
+      x->getChild("geo_Moon")->getLocalTransform()*rotate(glm::fmat4{}, float(glfwGetTime()) ,glm::fvec3{0.0f, 1.0f, 0.0f});
       //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
       //this way x sees the parent as the center of the orbit
-      glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
+      glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform()*rotation_around_self; 
       planet_geo->getParent()->setLocalTransform(newTransform);
 
       final_matrix = earth_local_transform * planet_geo->getParent()->getLocalTransform() * planet_geo->getLocalTransform();
@@ -672,9 +674,10 @@ void ApplicationSolar::planetrenderer(){
       //initializes Matrix with localTransform of Parent of x
       //We set our orientation source to the local transform of the parent because we want our planets to rotate around their parent
       glm::fmat4 rotation_matrix = glm::rotate(glm::fmat4{}, 0.0001f*tmp*speed ,glm::fvec3{0.0f, 1.0f, 0.0f});
+      
       //we multiply LocalTransform of the Geometry Node and the rotation Matrix and set it as their parents localTransform,
       //this way x sees the parent as the center of the orbit
-      glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform(); 
+      glm::fmat4 newTransform = rotation_matrix * planet_geo->getParent()->getLocalTransform()*rotation_around_self; 
       planet_geo->getParent()->setLocalTransform(newTransform);
       //debugPrint(glm::to_string(planet_geo->getParent()->getLocalTransform()));
       final_matrix = planet_geo->getWorldTransform();

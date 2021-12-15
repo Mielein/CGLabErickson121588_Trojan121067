@@ -53,6 +53,7 @@ ApplicationSolar::~ApplicationSolar() {
   glDeleteBuffers(1, &skybox_object.element_BO);
   glDeleteVertexArrays(1, &planet_object.vertex_AO);
   glDeleteVertexArrays(1, &star_object.vertex_AO);
+  glDeleteVertexArrays(1, &skybox_object.vertex_AO);
 }
 unsigned int m_texture;
 unsigned int m_sunTexture;
@@ -303,10 +304,13 @@ void ApplicationSolar::initializeSkybox(){
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
-/* 
+
   glGenTextures(1, &m_skytextures);
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
- */
+ 
+  glGenVertexArrays(GLint(1), &skybox_object.vertex_AO);
+  glBindVertexArray(skybox_object.vertex_AO);
+
   glGenBuffers(GLuint(1), &skybox_object.vertex_BO);
   glBindBuffer(GL_ARRAY_BUFFER, skybox_object.vertex_BO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float)*sky_img.size(), sky_img.data(), GL_STATIC_DRAW);
@@ -338,6 +342,9 @@ void ApplicationSolar::initializeSkybox(){
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+  skybox_object.num_elements = 36;
+  skybox_object.draw_mode = GL_TRIANGLES;
 }
 
 //create Orbits
@@ -471,8 +478,8 @@ void ApplicationSolar::skyboxrenderer(){
   glUniform1i(skybox_location, m_skytextures);
 
   
-  glDrawArrays(GL_TRIANGLES, 0, skybox_object.num_elements);
-  debugPrint("num elements: " + skybox_object.num_elements);
+  glDrawArrays(skybox_object.draw_mode, 0, skybox_object.num_elements);
+  //debugPrint("num elements: " + skybox_object.num_elements);
   glDepthMask(GL_TRUE);
 }
 

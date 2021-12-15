@@ -75,6 +75,9 @@ class ApplicationSolar : public Application {
   // camera projection matrix
   glm::fmat4 m_view_projection;
   // initialized sceneGraph with information about objects and there rotation
+
+  GLenum active_skymap;
+
 };
 
 #endif

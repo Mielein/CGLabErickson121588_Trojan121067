@@ -294,9 +294,14 @@ void ApplicationSolar::initializeTextures(){
     p->setTexInt(m_texture);
     planet++;
   }
-}
 
-void ApplicationSolar::initializeSkybox(){
+  //getting the active Texture
+  active_skymap = GL_TEXTURE2+planet;
+  int active_side = 0;
+
+  glActiveTexture(active_skymap);
+
+  //Skybox_file resource locations
   std::vector<std::string> sky_img;
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
@@ -305,26 +310,19 @@ void ApplicationSolar::initializeSkybox(){
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
   sky_img.push_back(m_resource_path + "textures/galaxie.png");
 
-  glGenTextures(1, &m_skytextures);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
- 
-  glGenVertexArrays(GLint(1), &skybox_object.vertex_AO);
-  glBindVertexArray(skybox_object.vertex_AO);
+  glGenTextures(1, &m_texture);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture);
 
-  glGenBuffers(GLuint(1), &skybox_object.vertex_BO);
-  glBindBuffer(GL_ARRAY_BUFFER, skybox_object.vertex_BO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(float)*sky_img.size(), sky_img.data(), GL_STATIC_DRAW);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(GLuint(0), GLuint(3), GL_FLOAT, GL_FALSE, GLsizei(sizeof(float)*6), NULL);
 
-  for(int i = 0; i < 6; i++){
+  for(auto img : sky_img){
     pixel_data sky_data;
     try{
-      sky_data = texture_loader::file(sky_img[i]);
+      sky_data = texture_loader::file(img);
     }
     catch(const std::exception& e){
       std::cout << "oh oh stinky" << '\n';
     }
+
     std::cout<<"SKYBOX"<<std::endl;
     std::cout<<"texture: "<< m_skytextures<<std::endl;
     std::cout<<"channel_type: "<< sky_data.channel_type<<std::endl;
@@ -332,19 +330,83 @@ void ApplicationSolar::initializeSkybox(){
     std::cout<<"height: "<< sky_data.height<<std::endl;
     std::cout<<"channels: "<< sky_data.channels<<std::endl;
 
-    
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, sky_data.channels, sky_data.width, sky_data.height, 0, 
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + active_side, 0, sky_data.channels, sky_data.width, sky_data.height, 0, 
     sky_data.channels, sky_data.channel_type, sky_data.ptr());
-    
+    active_side++;
+
   }
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
 
-  skybox_object.num_elements = 36;
+void ApplicationSolar::initializeSkybox(){
+  std::vector<GLfloat> skybox_set = {
+    	// positions   
+      -10.0f,  10.0f, -10.0f,   -10.0f, -10.0f, -10.0f,    10.0f, -10.0f, -10.0f,    10.0f, -10.0f, -10.0f,    10.0f,  10.0f, -10.0f,   -10.0f,  10.0f, -10.0f,      -10.0f, -10.0f,  10.0f,   -10.0f, -10.0f, -10.0f,   -10.0f,  10.0f, -10.0f,   -10.0f,  10.0f, -10.0f,   -10.0f,  10.0f,  10.0f,   -10.0f, -10.0f,  10.0f,       10.0f, -10.0f, -10.0f,    10.0f, -10.0f,  10.0f,    10.0f,  10.0f,  10.0f,    10.0f,  10.0f,  10.0f,    10.0f,  10.0f, -10.0f,    10.0f, -10.0f, -10.0f,       -10.0f, -10.0f,  10.0f,   -10.0f,  10.0f,  10.0f,    10.0f,  10.0f,  10.0f,    10.0f,  10.0f,  10.0f,    10.0f, -10.0f,  10.0f,   -10.0f, -10.0f,  10.0f,      -10.0f,  10.0f, -10.0f,    10.0f,  10.0f, -10.0f,    10.0f,  10.0f,  10.0f,    10.0f,  10.0f,  10.0f,   -10.0f,  10.0f,  10.0f,   -10.0f,  10.0f, -10.0f,      -10.0f, -10.0f, -10.0f,   -10.0f, -10.0f,  10.0f,    10.0f, -10.0f, -10.0f,    10.0f, -10.0f, -10.0f,   -10.0f, -10.0f,  10.0f,    10.0f, -10.0f,  10.0f};
+/* 
+    	-1.0f,  1.0f, -1.0f,
+    	-1.0f, -1.0f, -1.0f,
+    	 1.0f, -1.0f, -1.0f,
+    	 1.0f, -1.0f, -1.0f,
+    	 1.0f,  1.0f, -1.0f,
+    	-1.0f,  1.0f, -1.0f,
+	
+	    -1.0f, -1.0f,  1.0f,
+	    -1.0f, -1.0f, -1.0f,
+	    -1.0f,  1.0f, -1.0f,
+	    -1.0f,  1.0f, -1.0f,
+	    -1.0f,  1.0f,  1.0f,
+	    -1.0f, -1.0f,  1.0f,
+	
+	    1.0f, -1.0f, -1.0f,
+	    1.0f, -1.0f,  1.0f,
+	    1.0f,  1.0f,  1.0f,
+	    1.0f,  1.0f,  1.0f,
+	    1.0f,  1.0f, -1.0f,
+	    1.0f, -1.0f, -1.0f,
+	
+	    -1.0f, -1.0f,  1.0f,
+	    -1.0f,  1.0f,  1.0f,
+	    1.0f,  1.0f,  1.0f,
+	    1.0f,  1.0f,  1.0f,
+	    1.0f, -1.0f,  1.0f,
+	    -1.0f, -1.0f,  1.0f,
+	
+	    -1.0f,  1.0f, -1.0f,
+	    1.0f,  1.0f, -1.0f,
+	    1.0f,  1.0f,  1.0f,
+	    1.0f,  1.0f,  1.0f,
+	    -1.0f,  1.0f,  1.0f,
+	    -1.0f,  1.0f, -1.0f,
+	
+	    -1.0f, -1.0f, -1.0f,
+	    -1.0f, -1.0f,  1.0f,
+	    1.0f, -1.0f, -1.0f,
+	    1.0f, -1.0f, -1.0f,
+	    -1.0f, -1.0f,  1.0f,
+    	1.0f, -1.0f,  1.0f
+	}; */
+
+  glGenVertexArrays(1, &skybox_object.vertex_AO);
+  glBindVertexArray(skybox_object.vertex_AO);
+
+  glGenBuffers(1, &skybox_object.vertex_BO);
+  glBindBuffer(GL_ARRAY_BUFFER, skybox_object.vertex_BO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float)*skybox_set.size(), skybox_set.data(), GL_STATIC_DRAW);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, GLsizei(3 * sizeof(float)), NULL);
+
+  std::cout<< std::to_string(skybox_object.vertex_AO) << std::endl;
+
   skybox_object.draw_mode = GL_TRIANGLES;
+  skybox_object.num_elements = GLsizei(skybox_set.size());
+
+/*   glGenTextures(1, &m_skytextures);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures); */
 }
 
 //create Orbits
@@ -426,14 +488,30 @@ void ApplicationSolar::initializeOrbits(){
 void ApplicationSolar::render() {
   
   // bind shader to upload uniforms
-  skyboxrenderer();
   starRenderer();
   planetrenderer();
   orbitRenderer();
+  skyboxrenderer();
   
 } 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+void ApplicationSolar::skyboxrenderer(){
+  glDepthMask(GL_FALSE);
+  glUseProgram(m_shaders.at("skybox").handle);
+  glBindVertexArray(skybox_object.vertex_AO);
+
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
+  glActiveTexture(active_skymap);
+
+  int skybox_location = glGetUniformLocation(m_shaders.at("skybox").handle, "skybox_location");
+  glUniform1i(skybox_location, m_skytextures);
+
+  glDrawArrays(skybox_object.draw_mode, 0, skybox_object.num_elements);
+  //debugPrint("num elements: " + skybox_object.num_elements);
+  glDepthFunc(GL_LESS);
+}
+
 void ApplicationSolar::orbitRenderer() const{
   glUseProgram(m_shaders.at("orbit").handle);
   //this Vector holds the values for which the orbits need to be scaled
@@ -465,23 +543,6 @@ void ApplicationSolar::starRenderer() const{
     glDrawArrays(star_object.draw_mode,GLint(0), star_object.num_elements);
     //glDrawElements(star_object.draw_mode, star_object.num_elements, model::INDEX.type, &star_object);
  }
-
-void ApplicationSolar::skyboxrenderer(){
-  glDepthMask(GL_FALSE);
-  glUseProgram(m_shaders.at("skybox").handle);
-  glBindVertexArray(skybox_object.vertex_AO);
-
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, m_skytextures);
-
-  int skybox_location = glGetUniformLocation(m_shaders.at("skybox").handle, "skybox_location");
-  glUniform1i(skybox_location, m_skytextures);
-
-  
-  glDrawArrays(skybox_object.draw_mode, 0, skybox_object.num_elements);
-  //debugPrint("num elements: " + skybox_object.num_elements);
-  glDepthMask(GL_TRUE);
-}
 
 void ApplicationSolar::planetrenderer(){
 

@@ -354,12 +354,12 @@ void ApplicationSolar::initializeSkybox(){
   glActiveTexture(GL_TEXTURE10);
   glGenTextures(1, &m_skytextures);
   debugPrint(std::to_string(m_skytextures));
-  pixel_data sky_data_front = texture_loader::file(m_resource_path + "textures/right.png");
-  pixel_data sky_data_back = texture_loader::file(m_resource_path + "textures/left.png");
-  pixel_data sky_data_top = texture_loader::file(m_resource_path + "textures/bottom.png");
-  pixel_data sky_data_bottom = texture_loader::file(m_resource_path + "textures/top.png");
-  pixel_data sky_data_left = texture_loader::file(m_resource_path + "textures/front.png");
-  pixel_data sky_data_right = texture_loader::file(m_resource_path + "textures/back.png");
+  pixel_data sky_data_front = texture_loader::file(m_resource_path + "textures/right1.png");
+  pixel_data sky_data_back = texture_loader::file(m_resource_path + "textures/left1.png");
+  pixel_data sky_data_top = texture_loader::file(m_resource_path + "textures/bottom1.png");
+  pixel_data sky_data_bottom = texture_loader::file(m_resource_path + "textures/top1.png");
+  pixel_data sky_data_left = texture_loader::file(m_resource_path + "textures/back1.png");
+  pixel_data sky_data_right = texture_loader::file(m_resource_path + "textures/front1.png");
 
       
   glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, sky_data_right.channels, sky_data_right.width, sky_data_right.height, 0, 

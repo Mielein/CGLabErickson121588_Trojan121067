@@ -31,6 +31,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,framebuffer_obj{}
  ,texture_object{}
  ,skybox_object{}
+ ,quad_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,scene_graph_{}
@@ -181,15 +182,12 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenFramebuffers(1, &framebuffer_obj.handle);
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_obj.handle);
 
-//initialise framebuffer texture
+//create colour attachment
   //glActiveTexture(GL_TEXTURE0);
   glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , initial_resolution.x, initial_resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -197,6 +195,8 @@ void ApplicationSolar::initializeFramebuffer(){
 //Define Attachments (one call for each attachment to be defined)
   glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, framebuffer_obj.fbo_tex_handle, 0);
 
+
+//create renderbuffer attachment
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
@@ -545,13 +545,28 @@ void ApplicationSolar::initializeOrbits(){
 ////////////////////////////////////rendering/////////////////////////////////////////////////
 
 void ApplicationSolar::render() {
-  
+  //bind offscreen framebuffer
+  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_obj.handle);
+  //clear framebuffer
+  glClearColor(0.1f,0.1f,0.1f,0.1f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   // bind shader to upload uniforms
   skyboxrenderer();
   starRenderer();
   planetrenderer();
   orbitRenderer();
-  
+
+  //render default framebuffer
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  //clear default framebuffer
+  glClearColor(0.1f,0.1f,0.1f,0.1f);
+  glClear(GL_COLOR_BUFFER_BIT); //not using depthbuffer, so no need to clear that;
+
+  glUseProgram(m_shaders.at("buffer").handle);
+  glBindVertexArray(quad_object.vertex_AO);
+  glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
+  glDrawArrays(GL_TRIANGLES, 0, 6); //draw quad made out of two triangles 
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
 } 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -852,6 +867,55 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // load models
 void ApplicationSolar::initializeGeometry() {
+
+  //initialise quad object
+
+  float quadVertices[] = {
+    -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f
+  };
+
+  // generate vertex array object
+  glGenVertexArrays(1, &quad_object.vertex_AO);
+  // bind the array for attaching buffers
+  glBindVertexArray(quad_object.vertex_AO);
+
+  // generate generic buffer
+  glGenBuffers(1, &quad_object.vertex_BO);
+  // bind this as an vertex array buffer containing all attributes
+  glBindBuffer(GL_ARRAY_BUFFER, quad_object.vertex_BO);
+  // configure currently bound array buffer
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, quadVertices, GL_STATIC_DRAW); //12 because of vertices
+
+  // activate first attribute on gpu
+  glEnableVertexAttribArray(0);
+  // first attribute is 3 floats with no offset & stride
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+  // activate second attribute on gpu
+  glEnableVertexAttribArray(1);
+  // second attribute is 3 floats with no offset & stride
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,  4 * sizeof(float), (void*)(2*sizeof(float)));
+  
+
+
+   // generate generic buffer
+  glGenBuffers(1, &planet_object.element_BO);
+  // bind this as an vertex array buffer containing all attributes
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planet_object.element_BO);
+  // configure currently bound array buffer
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, model::INDEX.size * planet_model.indices.size(), planet_model.indices.data(), GL_STATIC_DRAW);
+
+  // store type of primitive to draw
+  planet_object.draw_mode = GL_TRIANGLES;
+  // transfer number of indices to model object 
+  planet_object.num_elements = GLsizei(planet_model.indices.size());
+  //std::cout << "Geometry_initializer" << std::endl;
+
+
+
+
+
+
   model planet_model = model_loader::obj(m_resource_path + "models/sphere1.obj", model::NORMAL | model::TEXCOORD);
 
   // generate vertex array object

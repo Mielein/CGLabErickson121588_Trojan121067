@@ -72,6 +72,7 @@ class ApplicationSolar : public Application {
   model_object orbit_object;
   model_object texture_object;
   model_object skybox_object;
+  model_object quad_object;
   framebuffer_object framebuffer_obj;
   // camera transform matrix
   glm::fmat4 m_view_transform;

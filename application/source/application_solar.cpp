@@ -861,6 +861,13 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("orbit").u_locs["ModelMatrix"] = -1;
   m_shaders.at("orbit").u_locs["ViewMatrix"] = -1;
   m_shaders.at("orbit").u_locs["ProjectionMatrix"] = -1;
+
+  m_shaders.emplace("quad", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/quad.vert"},
+                                           {GL_FRAGMENT_SHADER, m_resource_path + "shaders/quad.frag"}}});
+  // request uniform locations for shader program
+  m_shaders.at("quad").u_locs["ModelMatrix"] = -1;
+  m_shaders.at("quad").u_locs["ViewMatrix"] = -1;
+  m_shaders.at("quad").u_locs["ProjectionMatrix"] = -1;
   //std::cout << "initialize shader programms " << std::endl;
 
 }
@@ -902,6 +909,10 @@ void ApplicationSolar::initializeGeometry() {
   // second attribute is 3 floats with no offset & stride
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,  4 * sizeof(float), (void*)(2*sizeof(float)));
   
+   // store type of primitive to draw
+  quad_object.draw_mode = GL_TRIANGLES;
+  // transfer number of indices to model object 
+  quad_object.num_elements = GLsizei(6);
 
   model planet_model = model_loader::obj(m_resource_path + "models/sphere1.obj", model::NORMAL | model::TEXCOORD);
 

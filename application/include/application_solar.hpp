@@ -46,6 +46,7 @@ class ApplicationSolar : public Application {
   // initialize all objects in the graph to create the sun system
   void initializeSceneGraph();
   void initializeShaderPrograms();
+  void initializeFramebuffer();
   void initializeGeometry();
   void initializeTextures();
   void initializeSun();
@@ -71,6 +72,7 @@ class ApplicationSolar : public Application {
   model_object orbit_object;
   model_object texture_object;
   model_object skybox_object;
+  framebuffer_object framebuffer_obj;
   // camera transform matrix
   glm::fmat4 m_view_transform;
   // camera projection matrix

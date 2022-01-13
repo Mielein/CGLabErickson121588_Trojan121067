@@ -28,6 +28,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,planet_object{}
  ,star_object{}
  ,orbit_object{}
+ ,framebuffer_obj{}
  ,texture_object{}
  ,skybox_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
@@ -174,6 +175,44 @@ void ApplicationSolar::initializeSceneGraph() {
 
 }
 
+//--------------------------------------------------------FRAMEBUFFER--------------------------------------------------------------------
+void ApplicationSolar::initializeFramebuffer(){
+//Define Framebuffer
+  glGenFramebuffers(1, &framebuffer_obj.handle);
+  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_obj.handle);
+
+//initialise framebuffer texture
+  //glActiveTexture(GL_TEXTURE0);
+  glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
+  glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , initial_resolution.x, initial_resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+//Define Attachments (one call for each attachment to be defined)
+  glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, framebuffer_obj.fbo_tex_handle, 0);
+
+  glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
+  glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
+  //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, initial_resolution.x, initial_resolution.y); //not sure if initialres. is okay
+
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer_obj.rb_handle);
+//Define which Buffers to Write
+/*  GLenum draw_buffers[n] = {GL_COLOR_ATTACHMENT0};
+   glDrawBuffers(n, draw_buffers);
+  glDrawBuffers(1, GL_DEPTH_ATTACHMENT); */
+  //Check that the Framebuffer can be written; hence, that...
+  if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE ){
+    debugPrint("ERROR: FRAMEBUFFER. not complete!");
+  }
+}
+//--------------------------------------------------------------------------------------------------------------------------------------
 
 void ApplicationSolar::initializeStars(){
 
@@ -327,8 +366,7 @@ void ApplicationSolar::initializeTextures(){
       std::cout<<"height: "<< planet_data.height<<std::endl;
       std::cout<<"channels: "<< planet_data.channels<<std::endl;  */
 
-      glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , (GLsizei)planet_data.width, (GLsizei)planet_data.height, 0,
-      planet_data.channels, planet_data.channel_type, planet_data.ptr());
+      
 
       p->setMappingInt(m_mappingtexture);
     }

@@ -871,12 +871,14 @@ void ApplicationSolar::initializeGeometry() {
   //initialise quad object
 
   float quadVertices[] = {
-    -1.0f, -1.0f, 
-    1.0f, -1.0f,
-    1.0f, 1.0f,
-    -1.0f, 1.0f,
-    -1.0f, 1.0f,
-    1.0f, -1.0f
+    //pos          //texCoords
+    -1.0f, 1.0f,   0.0f, 1.0f,
+    -1.0f, -1.0f,  0.0f, 0.0f,
+    1.0f, -1.0f,   1.0f, 0.0f,
+
+    -1.0f, 1.0f,  0.0f, 1.0f,
+    -1.0f, 1.0f,  1.0f, 0.0f,
+    1.0f, -1.0f,  1.0f, 1.0f
   };
 
   // generate vertex array object
@@ -900,25 +902,6 @@ void ApplicationSolar::initializeGeometry() {
   // second attribute is 3 floats with no offset & stride
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,  4 * sizeof(float), (void*)(2*sizeof(float)));
   
-
-
-   // generate generic buffer
-  glGenBuffers(1, &planet_object.element_BO);
-  // bind this as an vertex array buffer containing all attributes
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planet_object.element_BO);
-  // configure currently bound array buffer
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, model::INDEX.size * planet_model.indices.size(), planet_model.indices.data(), GL_STATIC_DRAW);
-
-  // store type of primitive to draw
-  planet_object.draw_mode = GL_TRIANGLES;
-  // transfer number of indices to model object 
-  planet_object.num_elements = GLsizei(planet_model.indices.size());
-  //std::cout << "Geometry_initializer" << std::endl;
-
-
-
-
-
 
   model planet_model = model_loader::obj(m_resource_path + "models/sphere1.obj", model::NORMAL | model::TEXCOORD);
 

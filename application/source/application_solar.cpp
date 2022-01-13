@@ -44,6 +44,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeSkybox();
   initializeSun();
   initializeShaderPrograms();
+  initializeFramebuffer();
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -178,6 +179,7 @@ void ApplicationSolar::initializeSceneGraph() {
 
 //--------------------------------------------------------FRAMEBUFFER--------------------------------------------------------------------
 void ApplicationSolar::initializeFramebuffer(){
+  debugPrint("Initialising Framebuffer");
 //Define Framebuffer
   glGenFramebuffers(1, &framebuffer_obj.handle);
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_obj.handle);
@@ -211,6 +213,7 @@ void ApplicationSolar::initializeFramebuffer(){
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE ){
     debugPrint("ERROR: FRAMEBUFFER. not complete!");
   }
+  debugPrint("Framebuffer Initialised");
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -545,6 +548,7 @@ void ApplicationSolar::initializeOrbits(){
 ////////////////////////////////////rendering/////////////////////////////////////////////////
 
 void ApplicationSolar::render() {
+
   //bind offscreen framebuffer
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_obj.handle);
   //clear framebuffer
@@ -561,12 +565,14 @@ void ApplicationSolar::render() {
   //clear default framebuffer
   glClearColor(0.1f,0.1f,0.1f,0.1f);
   glClear(GL_COLOR_BUFFER_BIT); //not using depthbuffer, so no need to clear that;
-
-  glUseProgram(m_shaders.at("buffer").handle);
+  
+  glUseProgram(m_shaders.at("quad").handle);
   glBindVertexArray(quad_object.vertex_AO);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
   glDrawArrays(GL_TRIANGLES, 0, 6); //draw quad made out of two triangles 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  
 } 
 
 ////////////////////////////////////////////////////////////////////////////////////////////

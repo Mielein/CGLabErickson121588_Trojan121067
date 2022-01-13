@@ -865,6 +865,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.emplace("quad", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/quad.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/quad.frag"}}});
   // request uniform locations for shader program
+  m_shaders.at("quad").u_locs["screen_texture"] = -1;
   m_shaders.at("quad").u_locs["ModelMatrix"] = -1;
   m_shaders.at("quad").u_locs["ViewMatrix"] = -1;
   m_shaders.at("quad").u_locs["ProjectionMatrix"] = -1;

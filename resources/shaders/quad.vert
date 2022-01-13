@@ -1,15 +1,11 @@
 #version 150
 #extension GL_ARB_explicit_attrib_location : require
-layout(location = 0) in vec3 in_Position;
-layout(location = 1) in vec3 in_Color;
+layout(location = 0) in vec2 in_Position;
+layout(location = 1) in vec2 in_TexCoords;
 
-//Matrix Uniforms uploaded with glUniform*
-uniform mat4 ModelViewMatrix;
-uniform mat4 ProjectionMatrix;
-
-out vec3 pass_Color;
+out vec2 pass_TexCoords;
 
 void main() {
-	gl_Position = ProjectionMatrix * ModelViewMatrix * vec4(in_Position, 1.0);
-	pass_Color = in_Color;
+	gl_Position = vec4(in_Position.x, in_Position.y, 0.0, 1.0);
+	pass_TexCoords = in_TexCoords;
 }

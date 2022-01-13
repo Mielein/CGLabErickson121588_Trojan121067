@@ -61,6 +61,7 @@ ApplicationSolar::~ApplicationSolar() {
 unsigned int m_texture;
 unsigned int m_sunTexture;
 unsigned int m_skytextures;
+
 /////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::tmpfunk(){
   std::cout<< "this is tmpfunk" << std::endl;
@@ -189,26 +190,23 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , initial_resolution.x, initial_resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , GLsizei(600), GLsizei(400), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
 //Define Attachments (one call for each attachment to be defined)
-  glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, framebuffer_obj.fbo_tex_handle, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle,  0);
 
 
 //create renderbuffer attachment
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, initial_resolution.x, initial_resolution.y); //not sure if initialres. is okay
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 600, 400); //not sure if initialres. is okay
 
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer_obj.rb_handle);
-//Define which Buffers to Write
-/*  GLenum draw_buffers[n] = {GL_COLOR_ATTACHMENT0};
-   glDrawBuffers(n, draw_buffers);
-  glDrawBuffers(1, GL_DEPTH_ATTACHMENT); */
+
   //Check that the Framebuffer can be written; hence, that...
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE ){
     debugPrint("ERROR: FRAMEBUFFER. not complete!");

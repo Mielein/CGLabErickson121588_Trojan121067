@@ -871,8 +871,12 @@ void ApplicationSolar::initializeGeometry() {
   //initialise quad object
 
   float quadVertices[] = {
-    -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f
+    -1.0f, -1.0f, 
+    1.0f, -1.0f,
+    1.0f, 1.0f,
+    -1.0f, 1.0f,
+    -1.0f, 1.0f,
+    1.0f, -1.0f
   };
 
   // generate vertex array object

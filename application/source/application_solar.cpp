@@ -190,7 +190,7 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , 600, 400, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -203,7 +203,7 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 800, 600); //not sure if initialres. is okay
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 600, 400); //not sure if initialres. is okay
 
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer_obj.rb_handle);
 
@@ -567,6 +567,8 @@ void ApplicationSolar::render() {
   glClear(GL_COLOR_BUFFER_BIT); //not using depthbuffer, so no need to clear that;
   
   glUseProgram(m_shaders.at("quad").handle);
+  int screentex_location = glGetUniformLocation(m_shaders.at("quad").handle, "screen_texture");
+  glUniform1i(screentex_location, 1);
   glBindVertexArray(quad_object.vertex_AO);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
   glDrawArrays(GL_TRIANGLES, 0, 6); //draw quad made out of two triangles 
@@ -870,7 +872,6 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.emplace("quad", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/quad.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/quad.frag"}}});
   // request uniform locations for shader program
-  m_shaders.at("quad").u_locs["screen_texture"] = -1;
   m_shaders.at("quad").u_locs["ModelMatrix"] = -1;
   m_shaders.at("quad").u_locs["ViewMatrix"] = -1;
   m_shaders.at("quad").u_locs["ProjectionMatrix"] = -1;

@@ -10,11 +10,23 @@ uniform bool mirror_h_on;
 uniform bool blurr_on;
 uniform bool inverse;
 
+vec2 passCoords = pTexCoords;
 
-void main(){
-    
-    outFragColor = texture(screen_texture, pTexCoords);
+void main(){ 
 
+    if(mirror_v_on){
+        passCoords.y = 1.0 - passCoords.y;
+    }
+    if(mirror_h_on){
+        passCoords.x = 1.0 - passCoords.x;
+    }
+    if(blurr_on){
+
+    }
+
+// color 
+//----------------------------------------------------------------------------------------
+    outFragColor = texture(screen_texture, passCoords);
     if(inverse){
         outFragColor = vec4(vec3(1.0 - outFragColor), 1.0);
     }

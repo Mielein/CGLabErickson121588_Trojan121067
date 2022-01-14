@@ -833,6 +833,9 @@ void ApplicationSolar::uploadView() {
   // upload bool to quad shader
   glUniform1i(m_shaders.at("quad").u_locs.at("inverse"), inverse);
   glUniform1i(m_shaders.at("quad").u_locs.at("grayscale_on"), grayscale);
+  glUniform1i(m_shaders.at("quad").u_locs.at("mirror_h_on"), mirror_h);
+  glUniform1i(m_shaders.at("quad").u_locs.at("mirror_v_on"), mirror_v);
+  glUniform1i(m_shaders.at("quad").u_locs.at("blur_on"), blur);
 }
 
 void ApplicationSolar::uploadProjection() {
@@ -1054,10 +1057,12 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     uploadView();
   }
   else if(key == GLFW_KEY_8 && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    std::cout << mirror_h << std::endl;
     mirror_h = !mirror_h;
     uploadView();
   }
   else if(key == GLFW_KEY_9 && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    std::cout << mirror_v << std::endl;
     mirror_v = !mirror_v;
     uploadView();
   }

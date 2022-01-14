@@ -34,6 +34,8 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,quad_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
+ ,m_width{initial_resolution.x}
+ ,m_height{initial_resolution.y}
  ,scene_graph_{}
 {
   initializeSceneGraph();
@@ -44,6 +46,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeSkybox();
   initializeSun();
   initializeShaderPrograms();
+
   initializeFramebuffer(m_width, m_height);
 }
 
@@ -195,7 +198,7 @@ void ApplicationSolar::initializeFramebuffer(unsigned width, unsigned height){
   glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -207,7 +210,7 @@ void ApplicationSolar::initializeFramebuffer(unsigned width, unsigned height){
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_width, m_height); //not sure if initialres. is okay
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height); //not sure if initialres. is okay
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer_obj.rb_handle);
 
@@ -1061,7 +1064,7 @@ void ApplicationSolar::scrollCallback(double pos_x, double pos_y){
 
 //handle resizing
 void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
-  std::cout<< "width: "<<width<<std::endl;
+  std::cout<< "width: "<< width << std::endl;
   // recalculate projection matrix for new aspect ration
   m_view_projection = utils::calculate_projection_matrix(float(width) / float(height));
   // upload new projection matrix

@@ -890,8 +890,8 @@ void ApplicationSolar::initializeGeometry() {
     1.0f, -1.0f,   1.0f, 0.0f,
 
     -1.0f, 1.0f,  0.0f, 1.0f,
-    -1.0f, 1.0f,  1.0f, 0.0f,
-    1.0f, -1.0f,  1.0f, 1.0f
+    1.0f, -1.0f,  1.0f, 0.0f,
+    1.0f, 1.0f,  1.0f, 1.0f
   };
 
   // generate vertex array object

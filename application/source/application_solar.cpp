@@ -189,11 +189,11 @@ void ApplicationSolar::initializeSceneGraph() {
 //--------------------------------------------------------FRAMEBUFFER--------------------------------------------------------------------
 void ApplicationSolar::initializeFramebuffer(unsigned width, unsigned height){
   debugPrint("Initialising Framebuffer");
-//Define Framebuffer
+  //Define Framebuffer
   glGenFramebuffers(1, &framebuffer_obj.handle);
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_obj.handle);
 
-//create colour attachment
+  //create colour attachment
   //glActiveTexture(GL_TEXTURE0);
   glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
@@ -202,11 +202,13 @@ void ApplicationSolar::initializeFramebuffer(unsigned width, unsigned height){
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-//Define Attachments (one call for each attachment to be defined)
+  
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  //Define Attachments (one call for each attachment to be defined)
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle,  0);
 
-//create renderbuffer attachment
+  //create renderbuffer attachment
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
@@ -220,6 +222,7 @@ void ApplicationSolar::initializeFramebuffer(unsigned width, unsigned height){
   }
   
   debugPrint("Framebuffer Initialised");
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -375,7 +378,8 @@ void ApplicationSolar::initializeTextures(){
       std::cout<<"height: "<< planet_data.height<<std::endl;
       std::cout<<"channels: "<< planet_data.channels<<std::endl;  */
 
-      
+      glTexImage2D(GL_TEXTURE_2D, 0, planet_data.channels , (GLsizei)planet_data.width, (GLsizei)planet_data.height, 0,
+      planet_data.channels, planet_data.channel_type, planet_data.ptr());
 
       p->setMappingInt(m_mappingtexture);
     }
@@ -568,23 +572,26 @@ void ApplicationSolar::render() {
 
   //render default framebuffer
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glDisable(GL_DEPTH_TEST);
   //clear default framebuffer
   glClearColor(1.0f,1.0f,1.0f,1.0f);
   glClear(GL_COLOR_BUFFER_BIT); //not using depthbuffer, so no need to clear that;
+  glDisable(GL_DEPTH_TEST);
   
+  //render quad
   glUseProgram(m_shaders.at("quad").handle);
-  int screentex_location = glGetUniformLocation(m_shaders.at("quad").handle, "screen_texture");
-  glUniform1i(screentex_location, 1);
-  glBindVertexArray(quad_object.vertex_AO);
+
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
-  glDrawArrays(GL_TRIANGLES, 0, 6); //draw quad made out of two triangles 
-
-  glUseProgram(m_shaders.at("quad").handle);
-  int inverse_location = glGetUniformLocation(m_shaders.at("quad").handle, "inverse");
-  glUniform1i(inverse_location, inverse);
-
   
+  int screentex_location = glGetUniformLocation(m_shaders.at("quad").handle, "screen_texture");
+  glUniform1i(screentex_location, 0);
+
+  glBindVertexArray(quad_object.vertex_AO);
+  glDrawArrays(quad_object.draw_mode, 0, quad_object.num_elements); //draw quad made out of two triangles 
+
+  //glUseProgram(m_shaders.at("quad").handle);
+  //int inverse_location = glGetUniformLocation(m_shaders.at("quad").handle, "inverse");
+  //glUniform1i(inverse_location, inverse);
 } 
 
 ////////////////////////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,11 @@ class ApplicationSolar : public Application {
   float speed = 1.0f; 
   bool switch_appearence = false;
   bool inverse = false;
+  bool grayscale = false;
+  bool mirror_v = false;
+  bool mirror_h = false;
+  bool blur = false;
+
 
   unsigned int m_sunTexture;
   unsigned int m_texture;

@@ -584,7 +584,16 @@ void ApplicationSolar::render() {
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
   
   int screentex_location = glGetUniformLocation(m_shaders.at("quad").handle, "screen_texture");
+/*  int inverse_check = glGetUniformLocation(m_shaders.at("quad").handle, "inverse");
+  int grayscale_check = glGetUniformLocation(m_shaders.at("quad").handle, "grayscale_on");
+  int mirror_v_check = glGetUniformLocation(m_shaders.at("quad").handle, "mirror_v_on");
+  int mirror_h_check = glGetUniformLocation(m_shaders.at("quad").handle, "mirror_h_on");
+  int blur_check = glGetUniformLocation(m_shaders.at("quad").handle, "blur_on"); */
+
   glUniform1i(screentex_location, 0);
+  //glUniform1b(inverse_check, inverse);
+  //std::cout << inverse << std::endl;
+  //glUniform1b(grayscale, grayscale);
 
   glBindVertexArray(quad_object.vertex_AO);
   glDrawArrays(quad_object.draw_mode, 0, quad_object.num_elements); //draw quad made out of two triangles 
@@ -819,6 +828,11 @@ void ApplicationSolar::uploadView() {
   // upload matrix to gpu
   glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ViewMatrix"),
                      1, GL_FALSE, glm::value_ptr(view_matrix)); 
+
+  glUseProgram(m_shaders.at("quad").handle);
+  // upload bool to quad shader
+  glUniform1i(m_shaders.at("quad").u_locs.at("inverse"), inverse);
+  glUniform1i(m_shaders.at("quad").u_locs.at("grayscale_on"), grayscale);
 }
 
 void ApplicationSolar::uploadProjection() {
@@ -837,7 +851,8 @@ void ApplicationSolar::uploadProjection() {
                       1, GL_FALSE, glm::value_ptr(m_view_projection));  
   glUseProgram(m_shaders.at("skybox").handle);
   glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ProjectionMatrix"),
-                      1, GL_FALSE, glm::value_ptr(m_view_projection));  
+                      1, GL_FALSE, glm::value_ptr(m_view_projection)); 
+
 } 
 
 // update uniform locations
@@ -890,9 +905,12 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.emplace("quad", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/quad.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/quad.frag"}}});
   // request uniform locations for shader program
-  m_shaders.at("quad").u_locs["ModelMatrix"] = -1;
-  m_shaders.at("quad").u_locs["ViewMatrix"] = -1;
-  m_shaders.at("quad").u_locs["ProjectionMatrix"] = -1;
+  m_shaders.at("quad").u_locs["grayscale_on"] = 0;
+  m_shaders.at("quad").u_locs["mirror_v_on"] = 0;
+  m_shaders.at("quad").u_locs["mirror_h_on"] = 0;
+  m_shaders.at("quad").u_locs["blur_on"] = 0;
+  m_shaders.at("quad").u_locs["inverse"] = 0;
+
   //std::cout << "initialize shader programms " << std::endl;
 
 }
@@ -1028,7 +1046,23 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     uploadView();
   }
   else if(key == GLFW_KEY_I && (action == GLFW_PRESS || action == GLFW_REPEAT)){
-    inverse = true;
+    inverse = !inverse;
+    uploadView();
+  }
+  else if(key == GLFW_KEY_7 && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    grayscale = !grayscale;
+    uploadView();
+  }
+  else if(key == GLFW_KEY_8 && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    mirror_h = !mirror_h;
+    uploadView();
+  }
+  else if(key == GLFW_KEY_9 && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    mirror_v = !mirror_v;
+    uploadView();
+  }
+  else if(key == GLFW_KEY_0 && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    blur = !blur;
     uploadView();
   }
 }

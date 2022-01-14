@@ -36,6 +36,7 @@ class ApplicationSolar : public Application {
   glm::fmat4 earth_local_transform;
   float speed = 1.0f; 
   bool switch_appearence = false;
+  bool inverse = false;
 
   unsigned int m_sunTexture;
   unsigned int m_texture;

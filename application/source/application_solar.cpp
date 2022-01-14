@@ -54,6 +54,9 @@ ApplicationSolar::~ApplicationSolar() {
   glDeleteBuffers(1, &star_object.element_BO);
   glDeleteBuffers(1, &skybox_object.vertex_BO);
   glDeleteBuffers(1, &skybox_object.element_BO);
+  glDeleteBuffers(1, &quad_object.vertex_BO);
+  glDeleteBuffers(1, &quad_object.element_BO);
+  glDeleteVertexArrays(1, &quad_object.vertex_AO);
   glDeleteVertexArrays(1, &planet_object.vertex_AO);
   glDeleteVertexArrays(1, &star_object.vertex_AO);
   glDeleteVertexArrays(1, &skybox_object.vertex_AO);
@@ -573,6 +576,10 @@ void ApplicationSolar::render() {
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
   glDrawArrays(GL_TRIANGLES, 0, 6); //draw quad made out of two triangles 
 
+  glUseProgram(m_shaders.at("quad").handle);
+  int inverse_location = glGetUniformLocation(m_shaders.at("quad").handle, "inverse");
+  glUniform1i(inverse_location, inverse);
+
   
 } 
 
@@ -1007,6 +1014,10 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
   }
   else if (key == GLFW_KEY_2 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     switch_appearence = true;
+    uploadView();
+  }
+  else if(key == GLFW_KEY_I && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    inverse = true;
     uploadView();
   }
 }

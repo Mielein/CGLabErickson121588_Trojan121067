@@ -190,7 +190,7 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , GLsizei(600), GLsizei(400), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -203,7 +203,7 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 600, 400); //not sure if initialres. is okay
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 800, 600); //not sure if initialres. is okay
 
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer_obj.rb_handle);
 
@@ -211,6 +211,7 @@ void ApplicationSolar::initializeFramebuffer(){
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE ){
     debugPrint("ERROR: FRAMEBUFFER. not complete!");
   }
+  
   debugPrint("Framebuffer Initialised");
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
@@ -546,12 +547,12 @@ void ApplicationSolar::initializeOrbits(){
 ////////////////////////////////////rendering/////////////////////////////////////////////////
 
 void ApplicationSolar::render() {
-
   //bind offscreen framebuffer
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_obj.handle);
   //clear framebuffer
   glClearColor(0.1f,0.1f,0.1f,0.1f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
   // bind shader to upload uniforms
   skyboxrenderer();
   starRenderer();
@@ -560,15 +561,15 @@ void ApplicationSolar::render() {
 
   //render default framebuffer
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDisable(GL_DEPTH_TEST);
   //clear default framebuffer
-  glClearColor(0.1f,0.1f,0.1f,0.1f);
+  glClearColor(1.0f,1.0f,1.0f,1.0f);
   glClear(GL_COLOR_BUFFER_BIT); //not using depthbuffer, so no need to clear that;
   
   glUseProgram(m_shaders.at("quad").handle);
   glBindVertexArray(quad_object.vertex_AO);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
   glDrawArrays(GL_TRIANGLES, 0, 6); //draw quad made out of two triangles 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   
 } 
@@ -903,7 +904,7 @@ void ApplicationSolar::initializeGeometry() {
   // bind this as an vertex array buffer containing all attributes
   glBindBuffer(GL_ARRAY_BUFFER, quad_object.vertex_BO);
   // configure currently bound array buffer
-  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, quadVertices, GL_STATIC_DRAW); //12 because of vertices
+  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 
   // activate first attribute on gpu
   glEnableVertexAttribArray(0);

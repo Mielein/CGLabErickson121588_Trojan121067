@@ -203,13 +203,12 @@ void ApplicationSolar::initializeFramebuffer(unsigned width, unsigned height){
 //Define Attachments (one call for each attachment to be defined)
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle,  0);
 
-
 //create renderbuffer attachment
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_width, m_height); //not sure if initialres. is okay
-
+  glBindRenderbuffer(GL_RENDERBUFFER, 0);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer_obj.rb_handle);
 
   //Check that the Framebuffer can be written; hence, that...
@@ -1062,6 +1061,7 @@ void ApplicationSolar::scrollCallback(double pos_x, double pos_y){
 
 //handle resizing
 void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
+  std::cout<< "width: "<<width<<std::endl;
   // recalculate projection matrix for new aspect ration
   m_view_projection = utils::calculate_projection_matrix(float(width) / float(height));
   // upload new projection matrix

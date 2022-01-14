@@ -44,7 +44,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeSkybox();
   initializeSun();
   initializeShaderPrograms();
-  initializeFramebuffer();
+  initializeFramebuffer(m_width, m_height);
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -64,6 +64,8 @@ ApplicationSolar::~ApplicationSolar() {
 unsigned int m_texture;
 unsigned int m_sunTexture;
 unsigned int m_skytextures;
+float m_width;
+float m_height;
 
 /////////////////////////////////////////////////////////////////////////////////////
 void ApplicationSolar::tmpfunk(){
@@ -182,7 +184,7 @@ void ApplicationSolar::initializeSceneGraph() {
 }
 
 //--------------------------------------------------------FRAMEBUFFER--------------------------------------------------------------------
-void ApplicationSolar::initializeFramebuffer(){
+void ApplicationSolar::initializeFramebuffer(unsigned width, unsigned height){
   debugPrint("Initialising Framebuffer");
 //Define Framebuffer
   glGenFramebuffers(1, &framebuffer_obj.handle);
@@ -193,7 +195,7 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenTextures(1, &framebuffer_obj.fbo_tex_handle);
   glBindTexture(GL_TEXTURE_2D, framebuffer_obj.fbo_tex_handle);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , 600, 400, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB , m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -206,7 +208,7 @@ void ApplicationSolar::initializeFramebuffer(){
   glGenRenderbuffers(1, &framebuffer_obj.rb_handle);
   glBindRenderbuffer(GL_RENDERBUFFER, framebuffer_obj.rb_handle);
   //GL_DEPTH_COMPONENT24 specifies the number of color components in the texture
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 600, 400); //not sure if initialres. is okay
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_width, m_height); //not sure if initialres. is okay
 
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebuffer_obj.rb_handle);
 
@@ -1064,6 +1066,9 @@ void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
   m_view_projection = utils::calculate_projection_matrix(float(width) / float(height));
   // upload new projection matrix
   uploadProjection();
+  initializeFramebuffer(width, height);
+  m_width = width;
+  m_height = height;
 }
 
 

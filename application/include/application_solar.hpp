@@ -42,12 +42,14 @@ class ApplicationSolar : public Application {
   unsigned int m_texture;
   unsigned int m_mappingtexture;
   unsigned int m_skytextures;
+  unsigned m_width;
+  unsigned m_height;
 
  protected:
   // initialize all objects in the graph to create the sun system
   void initializeSceneGraph();
   void initializeShaderPrograms();
-  void initializeFramebuffer();
+  void initializeFramebuffer(unsigned width, unsigned height);
   void initializeGeometry();
   void initializeTextures();
   void initializeSun();
